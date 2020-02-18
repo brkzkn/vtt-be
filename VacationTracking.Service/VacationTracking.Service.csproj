@@ -15,8 +15,4 @@
     <ProjectReference Include="..\VacationTracking.Domain\VacationTracking.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Queries\Team\" />
-  </ItemGroup>
-
 </Project>

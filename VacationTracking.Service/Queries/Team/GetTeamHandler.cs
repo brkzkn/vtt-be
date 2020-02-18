@@ -1,16 +1,14 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using VacationTracking.Data.IRepositories;
 using VacationTracking.Domain.Dtos;
-using VacationTracking.Domain.Queries;
+using VacationTracking.Domain.Queries.Team;
 using VacationTracking.Service.Dxos;
 
-namespace VacationTracking.Service.Queries
+namespace VacationTracking.Service.Queries.Team
 {
     public class GetTeamHandler : IRequestHandler<GetTeamQuery, TeamDto>
     {
@@ -27,13 +25,13 @@ namespace VacationTracking.Service.Queries
 
         public async Task<TeamDto> Handle(GetTeamQuery request, CancellationToken cancellationToken)
         {
-            var team = await _teamRepository.GetAsync(request.CustomerId);
+            var team = await _teamRepository.GetAsync(request.TeamId);
 
             if (team != null)
             {
-                _logger.LogInformation($"Got a request get customer Id: {team.Id}");
-                var customerDto = _teamDxos.MapCustomerDto(team);
-                return customerDto;
+                _logger.LogInformation($"Got a request get customer Id: {team.TeamId}");
+                var teamDto = _teamDxos.MapCustomerDto(team);
+                return teamDto;
             }
 
             return null;

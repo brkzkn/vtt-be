@@ -3,22 +3,18 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using VacationTracking.Domain.Dtos;
 
-namespace VacationTracking.Domain.Queries
+namespace VacationTracking.Domain.Queries.Team
 {
     public class GetTeamQuery : QueryBase<TeamDto>
     {
-        public GetTeamQuery()
-        {
-        }
-
         [JsonConstructor]
-        public GetTeamQuery(Guid customerId)
+        public GetTeamQuery(Guid teamId)
         {
-            CustomerId = customerId;
+            TeamId = teamId;
         }
 
         [JsonProperty("id")]
         [Required]
-        public Guid CustomerId { get; set; }
+        public Guid TeamId { get; set; }
     }
 }

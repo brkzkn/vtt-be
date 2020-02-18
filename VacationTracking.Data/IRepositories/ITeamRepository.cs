@@ -5,6 +5,6 @@ namespace VacationTracking.Data.IRepositories
 {
     public interface ITeamRepository 
     {
-        Task<Domain.Models.Team> GetAsync(Guid id);
+        Task<Domain.Models.Teams> GetAsync(Guid id);
     }
 }

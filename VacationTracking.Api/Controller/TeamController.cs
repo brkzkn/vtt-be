@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 using VacationTracking.Domain.Dtos;
-using VacationTracking.Domain.Queries;
+using VacationTracking.Domain.Queries.Team;
 
 namespace VacationTracking.Api.Controller
 {
