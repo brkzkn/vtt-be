@@ -1,16 +1,19 @@
 ﻿using Dapper.FluentMap.Mapping;
 using System;
+using System.Collections.Generic;
 
 namespace VacationTracking.Domain.Models
 {
-    public class Teams : BaseModel
+    public class Team : BaseModel
     {
         public Guid TeamId { get; set; }
         public Guid CompanyId { get; set; }
         public string TeamName { get; set; }
+
+        public IList<TeamMember> TeamMembers { get; set; }
     }
 
-    public class TeamsMap : EntityMap<Teams>
+    public class TeamsMap : EntityMap<Team>
     {
         public TeamsMap()
         {

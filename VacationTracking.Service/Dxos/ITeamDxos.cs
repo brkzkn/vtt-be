@@ -4,6 +4,7 @@ namespace VacationTracking.Service.Dxos
 {
     public interface ITeamDxos
     {
-        TeamDto MapCustomerDto(Domain.Models.Teams team);
+        TeamDto MapTeamDto(Domain.Models.Team team);
+        TeamMemberDto MapTeamDto(Domain.Models.TeamMember teamMember);
     }
 }

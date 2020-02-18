@@ -14,6 +14,9 @@ namespace VacationTracking.Domain.Dtos
         [JsonProperty("isApprover")]
         public bool IsApprover { get; set; }
 
+        [JsonProperty("isMember")]
+        public bool IsMember { get; set; }
+
         [JsonProperty("User")]
         public UserDto User { get; set; }
     }

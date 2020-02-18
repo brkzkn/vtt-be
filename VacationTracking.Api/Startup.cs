@@ -29,6 +29,8 @@ namespace VacationTracking.Api
             FluentMapper.Initialize(config =>
             {
                 config.AddMap(new TeamsMap());
+                config.AddMap(new UserMap());
+                config.AddMap(new TeamMemberMap());
             });
         }
 
@@ -40,6 +42,7 @@ namespace VacationTracking.Api
             //Add DIs
             services.AddScoped<ITeamRepository, TeamRepository>();
             services.AddScoped<ITeamDxos, TeamDxos>();
+            services.AddScoped<IUserDxos, UserDxos>();
 
             services.AddMediatR(typeof(GetTeamHandler).Assembly);
 

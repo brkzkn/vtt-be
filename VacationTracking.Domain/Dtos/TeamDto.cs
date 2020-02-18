@@ -16,6 +16,6 @@ namespace VacationTracking.Domain.Dtos
         public Guid CompanyId { get; set; }
 
         [JsonProperty("teamMembers")]
-        public IList<UserDto> Users { get; set; }
+        public IList<TeamMemberDto> TeamMembers { get; set; }
     }
 }
