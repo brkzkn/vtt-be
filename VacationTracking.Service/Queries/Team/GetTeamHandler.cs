@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
@@ -6,20 +7,19 @@ using System.Threading.Tasks;
 using VacationTracking.Data.IRepositories;
 using VacationTracking.Domain.Dtos;
 using VacationTracking.Domain.Queries.Team;
-using VacationTracking.Service.Dxos;
 
 namespace VacationTracking.Service.Queries.Team
 {
     public class GetTeamHandler : IRequestHandler<GetTeamQuery, TeamDto>
     {
         private readonly ITeamRepository _teamRepository;
-        private readonly ITeamDxos _teamDxos;
         private readonly ILogger _logger;
+        private readonly IMapper _mapper;
 
-        public GetTeamHandler(ITeamRepository teamRepository, ITeamDxos teamDxos, ILogger<GetTeamHandler> logger)
+        public GetTeamHandler(ITeamRepository teamRepository, IMapper mapper, ILogger<GetTeamHandler> logger)
         {
             _teamRepository = teamRepository ?? throw new ArgumentNullException(nameof(teamRepository));
-            _teamDxos = teamDxos ?? throw new ArgumentNullException(nameof(teamDxos));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -32,7 +32,7 @@ namespace VacationTracking.Service.Queries.Team
             if (team != null)
             {
                 _logger.LogInformation($"Got a request get customer Id: {team.TeamId}");
-                var teamDto = _teamDxos.MapTeamDto(team);
+                var teamDto = _mapper.Map<Domain.Dtos.TeamDto>(team);
                 return teamDto;
             }
 

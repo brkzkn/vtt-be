@@ -10,7 +10,7 @@ namespace VacationTracking.Domain.Dtos
         public Guid TeamId { get; set; }
 
         [JsonProperty("name")]
-        public string Name { get; set; }
+        public string TeamName { get; set; }
 
         [JsonProperty("companyID")]
         public Guid CompanyId { get; set; }

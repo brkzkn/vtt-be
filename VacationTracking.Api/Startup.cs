@@ -5,11 +5,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using VacationTracking.Data.IRepositories;
 using VacationTracking.Data.Repositories;
-using VacationTracking.Service.Dxos;
 using MediatR;
 using Dapper.FluentMap;
 using VacationTracking.Domain.Models;
 using VacationTracking.Service.Queries.Team;
+using AutoMapper;
 
 namespace VacationTracking.Api
 {
@@ -41,10 +41,10 @@ namespace VacationTracking.Api
         {
             //Add DIs
             services.AddScoped<ITeamRepository, TeamRepository>();
-            services.AddScoped<ITeamDxos, TeamDxos>();
-            services.AddScoped<IUserDxos, UserDxos>();
 
             services.AddMediatR(typeof(GetTeamHandler).Assembly);
+
+            services.AddAutoMapper(typeof(Service.Mapper.AutoMapping));
 
             services.AddControllers();
         }

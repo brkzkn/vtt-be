@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -7,20 +8,19 @@ using System.Threading.Tasks;
 using VacationTracking.Data.IRepositories;
 using VacationTracking.Domain.Dtos;
 using VacationTracking.Domain.Queries.Team;
-using VacationTracking.Service.Dxos;
 
 namespace VacationTracking.Service.Queries.Team
 {
     public class GetTeamListHandler : IRequestHandler<GetTeamListQuery, IList<TeamDto>>
     {
         private readonly ITeamRepository _teamRepository;
-        private readonly ITeamDxos _teamDxos;
         private readonly ILogger _logger;
+        private readonly IMapper _mapper;
 
-        public GetTeamListHandler(ITeamRepository teamRepository, ITeamDxos teamDxos, ILogger<GetTeamHandler> logger)
+        public GetTeamListHandler(ITeamRepository teamRepository, IMapper mapper, ILogger<GetTeamHandler> logger)
         {
             _teamRepository = teamRepository ?? throw new ArgumentNullException(nameof(teamRepository));
-            _teamDxos = teamDxos ?? throw new ArgumentNullException(nameof(teamDxos));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
         public async Task<IList<TeamDto>> Handle(GetTeamListQuery request, CancellationToken cancellationToken)
@@ -35,7 +35,7 @@ namespace VacationTracking.Service.Queries.Team
                 List<TeamDto> teamDtos = new List<TeamDto>();
                 foreach (var team in teams)
                 {
-                    teamDtos.Add(_teamDxos.MapTeamDto(team));
+                    teamDtos.Add(_mapper.Map<TeamDto>(team));
                 }
                 return teamDtos;
             }
