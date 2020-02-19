@@ -10,6 +10,7 @@ using Dapper.FluentMap;
 using VacationTracking.Domain.Models;
 using VacationTracking.Service.Queries.Team;
 using AutoMapper;
+using VacationTracking.Service.Commands.Team;
 
 namespace VacationTracking.Api
 {
@@ -43,6 +44,8 @@ namespace VacationTracking.Api
             services.AddScoped<ITeamRepository, TeamRepository>();
 
             services.AddMediatR(typeof(GetTeamHandler).Assembly);
+            services.AddMediatR(typeof(GetTeamListHandler).Assembly);
+            services.AddMediatR(typeof(CreateTeamHandler).Assembly);
 
             services.AddAutoMapper(typeof(Service.Mapper.AutoMapping));
 

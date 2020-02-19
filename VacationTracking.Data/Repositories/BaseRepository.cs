@@ -11,7 +11,7 @@ namespace VacationTracking.Data.Repositories
         public BaseRepository(IConfiguration configuration)
         {
             ConnectionString = configuration.GetConnectionString("MyConnection");
-            DbConnection = new NpgsqlConnection(ConnectionString);
+            DbConnection = new NpgsqlConnection(ConnectionString);            
         }
     }
 }

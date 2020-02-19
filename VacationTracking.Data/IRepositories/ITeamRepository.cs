@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using VacationTracking.Domain.Models;
 
 namespace VacationTracking.Data.IRepositories
 {
@@ -8,5 +9,6 @@ namespace VacationTracking.Data.IRepositories
     {
         Task<Domain.Models.Team> GetAsync(Guid teamId);
         Task<IList<Domain.Models.Team>> GetListAsync(Guid companyId);
+        Task<Domain.Models.Team> CreateTeamAsync(Team model);
     }
 }

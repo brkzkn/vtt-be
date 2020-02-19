@@ -44,5 +44,38 @@ namespace VacationTracking.Data.Repositories
 
             return teamsDictionary.Values.AsList();
         }
+
+        public async Task<Team> CreateTeamAsync(Team team)
+        {
+            /*
+             1. Delete team_members where CompanyId = X and TeamId = Y and IsMember = true and user_id in (request.Members)
+             2. Merge two list (request.Member and request.Approver)
+                -   new TeamMember(teamId, Member[index]/Approver[index),  Member.IsExist(), Approver.IsExist())
+             3. Insert team table
+             */
+            DbConnection.Open();
+            using (var transaction = DbConnection.BeginTransaction())
+            {
+                string deleteSql = "DELETE FROM TEAM_MEMBERS " +
+                    $"WHERE TEAM_ID = '{team.TeamId}'";
+                var affectedRow = await SqlMapper.ExecuteAsync(DbConnection, deleteSql);
+
+                string insertTeamSql = "INSERT INTO TEAMS(TEAM_ID, COMPANY_ID, TEAM_NAME, CREATED_AT, CREATED_BY)" +
+                    $" VALUES('{team.TeamId}', '{team.CompanyId}', '{team.TeamName}', '{team.CreatedAt}', '{team.CreatedBy}')";
+
+                affectedRow = await SqlMapper.ExecuteAsync(DbConnection, insertTeamSql);
+
+                foreach (var teamMember in team.TeamMembers)
+                {
+                    string insertTeamMemberSql = "INSERT INTO TEAM_MEMBERS(TEAM_ID, USER_ID, IS_APPROVER, IS_MEMBER) " +
+                        $"VALUES('{teamMember.TeamId}', '{teamMember.UserId}', '{teamMember.IsApprover}', '{teamMember.IsMember}')";
+                    affectedRow = await SqlMapper.ExecuteAsync(DbConnection, insertTeamMemberSql);
+                }
+                await transaction.CommitAsync();
+            }
+            DbConnection.Close();
+
+            return team;
+        }
     }
 }
