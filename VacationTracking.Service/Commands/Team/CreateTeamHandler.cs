@@ -73,16 +73,10 @@ namespace VacationTracking.Service.Commands.Team
             teamEntity.TeamMembers = teamMembersDic.Values.AsList();
             var result = await _teamRepository.CreateTeamAsync(teamEntity);
 
+            //TODO: Fire "teamCreated" event
+
             return _mapper.Map<TeamDto>(result);
             
-            /*
-             1. Delete team_members where CompanyId = X and TeamId = Y and IsMember = true and user_id in (request.Members)
-             2. Merge two list (request.Member and request.Approver)
-                -   new TeamMember(teamId, Member[index]/Approver[index),  Member.IsExist(), Approver.IsExist())
-             3. Insert team table
-             */
-
-            throw new NotImplementedException();
         }
     }
 }

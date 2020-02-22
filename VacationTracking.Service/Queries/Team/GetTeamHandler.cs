@@ -27,7 +27,7 @@ namespace VacationTracking.Service.Queries.Team
         {
             // TODO: Check user permission. 
             // User should has owner or admin permission
-            var team = await _teamRepository.GetAsync(request.TeamId);
+            var team = await _teamRepository.GetAsync(request.TeamId, request.CompanyId);
 
             if (team != null)
             {

@@ -1,11 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using MediatR;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using VacationTracking.Domain.Dtos;
 
 namespace VacationTracking.Domain.Commands.Team
 {
-    public class CreateTeamCommand : CommandBase<TeamDto>
+    public class CreateTeamCommand : IRequest<TeamDto>
     {
         [JsonConstructor]
         public CreateTeamCommand(Guid companyId, Guid userId, string name, List<Guid> members, List<Guid> approvers)

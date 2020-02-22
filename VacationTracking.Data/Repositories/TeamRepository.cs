@@ -12,9 +12,10 @@ namespace VacationTracking.Data.Repositories
     {
         public TeamRepository(IConfiguration configuration) : base(configuration) { }
 
-        public async Task<Team> GetAsync(Guid teamId)
+        public async Task<Team> GetAsync(Guid teamId, Guid companyId)
         {
-            Team result = await SqlMapper.QuerySingleOrDefaultAsync<Team>(DbConnection, $"SELECT * FROM TEAMS WHERE TEAM_ID = '{teamId}'");
+            string sqlQuery = $"SELECT * FROM TEAMS WHERE TEAM_ID = '{teamId}' AND COMPANY_ID = '{companyId}'";
+            Team result = await SqlMapper.QuerySingleOrDefaultAsync<Team>(DbConnection, sqlQuery);
 
             return result;
         }
@@ -76,6 +77,31 @@ namespace VacationTracking.Data.Repositories
             DbConnection.Close();
 
             return team;
+        }
+
+        public async Task<bool> DeleteTeamAsync(Guid companyId, Guid teamId)
+        {
+            /*
+             * 1. Delete team_members
+             * 2. Delete holiday_team
+             * 2. Delete teams
+             */
+            DbConnection.Open();
+            using (var transaction = DbConnection.BeginTransaction())
+            {
+                string deleteTeamMemberSql = $"DELETE FROM TEAM_MEMBERS WHERE TEAM_ID = '{teamId}'";
+                var affectedRow = await SqlMapper.ExecuteAsync(DbConnection, deleteTeamMemberSql);
+
+                string deleteHolidayTeamSql = $"DELETE FROM HOLIDAY_TEAM WHERE TEAM_ID = '{teamId}'";
+                affectedRow = await SqlMapper.ExecuteAsync(DbConnection, deleteHolidayTeamSql);
+
+                string deleteTeamSql = $"DELETE FROM TEAMS WHERE TEAM_ID = '{teamId}'";
+                affectedRow = await SqlMapper.ExecuteAsync(DbConnection, deleteTeamSql);
+
+                transaction.Commit();
+            }
+            DbConnection.Close();
+            return true;
         }
     }
 }
