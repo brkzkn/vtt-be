@@ -90,10 +90,10 @@ namespace VacationTracking.Data.Repositories
             if (team == null)
                 throw new ArgumentNullException(nameof(Team));
 
-            string query = "UPDATE TEAM SET " +
-                $"TEAM_NAME = {team.TeamName}, " +
-                $"UPDATE_AT = {DateTime.UtcNow}, " +
-                $"UPDATE_BY = '{team.UpdatedBy}' " +
+            string query = "UPDATE TEAMS SET " +
+                $"TEAM_NAME = '{team.TeamName}', " +
+                $"UPDATED_AT = '{team.UpdatedAt}', " +
+                $"UPDATED_BY = '{team.UpdatedBy}' " +
                 $"WHERE TEAM_ID = '{team.TeamId}' AND COMPANY_ID = '{team.CompanyId}';";
 
             var affectedRow = await Connection.ExecuteAsync(query);

@@ -70,6 +70,21 @@ namespace VacationTracking.Api.Controller
             return Single(await QueryAsync(request));
         }
 
+        [HttpPut]
+        [Route("{id}")]
+        [ProducesResponseType(typeof(TeamDto), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<ActionResult<TeamDto>> UpdateTeamAsync(Guid id, [FromBody]TeamModel model)
+        {
+            Guid companyId = new Guid(_companyId);
+            Guid userId = new Guid(_userId);
+
+            var request = new UpdateTeamCommand(companyId, userId, id, model.Name, model.Members, model.Approvers);
+
+            return Single(await QueryAsync(request));
+        }
+
         [HttpDelete]
         [Route("{id}")]
         [ProducesResponseType(typeof(bool), 200)]
