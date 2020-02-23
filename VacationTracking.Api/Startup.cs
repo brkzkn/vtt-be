@@ -33,9 +33,13 @@ namespace VacationTracking.Api
 
             FluentMapper.Initialize(config =>
             {
+                config.AddMap(new CompaniesMap());
+                config.AddMap(new HolidaysMap());
+                config.AddMap(new LeaveTypesMap());
                 config.AddMap(new TeamsMap());
-                config.AddMap(new UserMap());
                 config.AddMap(new TeamMemberMap());
+                config.AddMap(new UserMap());
+                config.AddMap(new VacationsMap());
             });
         }
 
