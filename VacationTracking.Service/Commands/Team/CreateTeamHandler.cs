@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using VacationTracking.Data.IRepositories;
+using VacationTracking.Data;
 using VacationTracking.Domain.Commands.Team;
 using VacationTracking.Domain.Dtos;
 using VacationTracking.Domain.Models;
@@ -17,18 +17,17 @@ namespace VacationTracking.Service.Commands.Team
     {
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
-        private readonly ITeamRepository _teamRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CreateTeamHandler(ITeamRepository teamRepository, ILogger<CreateTeamHandler> logger, IMapper mapper)
+        public CreateTeamHandler(IUnitOfWork unitOfWork, ILogger<CreateTeamHandler> logger, IMapper mapper)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _teamRepository = teamRepository ?? throw new ArgumentNullException(nameof(teamRepository));
+            _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         }
 
         public async Task<TeamDto> Handle(CreateTeamCommand request, CancellationToken cancellationToken)
         {
-            
             var teamEntity = new Domain.Models.Team();
             Guid teamId = Guid.NewGuid();
             teamEntity.TeamName = request.Name;
@@ -38,8 +37,29 @@ namespace VacationTracking.Service.Commands.Team
             teamEntity.TeamId = teamId;
 
             teamEntity.TeamMembers = new List<TeamMember>();
+            teamEntity.TeamMembers = MergeMemberAndApprover(teamId, request.Members, request.Approvers);
+
+            using (_unitOfWork)
+            {
+                _unitOfWork.Begin();
+                var affectedRow = await _unitOfWork.TeamMemberRepository.SetAsNonMemberToOtherTeams(request.Members);
+                affectedRow = await _unitOfWork.TeamMemberRepository.RemoveNotActiveMemberAsync();
+                affectedRow = await _unitOfWork.TeamRepository.InsertAsync(teamEntity);
+                affectedRow = await _unitOfWork.TeamMemberRepository.InsertAsync(teamEntity.TeamMembers);
+
+                _unitOfWork.Commit();
+            }
+
+            //TODO: Fire "teamCreated" event
+
+            return _mapper.Map<TeamDto>(teamEntity);
+        }
+
+        private List<TeamMember> MergeMemberAndApprover(Guid teamId, IEnumerable<Guid> members, IEnumerable<Guid> approvers)
+        {
             Dictionary<Guid, TeamMember> teamMembersDic = new Dictionary<Guid, TeamMember>();
-            foreach (var member in request.Members)
+
+            foreach (var member in members)
             {
                 TeamMember teamMember = new TeamMember()
                 {
@@ -51,7 +71,7 @@ namespace VacationTracking.Service.Commands.Team
                 teamMembersDic.Add(member, teamMember);
             }
 
-            foreach (var approver in request.Approvers)
+            foreach (var approver in approvers)
             {
                 if (!teamMembersDic.TryGetValue(approver, out TeamMember teamMember))
                 {
@@ -70,13 +90,7 @@ namespace VacationTracking.Service.Commands.Team
                 }
             }
 
-            teamEntity.TeamMembers = teamMembersDic.Values.AsList();
-            var result = await _teamRepository.CreateTeamAsync(teamEntity);
-
-            //TODO: Fire "teamCreated" event
-
-            return _mapper.Map<TeamDto>(result);
-            
+            return teamMembersDic.Values.AsList();
         }
     }
 }

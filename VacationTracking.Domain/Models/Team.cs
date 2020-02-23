@@ -10,7 +10,8 @@ namespace VacationTracking.Domain.Models
         public Guid CompanyId { get; set; }
         public string TeamName { get; set; }
 
-        public List<TeamMember> TeamMembers { get; set; }
+        public IList<TeamMember> TeamMembers { get; set; }
+        public IList<Holiday> Holidays { get; set; }
     }
 
     public class TeamsMap : EntityMap<Team>

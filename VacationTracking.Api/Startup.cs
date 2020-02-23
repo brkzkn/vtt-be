@@ -11,6 +11,10 @@ using VacationTracking.Domain.Models;
 using VacationTracking.Service.Queries.Team;
 using AutoMapper;
 using VacationTracking.Service.Commands.Team;
+using VacationTracking.Data;
+using System.Data.SqlClient;
+using System.Data;
+using Npgsql;
 
 namespace VacationTracking.Api
 {
@@ -42,6 +46,10 @@ namespace VacationTracking.Api
         {
             //Add DIs
             services.AddScoped<ITeamRepository, TeamRepository>();
+            services.AddScoped<ITeamMemberRepository, TeamMemberRepository>();
+            services.AddScoped<IDbConnection>(db => new NpgsqlConnection(
+                    Configuration.GetConnectionString("MyConnection")));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddMediatR(typeof(GetTeamHandler).Assembly);
             services.AddMediatR(typeof(GetTeamListHandler).Assembly);

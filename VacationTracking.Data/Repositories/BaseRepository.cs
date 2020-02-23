@@ -1,17 +1,23 @@
-﻿using Microsoft.Extensions.Configuration;
-using Npgsql;
+﻿using System.Data;
 
 namespace VacationTracking.Data.Repositories
 {
-    public class BaseRepository 
+    public abstract class BaseRepository
     {
-        protected NpgsqlConnection DbConnection;
-        protected string ConnectionString;
-        
-        public BaseRepository(IConfiguration configuration)
+        protected IDbConnection Connection { get; private set; }
+
+        public BaseRepository(IDbConnection connection)
         {
-            ConnectionString = configuration.GetConnectionString("MyConnection");
-            DbConnection = new NpgsqlConnection(ConnectionString);            
+            Connection = connection;
         }
+
+        //protected NpgsqlConnection DbConnection;
+        //protected string ConnectionString;
+
+        //public BaseRepository(IConfiguration configuration)
+        //{
+        //    ConnectionString = configuration.GetConnectionString("MyConnection");
+        //    DbConnection = new NpgsqlConnection(ConnectionString);
+        //}
     }
 }

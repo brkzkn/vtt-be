@@ -7,9 +7,11 @@ namespace VacationTracking.Data.IRepositories
 {
     public interface ITeamRepository 
     {
-        Task<Domain.Models.Team> GetAsync(Guid teamId, Guid companyId);
-        Task<IList<Domain.Models.Team>> GetListAsync(Guid companyId);
-        Task<Domain.Models.Team> CreateTeamAsync(Team model);
-        Task<bool> DeleteTeamAsync(Guid companyId, Guid teamId);
+        Task<Team> GetAsync(Guid teamId, Guid companyId);
+        Task<IEnumerable<Team>> GetListAsync(Guid companyId);
+        Task<int> InsertAsync(Team model);
+        Task<int> InsertAsync(IEnumerable<Team> model);
+        Task<int> UpdateAsync(Team model);
+        Task<int> RemoveAsync(Guid companyId, Guid teamId);
     }
 }
