@@ -17,7 +17,7 @@ namespace VacationTracking.Service.Queries.Team
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
 
-        public GetTeamListHandler(ITeamRepository teamRepository, IMapper mapper, ILogger<GetTeamHandler> logger)
+        public GetTeamListHandler(ITeamRepository teamRepository, IMapper mapper, ILogger<GetTeamListHandler> logger)
         {
             _teamRepository = teamRepository ?? throw new ArgumentNullException(nameof(teamRepository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));

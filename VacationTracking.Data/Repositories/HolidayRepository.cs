@@ -16,14 +16,37 @@ namespace VacationTracking.Data.Repositories
         {
         }
 
-        public Task<Holiday> GetAsync(Guid companyId, Guid holidayId)
+        public async Task<Holiday> GetAsync(Guid companyId, Guid holidayId)
         {
-            throw new NotImplementedException();
+            string sql = $"SELECT * FROM HOLIDAYS WHERE HOLIDAY_ID = '{holidayId}' AND COMPANY_ID = '{companyId}'";
+            Holiday result = await Connection.QueryFirstOrDefaultAsync<Holiday>(sql);
+
+            return result;
         }
 
-        public Task<IEnumerable<Holiday>> GetListAsync(Guid teamId)
+        public async Task<IEnumerable<Holiday>> GetListAsync(Guid companyId)
         {
-            throw new NotImplementedException();
+            string sql = "SELECT * FROM HOLIDAYS as h  " +
+                "JOIN HOLIDAY_TEAM as ht on h.holiday_id = ht.holiday_id " +
+                "JOIN TEAMS as t on t.team_id = ht.team_id " +
+                $"WHERE h.COMPANY_ID = '{companyId}'";
+
+            Dictionary<Guid, Holiday> holidaysDictionary = new Dictionary<Guid, Holiday>();
+
+            var result = await Connection.QueryAsync<Holiday, HolidayTeam, Team, Holiday>(sql, map: (h, ht, t) =>
+            {
+                if (!holidaysDictionary.TryGetValue(h.HolidayId, out Holiday holidayEntry))
+                {
+                    holidayEntry = h;
+                    holidayEntry.Teams = new List<Team>();
+                    holidaysDictionary.Add(h.HolidayId, holidayEntry);
+                }
+                holidayEntry.Teams.Add(t);
+                return holidayEntry;
+
+            }, splitOn: "holiday_id, team_id");
+
+            return holidaysDictionary.Values.AsList();
         }
 
         public async Task<int> InsertAsync(Holiday model)

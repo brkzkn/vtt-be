@@ -1,10 +1,12 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using VacationTracking.Api.Models;
 using VacationTracking.Domain.Commands.Holiday;
 using VacationTracking.Domain.Dtos;
+using VacationTracking.Domain.Queries.Holiday;
 
 namespace VacationTracking.Api.Controller
 {
@@ -22,6 +24,39 @@ namespace VacationTracking.Api.Controller
 
         }
 
+        /// <summary>
+        /// Get holiday by id
+        /// </summary>
+        /// <param name="id">Id of holiday</param>
+        /// <returns>Holiday information</returns>
+        [HttpGet]
+        [Route("{id}")]
+        [ProducesResponseType(typeof(HolidayDto), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult<HolidayDto>> GetTeamAsync(Guid id)
+        {
+            //TODO: Set companyId from logged-in users
+            Guid companyId = new Guid(_companyId);
+
+            return Single(await QueryAsync(new GetHolidayQuery(id, companyId)));
+        }
+
+        /// <summary>
+        /// Get holiday list
+        /// </summary>
+        /// <returns>List of holiday information</returns>
+        [HttpGet]
+        [ProducesResponseType(typeof(IList<HolidayDto>), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult<IList<HolidayDto>>> GetHolidayListAsync()
+        {
+            //TODO: Set companyId from logged-in users
+            Guid companyId = new Guid(_companyId);
+
+            return Single(await QueryAsync(new GetHolidayListQuery(companyId)));
+        }
 
         [HttpPost]
         [ProducesResponseType(typeof(HolidayDto), 200)]

@@ -13,7 +13,7 @@ namespace VacationTracking.Domain.Models
         public DateTime EndDate { get; set; }
         public bool IsFullDay { get; set; }
         
-        public IList<Team> Teams { get; set; }
+        public List<Team> Teams { get; set; }
     }
 
     public class HolidaysMap : EntityMap<Holiday>
