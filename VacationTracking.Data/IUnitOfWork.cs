@@ -7,6 +7,7 @@ namespace VacationTracking.Data
     public interface IUnitOfWork : IDisposable
     {
         TeamRepository TeamRepository { get; }
+        HolidayRepository HolidayRepository{ get; }
         TeamMemberRepository TeamMemberRepository { get; }
         NpgsqlConnection Connection { get; }
 

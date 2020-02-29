@@ -24,9 +24,6 @@ namespace VacationTracking.Domain.Dtos
         [JsonProperty("isFullDay")]
         public bool IsFullDay { get; set; }
 
-        [JsonProperty("addedBy")]
-        public Guid AddedBy { get; set; }
-
         [JsonProperty("teams")]
         public IList<TeamDto> Teams { get; set; }
     }

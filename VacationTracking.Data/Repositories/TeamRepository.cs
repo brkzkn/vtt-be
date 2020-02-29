@@ -64,10 +64,10 @@ namespace VacationTracking.Data.Repositories
         {
             var insertTeamSql = new StringBuilder("INSERT INTO TEAMS(TEAM_ID, COMPANY_ID, TEAM_NAME, CREATED_AT, CREATED_BY) VALUES");
             int teamCount = teams.AsList().Count;
-            int currentTeam = 0;
+            int currentCount = 0;
             foreach (var team in teams)
             {
-                if (currentTeam++ == teamCount)
+                if (currentCount++ == teamCount)
                     insertTeamSql.Append($"('{team.TeamId}', '{team.CompanyId}', '{team.TeamName}', '{team.CreatedAt}', '{team.CreatedBy}');");
                 else
                     insertTeamSql.Append($"('{team.TeamId}', '{team.CompanyId}', '{team.TeamName}', '{team.CreatedAt}', '{team.CreatedBy}'),");

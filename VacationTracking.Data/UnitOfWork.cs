@@ -21,6 +21,7 @@ namespace VacationTracking.Data
         // Add new repository in resetRepositories function
         private TeamRepository _teamRepository;
         private TeamMemberRepository _teamMemberRepository;
+        private HolidayRepository _holidayRepository;
         #endregion
 
         #region Public Repositories
@@ -31,6 +32,10 @@ namespace VacationTracking.Data
         public TeamMemberRepository TeamMemberRepository
         {
             get { return _teamMemberRepository ?? (_teamMemberRepository = new TeamMemberRepository(_connection)); }
+        }
+        public HolidayRepository HolidayRepository
+        {
+            get { return _holidayRepository ?? (_holidayRepository = new HolidayRepository(_connection)); }
         }
 
         public NpgsqlConnection Connection 

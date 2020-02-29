@@ -15,6 +15,7 @@ using VacationTracking.Data;
 using System.Data.SqlClient;
 using System.Data;
 using Npgsql;
+using Microsoft.AspNetCore.Routing;
 
 namespace VacationTracking.Api
 {
@@ -61,6 +62,18 @@ namespace VacationTracking.Api
 
             services.AddAutoMapper(typeof(Service.Mapper.AutoMapping));
 
+
+            services.AddMemoryCache();
+
+            // Add Cors
+            services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
+            services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+
             services.AddControllers();
         }
 
@@ -71,6 +84,8 @@ namespace VacationTracking.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors("CorsPolicy");
 
             app.UseHttpsRedirection();
 

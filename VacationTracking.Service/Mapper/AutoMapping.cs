@@ -9,6 +9,7 @@ namespace VacationTracking.Service.Mapper
             CreateMap<Domain.Models.User, Domain.Dtos.UserDto>();
             CreateMap<Domain.Models.TeamMember, Domain.Dtos.TeamMemberDto>();
             CreateMap<Domain.Models.Team, Domain.Dtos.TeamDto>();
+            CreateMap<Domain.Models.Holiday, Domain.Dtos.HolidayDto>();
         }
     }
 }
