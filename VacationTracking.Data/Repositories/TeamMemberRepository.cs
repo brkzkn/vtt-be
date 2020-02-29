@@ -24,7 +24,19 @@ namespace VacationTracking.Data.Repositories
 
         public async Task<IEnumerable<TeamMember>> GetListAsync(Guid teamId)
         {
-            throw new NotImplementedException();
+            string sql = "SELECT * FROM TEAM_MEMBERS as tm  " +
+                "JOIN USERS as u on tm.user_id = u.user_id " +
+                $"WHERE tm.TEAM_ID = '{teamId}'";
+
+            Dictionary<Guid, TeamMember> teamMemberDictionary = new Dictionary<Guid, TeamMember>();
+
+            var result = await Connection.QueryAsync<TeamMember, User, TeamMember>(sql, (team_member, user) =>
+            {
+                team_member.User = user;
+                return team_member;
+            }, splitOn: "user_id");
+
+            return result;
         }
 
         public async Task<int> InsertAsync(TeamMember teamMember)
