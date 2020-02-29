@@ -92,5 +92,30 @@ namespace VacationTracking.Api.Controller
 
             return Single(await QueryAsync(request));
         }
+
+        [HttpPut]
+        [Route("{id}")]
+        [ProducesResponseType(typeof(HolidayDto), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<ActionResult<HolidayDto>> UpdateTeamAsync(Guid id, [FromBody]HolidayModel model)
+        {
+            Guid companyId = new Guid(_companyId);
+            Guid userId = new Guid(_userId);
+
+            var request = new UpdateHolidayCommand(companyId,
+                                                   id,
+                                                   userId,
+                                                   model.Name,
+                                                   model.StartDate,
+                                                   model.EndDate,
+                                                   model.IsFullDay,
+                                                   model.IsForAllTeams,
+                                                   model.Teams);
+
+            return Single(await QueryAsync(request));
+        }
+
+
     }
 }

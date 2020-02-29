@@ -49,6 +49,25 @@ namespace VacationTracking.Data.Repositories
             return holidaysDictionary.Values.AsList();
         }
 
+        public async Task<int> UpdateAsync(Guid holidayId, Holiday entity)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(Holiday));
+
+            string query = "UPDATE HOLIDAYS SET " +
+                $"NAME = '{entity.HolidayName}', " +
+                $"START_DATE = '{entity.StartDate}', " +
+                $"END_DATE = '{entity.EndDate}', " +
+                $"IS_FULL_DAY = '{entity.IsFullDay}', " +
+                $"UPDATED_AT = '{entity.UpdatedAt}', " +
+                $"UPDATED_BY = '{entity.UpdatedBy}' " +
+                $"WHERE HOLIDAY_ID = '{entity.HolidayId}' AND COMPANY_ID = '{entity.CompanyId}';";
+
+            var affectedRow = await Connection.ExecuteAsync(query);
+
+            return affectedRow;
+        }
+
         public async Task<int> InsertAsync(Holiday model)
         {
             string sql = "INSERT INTO HOLIDAYS(HOLIDAY_ID, COMPANY_ID, NAME, START_DATE, END_DATE, IS_FULL_DAY, CREATED_AT, CREATED_BY)" +
