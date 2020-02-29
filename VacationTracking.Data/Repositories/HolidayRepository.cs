@@ -78,14 +78,18 @@ namespace VacationTracking.Data.Repositories
             return affectedRow;
         }
 
-        public Task<int> RemoveAsync(Guid holidayId)
+        public async Task<int> RemoveAsync(Guid holidayId, Guid companyId)
         {
-            throw new NotImplementedException();
+            string sql = $"DELETE FROM HOLIDAYS WHERE HOLIDAY_ID = '{holidayId}' and COMPANY_ID = '{companyId}'";
+            var affectedRow = await Connection.ExecuteAsync(sql);
+            return affectedRow;
         }
 
-        public Task<int> RemoveAsync(IList<Guid> holidayId)
+        public async Task<int> RemoveTeamHolidays(Guid holidayId)
         {
-            throw new NotImplementedException();
+            string sql = $"DELETE FROM HOLIDAY_TEAM WHERE HOLIDAY_ID = '{holidayId}'";
+            var affectedRow = await Connection.ExecuteAsync(sql);
+            return affectedRow;
         }
     }
 }

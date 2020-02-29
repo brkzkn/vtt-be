@@ -11,7 +11,7 @@ namespace VacationTracking.Data.IRepositories
         Task<IEnumerable<Holiday>> GetListAsync(Guid companyId);
         Task<int> InsertAsync(Holiday model);
         Task<int> InsertHolidayToTeams(Guid holidayId, IList<Guid> teamIds);
-        Task<int> RemoveAsync(Guid holidayId);
-        Task<int> RemoveAsync(IList<Guid> holidayId);
+        Task<int> RemoveAsync(Guid holidayId, Guid companyId);
+        Task<int> RemoveTeamHolidays(Guid holidayId);
     }
 }

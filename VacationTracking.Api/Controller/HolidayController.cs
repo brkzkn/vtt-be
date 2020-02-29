@@ -34,7 +34,7 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(typeof(HolidayDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<ActionResult<HolidayDto>> GetTeamAsync(Guid id)
+        public async Task<ActionResult<HolidayDto>> GetHolidayAsync(Guid id)
         {
             //TODO: Set companyId from logged-in users
             Guid companyId = new Guid(_companyId);
@@ -62,7 +62,7 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(typeof(HolidayDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult<HolidayDto>> CreateTeamAsync([FromBody]HolidayModel model)
+        public async Task<ActionResult<HolidayDto>> CreateHolidayAsync([FromBody]HolidayModel model)
         {
             Guid companyId = new Guid(_companyId);
             Guid userId = new Guid(_userId);
@@ -79,5 +79,18 @@ namespace VacationTracking.Api.Controller
             return Single(await QueryAsync(request));
         }
 
+        [HttpDelete]
+        [Route("{id}")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<ActionResult<bool>> DeleteHolidayAsync(Guid id)
+        {
+            Guid companyId = new Guid(_companyId);
+
+            var request = new DeleteHolidayCommand(id, companyId);
+
+            return Single(await QueryAsync(request));
+        }
     }
 }
