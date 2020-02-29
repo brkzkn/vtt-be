@@ -50,6 +50,7 @@ namespace VacationTracking.Api
         public void ConfigureServices(IServiceCollection services)
         {
             //Add DIs
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IHolidayRepository, HolidayRepository>();
             services.AddScoped<ITeamRepository, TeamRepository>();
             services.AddScoped<ITeamMemberRepository, TeamMemberRepository>();
