@@ -3,12 +3,14 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using VacationTracking.Api.Models;
+using VacationTracking.Domain.Commands.LeaveType;
 using VacationTracking.Domain.Dtos;
 using VacationTracking.Domain.Queries.LeaveType;
 
 namespace VacationTracking.Api.Controller
 {
-    [Route("api/[controller]")]
+    [Route("api/leave-type")]
     [ApiController]
     public class LeaveTypeController : ApiControllerBase
     {
@@ -53,6 +55,30 @@ namespace VacationTracking.Api.Controller
             Guid companyId = new Guid(_companyId);
 
             return Single(await QueryAsync(new GetLeaveTypeListQuery(companyId)));
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(LeaveTypeDto), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<ActionResult<LeaveTypeDto>> CreateLeaveTypeAsync([FromBody]LeaveTypeModel model)
+        {
+            Guid companyId = new Guid(_companyId);
+            Guid userId = new Guid(_userId);
+
+            var request = new CreateLeaveTypeCommand(companyId,
+                                                     userId,
+                                                     model.IsHalfDaysActivated,
+                                                     model.IsHideLeaveTypeName,
+                                                     model.TypeName,
+                                                     model.IsApprovalRequired,
+                                                     model.DefaultDaysPerYear,
+                                                     model.IsUnlimited,
+                                                     model.IsReasonRequired,
+                                                     model.IsAllowNegativeBalance,
+                                                     model.Color);
+
+            return Single(await QueryAsync(request));
         }
 
     }

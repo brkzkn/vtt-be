@@ -31,14 +31,26 @@ namespace VacationTracking.Data.Repositories
             return result;
         }
 
-        public Task<int> InsertAsync(LeaveType model)
+        public async Task<int> InsertAsync(LeaveType model)
         {
-            throw new NotImplementedException();
+            string sql = "INSERT INTO LEAVE_TYPES(leave_type_id, company_id, is_default, is_half_days_activated, is_active, is_deleted, "
+                         + "is_hide_leave_type_name, type_name, is_approver_required, default_days_per_year, is_unlimited, is_reason_required, "
+                         + "is_allow_negative_balance, color_code, created_at, created_by)"
+                         + $" VALUES('{model.LeaveTypeId}', '{model.CompanyId}', '{model.IsDefault}', '{model.IsHalfDaysActivated}', '{model.IsActive}', "
+                         + $"'{model.IsDeleted}', '{model.IsHideLeaveTypeName}', '{model.TypeName}', '{model.IsApproverRequired}', '{model.DefaultDaysPerYear}', "
+                         + $"'{model.IsUnlimited}', '{model.IsReasonRequired}', '{model.IsAllowNegativeBalance}', '{model.ColorCode}', "
+                         + $"'{model.CreatedAt}', '{model.CreatedBy}')";
+
+            var affectedRow = await Connection.ExecuteAsync(sql);
+
+            return affectedRow;
         }
 
-        public Task<int> InsertHolidayToTeams(Guid leaveTypeId, IList<Guid> teamIds)
+        public async Task<bool> IsLeaveTypeExistAsync(Guid companyId, string name)
         {
-            throw new NotImplementedException();
+            var exists = await Connection.ExecuteScalarAsync<bool>($"select count(1) from Leave_Types where company_id='{companyId}' and type_name = '{name}'");
+
+            return exists;
         }
 
         public Task<int> RemoveAsync(Guid leaveTypeId, Guid companyId)

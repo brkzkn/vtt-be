@@ -52,6 +52,7 @@ namespace VacationTracking.Api
             //Add DIs
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IHolidayRepository, HolidayRepository>();
+            services.AddScoped<ILeaveTypeRepository, LeaveTypeRepository>();
             services.AddScoped<ITeamRepository, TeamRepository>();
             services.AddScoped<ITeamMemberRepository, TeamMemberRepository>();
             services.AddScoped<IDbConnection>(db => new NpgsqlConnection(
@@ -59,9 +60,6 @@ namespace VacationTracking.Api
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddMediatR(typeof(GetTeamHandler).Assembly);
-            services.AddMediatR(typeof(GetTeamListHandler).Assembly);
-            services.AddMediatR(typeof(CreateTeamHandler).Assembly);
-
             services.AddAutoMapper(typeof(Service.Mapper.AutoMapping));
 
 
