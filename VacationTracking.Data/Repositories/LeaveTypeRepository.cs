@@ -63,9 +63,33 @@ namespace VacationTracking.Data.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<int> UpdateAsync(Guid leaveTypeId, LeaveType model)
+        public async Task<int> UpdateAsync(Guid leaveTypeId, LeaveType model)
         {
-            throw new NotImplementedException();
+            if (model == null)
+                throw new ArgumentNullException(nameof(LeaveType));
+            /*
+            =?, =?, is_deleted=?, =?, 
+            =?, =?, =?, =?, =?, =?, 
+            =?, created_at=?, created_by=?, =?, =?
+             */
+            string query = "UPDATE leave_types SET " +
+                $"is_half_days_activated = '{model.IsHalfDaysActivated}', " +
+                $"is_active = '{model.IsActive}', " +
+                $"is_hide_leave_type_name = '{model.IsHideLeaveTypeName}', " +
+                $"type_name = '{model.TypeName}', " +
+                $"is_approver_required = '{model.IsApproverRequired}', " +
+                $"default_days_per_year = '{model.DefaultDaysPerYear}', " +
+                $"is_unlimited = '{model.IsUnlimited}', " +
+                $"is_reason_required = '{model.IsReasonRequired}', " +
+                $"is_allow_negative_balance = '{model.IsAllowNegativeBalance}', " +
+                $"color_code = '{model.ColorCode}', " +
+                $"updated_at = '{model.UpdatedAt}', " +
+                $"updated_by = '{model.UpdatedBy}' " +
+                $"WHERE leave_type_id = '{model.LeaveTypeId}' AND COMPANY_ID = '{model.CompanyId}';";
+
+            var affectedRow = await Connection.ExecuteAsync(query);
+
+            return affectedRow;
         }
     }
 }

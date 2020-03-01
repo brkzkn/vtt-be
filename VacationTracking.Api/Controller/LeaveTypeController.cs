@@ -33,7 +33,7 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(typeof(LeaveTypeDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<ActionResult<LeaveTypeDto>> GetHolidayAsync(Guid id)
+        public async Task<ActionResult<LeaveTypeDto>> GetAsync(Guid id)
         {
             //TODO: Set companyId from logged-in users
             Guid companyId = new Guid(_companyId);
@@ -49,7 +49,7 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(typeof(IList<LeaveTypeDto>), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<ActionResult<IList<LeaveTypeDto>>> GetLeaveTypeAsync()
+        public async Task<ActionResult<IList<LeaveTypeDto>>> GetListAsync()
         {
             //TODO: Set companyId from logged-in users
             Guid companyId = new Guid(_companyId);
@@ -61,7 +61,7 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(typeof(LeaveTypeDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult<LeaveTypeDto>> CreateLeaveTypeAsync([FromBody]LeaveTypeModel model)
+        public async Task<ActionResult<LeaveTypeDto>> CreateAsync([FromBody]LeaveTypeModel model)
         {
             Guid companyId = new Guid(_companyId);
             Guid userId = new Guid(_userId);
@@ -77,6 +77,48 @@ namespace VacationTracking.Api.Controller
                                                      model.IsReasonRequired,
                                                      model.IsAllowNegativeBalance,
                                                      model.Color);
+
+            return Single(await QueryAsync(request));
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<ActionResult<bool>> DeleteAsync(Guid id)
+        {
+            throw new NotImplementedException();
+            //Guid companyId = new Guid(_companyId);
+
+            //var request = new DeleteHolidayCommand(id, companyId);
+
+            //return Single(await QueryAsync(request));
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+        [ProducesResponseType(typeof(LeaveTypeDto), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<ActionResult<LeaveTypeDto>> UpdateAsync(Guid id, [FromBody]LeaveTypeModel model)
+        {
+            Guid companyId = new Guid(_companyId);
+            Guid userId = new Guid(_userId);
+
+            var request = new UpdateLeaveTypeCommand(companyId,
+                                                     userId,
+                                                     id,
+                                                     model.IsHalfDaysActivated,
+                                                     model.IsHideLeaveTypeName,
+                                                     model.TypeName,
+                                                     model.IsApprovalRequired,
+                                                     model.DefaultDaysPerYear,
+                                                     model.IsUnlimited,
+                                                     model.IsReasonRequired,
+                                                     model.IsAllowNegativeBalance,
+                                                     model.Color,
+                                                     model.IsActive);
 
             return Single(await QueryAsync(request));
         }

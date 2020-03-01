@@ -11,5 +11,6 @@
 		public bool IsReasonRequired { get; set; }
 		public bool IsAllowNegativeBalance { get; set; }
 		public string Color { get; set; }
+		public bool IsActive { get; set; }
     }
 }
