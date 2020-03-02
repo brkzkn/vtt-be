@@ -88,12 +88,11 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(500)]
         public async Task<ActionResult<bool>> DeleteAsync(Guid id)
         {
-            throw new NotImplementedException();
-            //Guid companyId = new Guid(_companyId);
+            Guid companyId = new Guid(_companyId);
 
-            //var request = new DeleteHolidayCommand(id, companyId);
+            var request = new DeleteLeaveTypeCommand(id, companyId);
 
-            //return Single(await QueryAsync(request));
+            return Single(await QueryAsync(request));
         }
 
         [HttpPut]

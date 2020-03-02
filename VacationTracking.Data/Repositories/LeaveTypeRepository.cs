@@ -17,7 +17,7 @@ namespace VacationTracking.Data.Repositories
 
         public async Task<LeaveType> GetAsync(Guid companyId, Guid leaveTypeId)
         {
-            string sql = $"SELECT * FROM LEAVE_TYPES WHERE LEAVE_TYPE_ID = '{leaveTypeId}' AND COMPANY_ID = '{companyId}'";
+            string sql = $"SELECT * FROM LEAVE_TYPES WHERE LEAVE_TYPE_ID = '{leaveTypeId}' AND COMPANY_ID = '{companyId}' and is_deleted = 'false'";
             LeaveType result = await Connection.QueryFirstOrDefaultAsync<LeaveType>(sql);
 
             return result;
@@ -25,7 +25,7 @@ namespace VacationTracking.Data.Repositories
 
         public async Task<IEnumerable<LeaveType>> GetListAsync(Guid companyId)
         {
-            string sql = $"SELECT * FROM LEAVE_TYPES WHERE COMPANY_ID = '{companyId}'";
+            string sql = $"SELECT * FROM LEAVE_TYPES WHERE COMPANY_ID = '{companyId}' and is_deleted = 'false'";
             var result = await Connection.QueryAsync<LeaveType>(sql);
 
             return result;
@@ -48,30 +48,27 @@ namespace VacationTracking.Data.Repositories
 
         public async Task<bool> IsLeaveTypeExistAsync(Guid companyId, string name)
         {
-            var exists = await Connection.ExecuteScalarAsync<bool>($"select count(1) from Leave_Types where company_id='{companyId}' and type_name = '{name}'");
+            var exists = await Connection.ExecuteScalarAsync<bool>($"select count(1) from Leave_Types where company_id='{companyId}' and type_name = '{name}' and is_deleted = 'false'");
 
             return exists;
         }
 
-        public Task<int> RemoveAsync(Guid leaveTypeId, Guid companyId)
+        public async Task<int> RemoveAsync(Guid leaveTypeId, Guid companyId)
         {
-            throw new NotImplementedException();
-        }
+            string query = "UPDATE leave_types SET " +
+                $"is_deleted = 'true' " +
+                $"WHERE leave_type_id = '{leaveTypeId}' AND COMPANY_ID = '{companyId}';";
 
-        public Task<int> RemoveTeamHolidays(Guid leaveTypeId)
-        {
-            throw new NotImplementedException();
+            var affectedRow = await Connection.ExecuteAsync(query);
+
+            return affectedRow;
         }
 
         public async Task<int> UpdateAsync(Guid leaveTypeId, LeaveType model)
         {
             if (model == null)
                 throw new ArgumentNullException(nameof(LeaveType));
-            /*
-            =?, =?, is_deleted=?, =?, 
-            =?, =?, =?, =?, =?, =?, 
-            =?, created_at=?, created_by=?, =?, =?
-             */
+           
             string query = "UPDATE leave_types SET " +
                 $"is_half_days_activated = '{model.IsHalfDaysActivated}', " +
                 $"is_active = '{model.IsActive}', " +

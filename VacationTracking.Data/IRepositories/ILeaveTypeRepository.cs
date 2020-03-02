@@ -13,6 +13,5 @@ namespace VacationTracking.Data.IRepositories
         Task<int> InsertAsync(LeaveType model);
         Task<bool> IsLeaveTypeExistAsync(Guid companyId, string name);
         Task<int> RemoveAsync(Guid leaveTypeId, Guid companyId);
-        Task<int> RemoveTeamHolidays(Guid leaveTypeId);
     }
 }
