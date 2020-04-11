@@ -76,7 +76,7 @@ namespace VacationTracking.Api.Controller
                                                    model.IsForAllTeams, 
                                                    model.IsFullDay);
 
-            return Single(await QueryAsync(request));
+            return Single(await CommandAsync(request));
         }
 
         [HttpDelete]
@@ -90,7 +90,7 @@ namespace VacationTracking.Api.Controller
 
             var request = new DeleteHolidayCommand(id, companyId);
 
-            return Single(await QueryAsync(request));
+            return Single(await CommandAsync(request));
         }
 
         [HttpPut]
@@ -113,7 +113,7 @@ namespace VacationTracking.Api.Controller
                                                    model.IsForAllTeams,
                                                    model.Teams);
 
-            return Single(await QueryAsync(request));
+            return Single(await CommandAsync(request));
         }
 
 

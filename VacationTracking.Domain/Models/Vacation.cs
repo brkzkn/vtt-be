@@ -7,7 +7,7 @@ namespace VacationTracking.Domain.Models
     {
         public Guid VacationId { get; set; }
         public Guid UserId { get; set; }
-        public Guid ApproverId { get; set; }
+        public Guid? ApproverId { get; set; }
         public Guid LeaveTypeId { get; set; }
         public string Status { get; set; }
         public DateTime StartDate { get; set; }

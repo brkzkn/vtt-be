@@ -25,12 +25,29 @@ namespace VacationTracking.Service.Commands.LeaveType
 
         public async Task<LeaveTypeDto> Handle(CreateLeaveTypeCommand request, CancellationToken cancellationToken)
         {
+            Domain.Models.LeaveType entity = MapToEntity(request);
+
+            using (_unitOfWork)
+            {
+                var isTypeNameValid = await _unitOfWork.LeaveTypeRepository.IsLeaveTypeExistAsync(entity.CompanyId, entity.TypeName);
+                if (isTypeNameValid)
+                    throw new Exception("NameAlreadyExist"); //TODO: Replace custom exception handler
+
+                var affectedRow = await _unitOfWork.LeaveTypeRepository.InsertAsync(entity);
+            }
+
+            //TODO: Fire "leaveTypeCreated" event
+            return _mapper.Map<LeaveTypeDto>(entity);
+        }
+
+        private Domain.Models.LeaveType MapToEntity(CreateLeaveTypeCommand request)
+        {
             var entity = new Domain.Models.LeaveType();
             Guid leaveTypeId = Guid.NewGuid();
 
             entity.ColorCode = request.Color;
             entity.CompanyId = request.CompanyId;
-            
+
             entity.CreatedAt = DateTime.UtcNow;
             entity.CreatedBy = request.UserId;
             entity.DefaultDaysPerYear = request.DefaultDaysPerYear;
@@ -45,18 +62,7 @@ namespace VacationTracking.Service.Commands.LeaveType
             entity.IsUnlimited = request.IsUnlimited;
             entity.LeaveTypeId = leaveTypeId;
             entity.TypeName = request.TypeName;
-            
-            using (_unitOfWork)
-            {
-                var isTypeNameValid = await _unitOfWork.LeaveTypeRepository.IsLeaveTypeExistAsync(entity.CompanyId, entity.TypeName);
-                if (isTypeNameValid)
-                    throw new Exception("NameAlreadyExist"); //TODO: Replace custom exception handler
-
-                var affectedRow = await _unitOfWork.LeaveTypeRepository.InsertAsync(entity);
-            }
-
-            //TODO: Fire "leaveTypeCreated" event
-            return _mapper.Map<LeaveTypeDto>(entity);
+            return entity;
         }
     }
 }

@@ -67,7 +67,7 @@ namespace VacationTracking.Api.Controller
 
             var request = new CreateTeamCommand(companyId, userId, model.Name, model.Members, model.Approvers);
 
-            return Single(await QueryAsync(request));
+            return Single(await CommandAsync(request));
         }
 
         [HttpPut]
@@ -82,7 +82,7 @@ namespace VacationTracking.Api.Controller
 
             var request = new UpdateTeamCommand(companyId, userId, id, model.Name, model.Members, model.Approvers);
 
-            return Single(await QueryAsync(request));
+            return Single(await CommandAsync(request));
         }
 
         [HttpDelete]
@@ -96,7 +96,7 @@ namespace VacationTracking.Api.Controller
             
             var request = new DeleteTeamCommand(id, companyId);
 
-            return Single(await QueryAsync(request));
+            return Single(await CommandAsync(request));
         }
 
         /// <summary>

@@ -1,21 +1,22 @@
+using AutoMapper;
+using Dapper.FluentMap;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Npgsql;
+using System;
+using System.Data;
+using System.IO;
+using System.Reflection;
+using VacationTracking.Data;
 using VacationTracking.Data.IRepositories;
 using VacationTracking.Data.Repositories;
-using MediatR;
-using Dapper.FluentMap;
 using VacationTracking.Domain.Models;
 using VacationTracking.Service.Queries.Team;
-using AutoMapper;
-using VacationTracking.Service.Commands.Team;
-using VacationTracking.Data;
-using System.Data.SqlClient;
-using System.Data;
-using Npgsql;
-using Microsoft.AspNetCore.Routing;
 
 namespace VacationTracking.Api
 {
@@ -55,12 +56,57 @@ namespace VacationTracking.Api
             services.AddScoped<ILeaveTypeRepository, LeaveTypeRepository>();
             services.AddScoped<ITeamRepository, TeamRepository>();
             services.AddScoped<ITeamMemberRepository, TeamMemberRepository>();
+            services.AddScoped<IVacationRepository, VacationRepository>();
             services.AddScoped<IDbConnection>(db => new NpgsqlConnection(
                     Configuration.GetConnectionString("MyConnection")));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddMediatR(typeof(GetTeamHandler).Assembly);
             services.AddAutoMapper(typeof(Service.Mapper.AutoMapping));
+
+            // Register the Swagger generator
+            // Register the Swagger generator, defining 1 or more Swagger documents
+            services.AddSwaggerGen(c =>
+            {
+                // resolve the IApiVersionDescriptionProvider service
+                // note: that we have to build a temporary service provider here because one has not been created yet
+
+                // add a swagger document for each discovered API version
+                // note: you might choose to skip or document deprecated API versions differently
+                c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo()
+                {
+                    Title = "VacationTracker Api",
+                    Version = "1.0"
+                });
+
+                //c.EnableAnnotations();
+
+                //c.AddSecurityDefinition("oauth2", new OAuth2Scheme
+                //{
+                //    Flow = "implicit",
+                //    Description = "OAuth2 Implicit Grant",
+                //    AuthorizationUrl = $"{Configuration["AzureAD:Instance"]}{Configuration["AzureAD:TenantId"]}/oauth2/authorize",
+                //    Scopes = new Dictionary<string, string>
+                //    {
+                //        { "read", "Access read operations" },
+                //        { "user_impersonation", "vacation-swagger-app" }
+                //    },
+                //    TokenUrl = $"{Configuration["AzureAD:Instance"]}{Configuration["AzureAD:TenantId"]}/oauth2/authorize",
+                //    Type = "oauth2"
+                //});
+
+                //c.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>>
+                //{
+                //    { "oauth2", new string[] { } }
+                //});
+
+                //c.DocumentFilter<LowercaseDocumentFilter>();
+                // Set the comments path for the Swagger JSON and UI.
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+            });
 
 
             services.AddMemoryCache();
@@ -84,6 +130,23 @@ namespace VacationTracking.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                // build a swagger endpoint for each discovered API version
+                c.SwaggerEndpoint($"/swagger/v1/swagger.json", "v1");
+                //c.OAuthClientId(Configuration["AzureAD:ClientId"]);
+                //c.OAuthAppName("hydra-swagger-app");
+                //c.OAuthAdditionalQueryStringParams(new Dictionary<string, string>()
+                //{
+                //    { "resource", Configuration["AzureAD:ClientId"] }
+                //});
+                //c.OAuthUseBasicAuthenticationWithAccessCodeGrant();
+            });
 
             app.UseCors("CorsPolicy");
 

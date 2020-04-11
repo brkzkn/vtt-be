@@ -14,8 +14,8 @@ namespace VacationTracking.Domain.Dtos
         [JsonProperty("approverId")]
         public Guid ApproverId { get; set; }
 
-        [JsonProperty("leaveId")]
-        public Guid LeaveId { get; set; }
+        [JsonProperty("leaveTypeId")]
+        public Guid LeaveTypeId { get; set; }
 
         [JsonProperty("vacationStatus")]
         public string VacationStatus { get; set; }

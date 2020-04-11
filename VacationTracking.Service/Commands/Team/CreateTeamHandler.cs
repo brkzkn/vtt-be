@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Dapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System;

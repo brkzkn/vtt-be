@@ -78,7 +78,7 @@ namespace VacationTracking.Api.Controller
                                                      model.IsAllowNegativeBalance,
                                                      model.Color);
 
-            return Single(await QueryAsync(request));
+            return Single(await CommandAsync(request));
         }
 
         [HttpDelete]
@@ -92,7 +92,7 @@ namespace VacationTracking.Api.Controller
 
             var request = new DeleteLeaveTypeCommand(id, companyId);
 
-            return Single(await QueryAsync(request));
+            return Single(await CommandAsync(request));
         }
 
         [HttpPut]
@@ -119,7 +119,7 @@ namespace VacationTracking.Api.Controller
                                                      model.Color,
                                                      model.IsActive);
 
-            return Single(await QueryAsync(request));
+            return Single(await CommandAsync(request));
         }
 
     }

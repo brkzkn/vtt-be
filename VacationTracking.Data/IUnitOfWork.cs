@@ -10,6 +10,7 @@ namespace VacationTracking.Data
         HolidayRepository HolidayRepository{ get; }
         LeaveTypeRepository LeaveTypeRepository { get; }
         TeamMemberRepository TeamMemberRepository { get; }
+        VacationRepository VacationRepository { get; }
         NpgsqlConnection Connection { get; }
 
         void Begin();

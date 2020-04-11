@@ -23,6 +23,7 @@ namespace VacationTracking.Data
         private TeamMemberRepository _teamMemberRepository;
         private HolidayRepository _holidayRepository;
         private LeaveTypeRepository _leaveTypeRepository;
+        private VacationRepository _vacationRepository;
         #endregion
 
         #region Public Repositories
@@ -41,6 +42,10 @@ namespace VacationTracking.Data
         public LeaveTypeRepository LeaveTypeRepository
         {
             get { return _leaveTypeRepository ?? (_leaveTypeRepository= new LeaveTypeRepository(_connection)); }
+        }
+        public VacationRepository VacationRepository
+        {
+            get { return _vacationRepository ?? (_vacationRepository = new VacationRepository(_connection)); }
         }
 
         public NpgsqlConnection Connection 

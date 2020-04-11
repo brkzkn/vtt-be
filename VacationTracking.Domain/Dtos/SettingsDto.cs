@@ -16,5 +16,9 @@ namespace VacationTracking.Domain.Dtos
 
         [JsonProperty("isUserSetting")]
         public bool IsUserSetting { get; set; }
+
+        [JsonProperty("settingValue")]
+        public string settingValue { get; set; }
+
     }
 }
