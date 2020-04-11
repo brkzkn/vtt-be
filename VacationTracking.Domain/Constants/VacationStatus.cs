@@ -2,8 +2,8 @@
 {
     public class VacationStatus
     {
-        public const string Approved = "APPROVED";
-        public const string Pending = "PENDING";
-        public const string Rejected = "REJECTED";
+        public const string Approved = "approved";
+        public const string Pending = "pending";
+        public const string Rejected = "rejected";
     }
 }

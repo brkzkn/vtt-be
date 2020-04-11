@@ -13,6 +13,7 @@ namespace VacationTracking.Domain.Models
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string Reason { get; set; }
+        public string Response { get; set; }
     }
     public class VacationsMap : EntityMap<Vacation>
     {
@@ -26,6 +27,7 @@ namespace VacationTracking.Domain.Models
             Map(p => p.StartDate).ToColumn("start_date");
             Map(p => p.EndDate).ToColumn("end_date");
             Map(p => p.Reason).ToColumn("reason");
+            Map(p => p.Response).ToColumn("response");
             Map(p => p.CreatedAt).ToColumn("created_at");
             Map(p => p.CreatedBy).ToColumn("created_by");
             Map(p => p.UpdatedAt).ToColumn("updated_at");

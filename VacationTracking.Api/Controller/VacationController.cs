@@ -60,5 +60,24 @@ namespace VacationTracking.Api.Controller
             return Single(await CommandAsync(request));
         }
 
+        [HttpPut]
+        [Route("{id}/response")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<ActionResult<bool>> ResponseUserVacationAsync(Guid id, [FromBody]VacationResponseModel model)
+        {
+            Guid companyId = new Guid(_companyId);
+            Guid userId = new Guid(_userId);
+
+            var request = new UpdateVacationCommand(companyId,
+                                                    id,
+                                                    userId,
+                                                    model.Status,
+                                                    model.Response);
+
+            return Single(await CommandAsync(request));
+        }
+
     }
 }

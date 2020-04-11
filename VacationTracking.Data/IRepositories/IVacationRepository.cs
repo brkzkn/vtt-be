@@ -6,5 +6,6 @@ namespace VacationTracking.Data.IRepositories
     public interface IVacationRepository
     {
         Task<int> InsertAsync(Vacation model);
+        Task<int> UpdateStatusAsync(Vacation model);
     }
 }

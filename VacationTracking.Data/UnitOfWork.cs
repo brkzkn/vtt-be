@@ -27,23 +27,23 @@ namespace VacationTracking.Data
         #endregion
 
         #region Public Repositories
-        public TeamRepository TeamRepository
+        public ITeamRepository TeamRepository
         {
             get { return _teamRepository ?? (_teamRepository = new TeamRepository(_connection)); }
         }
-        public TeamMemberRepository TeamMemberRepository
+        public ITeamMemberRepository TeamMemberRepository
         {
             get { return _teamMemberRepository ?? (_teamMemberRepository = new TeamMemberRepository(_connection)); }
         }
-        public HolidayRepository HolidayRepository
+        public IHolidayRepository HolidayRepository
         {
             get { return _holidayRepository ?? (_holidayRepository = new HolidayRepository(_connection)); }
         }
-        public LeaveTypeRepository LeaveTypeRepository
+        public ILeaveTypeRepository LeaveTypeRepository
         {
             get { return _leaveTypeRepository ?? (_leaveTypeRepository= new LeaveTypeRepository(_connection)); }
         }
-        public VacationRepository VacationRepository
+        public IVacationRepository VacationRepository
         {
             get { return _vacationRepository ?? (_vacationRepository = new VacationRepository(_connection)); }
         }

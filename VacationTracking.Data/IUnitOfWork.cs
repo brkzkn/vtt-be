@@ -1,16 +1,17 @@
 ﻿using Npgsql;
 using System;
+using VacationTracking.Data.IRepositories;
 using VacationTracking.Data.Repositories;
 
 namespace VacationTracking.Data
 {
     public interface IUnitOfWork : IDisposable
     {
-        TeamRepository TeamRepository { get; }
-        HolidayRepository HolidayRepository{ get; }
-        LeaveTypeRepository LeaveTypeRepository { get; }
-        TeamMemberRepository TeamMemberRepository { get; }
-        VacationRepository VacationRepository { get; }
+        ITeamRepository TeamRepository { get; }
+        IHolidayRepository HolidayRepository{ get; }
+        ILeaveTypeRepository LeaveTypeRepository { get; }
+        ITeamMemberRepository TeamMemberRepository { get; }
+        IVacationRepository VacationRepository { get; }
         NpgsqlConnection Connection { get; }
 
         void Begin();
