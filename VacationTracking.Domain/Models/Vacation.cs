@@ -9,7 +9,7 @@ namespace VacationTracking.Domain.Models
         public Guid UserId { get; set; }
         public Guid? ApproverId { get; set; }
         public Guid LeaveTypeId { get; set; }
-        public string Status { get; set; }
+        public string VacationStatus { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string Reason { get; set; }
@@ -23,7 +23,7 @@ namespace VacationTracking.Domain.Models
             Map(p => p.UserId).ToColumn("user_id");
             Map(p => p.ApproverId).ToColumn("approver_id");
             Map(p => p.LeaveTypeId).ToColumn("leave_type_id");
-            Map(p => p.Status).ToColumn("vacation_status");
+            Map(p => p.VacationStatus).ToColumn("vacation_status");
             Map(p => p.StartDate).ToColumn("start_date");
             Map(p => p.EndDate).ToColumn("end_date");
             Map(p => p.Reason).ToColumn("reason");

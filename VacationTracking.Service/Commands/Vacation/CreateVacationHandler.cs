@@ -49,7 +49,7 @@ namespace VacationTracking.Service.Commands.Vacation
             vacationEntity.UserId = request.UserId;
             vacationEntity.ApproverId = null;
             vacationEntity.LeaveTypeId = request.LeaveTypeId;
-            vacationEntity.Status = VacationStatus.Pending;
+            vacationEntity.VacationStatus = VacationStatus.Pending;
             vacationEntity.StartDate = request.StartDate;
             vacationEntity.EndDate = request.EndDate;
             vacationEntity.Reason = request.Reason;

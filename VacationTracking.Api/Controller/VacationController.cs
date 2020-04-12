@@ -1,10 +1,12 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using VacationTracking.Api.Models;
 using VacationTracking.Domain.Commands.Vacation;
 using VacationTracking.Domain.Dtos;
+using VacationTracking.Domain.Queries.Vacation;
 
 namespace VacationTracking.Api.Controller
 {
@@ -20,6 +22,23 @@ namespace VacationTracking.Api.Controller
         public VacationController(IMediator mediator) : base(mediator)
         {
 
+        }
+
+
+        /// <summary>
+        /// Get vacation list
+        /// </summary>
+        /// <returns>List of teams</returns>
+        [HttpGet]
+        [ProducesResponseType(typeof(IList<VacationDto>), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult<IList<VacationDto>>> GetAsync()
+        {
+            //TODO: Set companyId from logged-in users
+            Guid companyId = new Guid(_companyId);
+
+            return Single(await QueryAsync(new GetVacationListQuery(companyId)));
         }
 
         [HttpPost]

@@ -52,7 +52,7 @@ namespace VacationTracking.Service.Commands.Vacation
             vacationEntity.UserId = request.UserId;
             vacationEntity.ApproverId = null;
             vacationEntity.LeaveTypeId = request.LeaveTypeId;
-            vacationEntity.Status = VacationStatus.Approved;
+            vacationEntity.VacationStatus = VacationStatus.Approved;
             vacationEntity.StartDate = request.StartDate;
             vacationEntity.EndDate = request.EndDate;
             vacationEntity.Reason = request.Reason;

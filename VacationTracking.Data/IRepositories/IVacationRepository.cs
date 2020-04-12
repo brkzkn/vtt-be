@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using VacationTracking.Domain.Models;
 
 namespace VacationTracking.Data.IRepositories
@@ -7,5 +9,6 @@ namespace VacationTracking.Data.IRepositories
     {
         Task<int> InsertAsync(Vacation model);
         Task<int> UpdateStatusAsync(Vacation model);
+        Task<IEnumerable<Vacation>> GetListAsync(Guid companyId);
     }
 }

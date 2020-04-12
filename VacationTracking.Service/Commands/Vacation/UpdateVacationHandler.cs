@@ -53,10 +53,10 @@ namespace VacationTracking.Service.Commands.Vacation
             switch (request.Status)
             {
                 case VacationStatus.Approved:
-                    vacationEntity.Status = VacationStatus.Approved;
+                    vacationEntity.VacationStatus = VacationStatus.Approved;
                     break;
                 case VacationStatus.Rejected:
-                    vacationEntity.Status = VacationStatus.Rejected;
+                    vacationEntity.VacationStatus = VacationStatus.Rejected;
                     break;
                 default:
                     throw new Exception("Invalid vacation status");
