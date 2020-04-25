@@ -3,6 +3,10 @@
     public class VacationResponseModel
     {
         public string Status { get; set; }
-        public string Response { get; set; }
+
+        /// <summary>
+        /// An approver can share note for own response.
+        /// </summary>
+        public string Note { get; set; }
     }
 }

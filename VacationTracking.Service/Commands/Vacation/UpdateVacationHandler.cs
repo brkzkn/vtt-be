@@ -46,7 +46,7 @@ namespace VacationTracking.Service.Commands.Vacation
             var vacationEntity = new Domain.Models.Vacation();
             vacationEntity.VacationId = request.VacationId;
             vacationEntity.ApproverId = request.ResponsedBy;
-            vacationEntity.Response = request.Response;
+            vacationEntity.Note = request.Note;
             vacationEntity.UpdatedAt= DateTime.Now;
             vacationEntity.UpdatedBy = request.ResponsedBy;
 

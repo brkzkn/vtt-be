@@ -38,6 +38,24 @@ namespace VacationTracking.Api.Controller
             return Single(await QueryAsync(new GetUserQuery(id, companyId)));
         }
 
+        /// <summary>
+        /// Get logged-in user info
+        /// </summary>
+        /// <returns>Logged-in user information</returns>
+        [HttpGet]
+        [Route("info")]
+        [ProducesResponseType(typeof(UserDto), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public async Task<ActionResult<UserDto>> GetTeamAsync()
+        {
+            //TODO: Set companyId from logged-in users
+            Guid companyId = new Guid(_companyId);
+            Guid userId = new Guid(_userId);
+
+            return Single(await QueryAsync(new GetUserQuery(userId, companyId)));
+        }
+
 
         /// <summary>
         /// Get user list

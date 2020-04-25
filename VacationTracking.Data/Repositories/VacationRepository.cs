@@ -45,7 +45,7 @@ namespace VacationTracking.Data.Repositories
             string query = "UPDATE VACATIONS SET " +
                 $"VACATION_STATUS = '{model.VacationStatus}', " +
                 $"APPROVER_ID = '{model.ApproverId}', " +
-                $"RESPONSE = '{model.Response}', " +
+                $"NOTE = '{model.Note}', " +
                 $"UPDATED_AT = '{model.UpdatedAt}', " +
                 $"UPDATED_BY = '{model.UpdatedBy}' " +
                 $"WHERE VACATION_ID = '{model.VacationId}';";

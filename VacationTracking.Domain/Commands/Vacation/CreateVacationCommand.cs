@@ -8,7 +8,7 @@ namespace VacationTracking.Domain.Commands.Vacation
     public class CreateVacationCommand : IRequest<VacationDto>
     {
         [JsonConstructor]
-        public CreateVacationCommand(Guid companyId, Guid userId, Guid leaveTypeId, DateTime startDate, DateTime endDate, string reason)
+        public CreateVacationCommand(Guid companyId, Guid userId, Guid leaveTypeId, DateTime startDate, DateTime endDate, string reason, bool isHalfDay)
         {
             CompanyId = companyId;
             UserId = userId;
@@ -16,6 +16,7 @@ namespace VacationTracking.Domain.Commands.Vacation
             StartDate = startDate;
             EndDate = endDate;
             Reason = reason;
+            IsHalfDay = isHalfDay;
         }
 
         public Guid CompanyId { get; set; }
@@ -24,5 +25,6 @@ namespace VacationTracking.Domain.Commands.Vacation
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string Reason { get; set; }
+        public bool IsHalfDay { get; set; }
     }
 }

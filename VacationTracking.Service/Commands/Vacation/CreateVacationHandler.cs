@@ -53,6 +53,7 @@ namespace VacationTracking.Service.Commands.Vacation
             vacationEntity.StartDate = request.StartDate;
             vacationEntity.EndDate = request.EndDate;
             vacationEntity.Reason = request.Reason;
+            vacationEntity.IsHalfDay = request.IsHalfDay;
             vacationEntity.CreatedAt = DateTime.Now;
             vacationEntity.CreatedBy = request.UserId;
             return vacationEntity;

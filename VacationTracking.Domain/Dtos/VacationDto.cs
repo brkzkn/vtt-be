@@ -3,7 +3,7 @@ using System;
 
 namespace VacationTracking.Domain.Dtos
 {
-    public class VacationDto :BaseDto
+    public class VacationDto : BaseDto
     {
         [JsonProperty("vacationId")]
         public Guid VacationId { get; set; }
@@ -28,6 +28,9 @@ namespace VacationTracking.Domain.Dtos
 
         [JsonProperty("reason")]
         public string Reason { get; set; }
+
+        [JsonProperty("isHalfDay")]
+        public bool IsHalfDay { get; set; }
 
     }
 }

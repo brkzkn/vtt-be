@@ -41,6 +41,11 @@ namespace VacationTracking.Api.Controller
             return Single(await QueryAsync(new GetVacationListQuery(companyId)));
         }
 
+        /// <summary>
+        /// Create vacation for logged-in user
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(typeof(VacationDto), 200)]
         [ProducesResponseType(400)]
@@ -55,22 +60,26 @@ namespace VacationTracking.Api.Controller
                                                     model.LeaveTypeId,
                                                     model.StartDate,
                                                     model.EndDate,
-                                                    model.Reason);
+                                                    model.Reason,
+                                                    model.IsHalfDays);
 
             return Single(await CommandAsync(request));
         }
 
+        /// <summary>
+        /// Create vacation for spesific user
+        /// </summary>
         [HttpPost]
-        [Route("user")]
+        [Route("{id}/user")]
         [ProducesResponseType(typeof(VacationDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult<VacationDto>> CreateUserVacationAsync([FromBody]VacationModel model)
+        public async Task<ActionResult<VacationDto>> CreateUserVacationAsync(Guid id, [FromBody]VacationModel model)
         {
             Guid companyId = new Guid(_companyId);
 
             var request = new CreateUserVacationCommand(companyId,
-                                                    model.UserId,
+                                                    id,
                                                     model.LeaveTypeId,
                                                     model.StartDate,
                                                     model.EndDate,
@@ -93,7 +102,7 @@ namespace VacationTracking.Api.Controller
                                                     id,
                                                     userId,
                                                     model.Status,
-                                                    model.Response);
+                                                    model.Note);
 
             return Single(await CommandAsync(request));
         }
