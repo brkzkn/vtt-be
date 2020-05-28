@@ -1,34 +1,47 @@
-﻿using Dapper.FluentMap.Mapping;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VacationTracking.Domain.Models
 {
+    [Table("users")]
     public class User : BaseModel
     {
-        public Guid UserId { get; set; }
-        public Guid CompanyId { get; set; }
-        public string FullName { get; set; }
-        public string Email { get; set; }
-        public DateTime EmployeeSince { get; set; }
-        public string Status { get; set; }
-        public string AccountType { get; set; }
-    }
-
-    public class UserMap : EntityMap<User>
-    {
-        public UserMap()
+        public User()
         {
-            Map(p => p.UserId).ToColumn("user_id");
-            Map(p => p.CompanyId).ToColumn("company_id");
-            Map(p => p.FullName).ToColumn("full_name");
-            Map(p => p.Email).ToColumn("email");
-            Map(p => p.EmployeeSince).ToColumn("employee_since");
-            Map(p => p.Status).ToColumn("status");
-            Map(p => p.AccountType).ToColumn("account_type");
-            Map(p => p.CreatedAt).ToColumn("created_at");
-            Map(p => p.CreatedBy).ToColumn("created_by");
-            Map(p => p.UpdatedAt).ToColumn("updated_at");
-            Map(p => p.UpdatedBy).ToColumn("updated_by");
+            VacationsApprover = new HashSet<Vacation>();
+            VacationsUser = new HashSet<Vacation>();
         }
+
+        [Key]
+        [Column("user_id")]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public Guid UserId { get; set; }
+
+        [Column("company_id")]
+        public Guid CompanyId { get; set; }
+
+        [Column("full_name")]
+        [StringLength(100)]
+        public string FullName { get; set; }
+
+        [Column("email")]
+        [StringLength(200)]
+        public string Email { get; set; }
+
+        [Column("employee_since", TypeName = "date")]
+        public DateTime EmployeeSince { get; set; }
+
+        [Column("status")]
+        [StringLength(50)]
+        public string Status { get; set; }
+
+        [Column("account_type")]
+        [StringLength(50)]
+        public string AccountType { get; set; }
+
+        public ICollection<Vacation> VacationsApprover { get; set; }
+        public ICollection<Vacation> VacationsUser { get; set; }
     }
 }

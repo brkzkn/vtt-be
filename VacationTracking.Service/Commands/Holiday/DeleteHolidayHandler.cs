@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using VacationTracking.Data;
+using VacationTracking.Data.UnitOfWork;
 using VacationTracking.Domain.Commands.Holiday;
 
 namespace VacationTracking.Service.Commands.Holiday
@@ -24,15 +24,16 @@ namespace VacationTracking.Service.Commands.Holiday
 
         public async Task<bool> Handle(DeleteHolidayCommand request, CancellationToken cancellationToken)
         {
-            using (_unitOfWork)
-            {
-                _unitOfWork.Begin();
-                var affectedRows = await _unitOfWork.HolidayRepository.RemoveTeamHolidays(request.HolidayId);
-                affectedRows = await _unitOfWork.HolidayRepository.RemoveAsync(request.HolidayId, request.CompanyId);
+            throw new NotImplementedException();
+            //using (_unitOfWork)
+            //{
+            //    _unitOfWork.Begin();
+            //    var affectedRows = await _unitOfWork.HolidayRepository.RemoveTeamHolidays(request.HolidayId);
+            //    affectedRows = await _unitOfWork.HolidayRepository.RemoveAsync(request.HolidayId, request.CompanyId);
 
-                _unitOfWork.Commit();
-                return affectedRows > 0;
-            }
+            //    _unitOfWork.Commit();
+            //    return affectedRows > 0;
+            //}
         }
     }
 }

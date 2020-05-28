@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using VacationTracking.Data;
+using VacationTracking.Data.UnitOfWork;
 using VacationTracking.Domain.Commands.LeaveType;
 
 namespace VacationTracking.Service.Commands.LeaveType
@@ -24,12 +24,13 @@ namespace VacationTracking.Service.Commands.LeaveType
 
         public async Task<bool> Handle(DeleteLeaveTypeCommand request, CancellationToken cancellationToken)
         {
-            using (_unitOfWork)
-            {
-                var affectedRows = await _unitOfWork.LeaveTypeRepository.RemoveAsync(request.LeaveTypeId, request.CompanyId);
+            throw new NotImplementedException();
+            //using (_unitOfWork)
+            //{
+            //    var affectedRows = await _unitOfWork.LeaveTypeRepository.RemoveAsync(request.LeaveTypeId, request.CompanyId);
 
-                return affectedRows > 0;
-            }
+            //    return affectedRows > 0;
+            //}
         }
     }
 }

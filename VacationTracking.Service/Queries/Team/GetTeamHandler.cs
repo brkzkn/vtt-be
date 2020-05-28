@@ -29,22 +29,23 @@ namespace VacationTracking.Service.Queries.Team
 
         public async Task<TeamDto> Handle(GetTeamQuery request, CancellationToken cancellationToken)
         {
-            // TODO: Check user permission. 
-            // User should has owner or admin permission
-            var team = await _teamRepository.GetAsync(request.TeamId, request.CompanyId);
+            throw new NotImplementedException();
+            //// TODO: Check user permission. 
+            //// User should has owner or admin permission
+            //var team = await _teamRepository.GetAsync(request.TeamId, request.CompanyId);
 
-            var teamMembers = await _teamMemberRepository.GetListAsync(request.TeamId);
-            team.TeamMembers = new List<TeamMember>();
-            team.TeamMembers.AddRange(teamMembers);
+            //var teamMembers = await _teamMemberRepository.GetListAsync(request.TeamId);
+            //team.TeamMembers = new List<TeamMember>();
+            //team.TeamMembers.AddRange(teamMembers);
 
-            if (team != null)
-            {
-                _logger.LogInformation($"Got a request get customer Id: {team.TeamId}");
-                var teamDto = _mapper.Map<Domain.Dtos.TeamDto>(team);
-                return teamDto;
-            }
+            //if (team != null)
+            //{
+            //    _logger.LogInformation($"Got a request get customer Id: {team.TeamId}");
+            //    var teamDto = _mapper.Map<Domain.Dtos.TeamDto>(team);
+            //    return teamDto;
+            //}
 
-            return null;
+            //return null;
         }
     }
 }

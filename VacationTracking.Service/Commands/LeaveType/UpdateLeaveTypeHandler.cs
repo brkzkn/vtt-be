@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using VacationTracking.Data;
+using VacationTracking.Data.UnitOfWork;
 using VacationTracking.Domain.Commands.LeaveType;
 using VacationTracking.Domain.Dtos;
 
@@ -27,35 +28,35 @@ namespace VacationTracking.Service.Commands.LeaveType
 
         public async Task<LeaveTypeDto> Handle(UpdateLeaveTypeCommand request, CancellationToken cancellationToken)
         {
+            throw new NotImplementedException();
+            //Domain.Models.LeaveType entity = await _unitOfWork.LeaveTypeRepository.GetAsync(request.CompanyId, request.LeaveTypeId);
+            //if (entity == null)
+            //    throw new ArgumentNullException(nameof(Domain.Models.LeaveType));
 
-            Domain.Models.LeaveType entity = await _unitOfWork.LeaveTypeRepository.GetAsync(request.CompanyId, request.LeaveTypeId);
-            if (entity == null)
-                throw new ArgumentNullException(nameof(Domain.Models.LeaveType));
+            //entity.ColorCode = request.Color;
+            //entity.CompanyId = request.CompanyId;
+            //entity.DefaultDaysPerYear = request.DefaultDaysPerYear;
+            //entity.IsActive = request.IsActive;
+            //entity.IsAllowNegativeBalance = request.IsAllowNegativeBalance;
+            //entity.IsApproverRequired = request.IsApproverRequired;
+            //entity.IsDefault = false;
+            //entity.IsDeleted = false;
+            //entity.IsHalfDaysActivated = request.IsHalfDaysActivated;
+            //entity.IsHideLeaveTypeName = request.IsHideLeaveTypeName;
+            //entity.IsReasonRequired = request.IsReasonRequired;
+            //entity.IsUnlimited = request.IsUnlimited;
+            //entity.TypeName = request.TypeName;
 
-            entity.ColorCode = request.Color;
-            entity.CompanyId = request.CompanyId;
-            entity.DefaultDaysPerYear = request.DefaultDaysPerYear;
-            entity.IsActive = request.IsActive;
-            entity.IsAllowNegativeBalance = request.IsAllowNegativeBalance;
-            entity.IsApproverRequired = request.IsApproverRequired;
-            entity.IsDefault = false;
-            entity.IsDeleted = false;
-            entity.IsHalfDaysActivated = request.IsHalfDaysActivated;
-            entity.IsHideLeaveTypeName = request.IsHideLeaveTypeName;
-            entity.IsReasonRequired = request.IsReasonRequired;
-            entity.IsUnlimited = request.IsUnlimited;
-            entity.TypeName = request.TypeName;
+            //entity.UpdatedAt = DateTime.UtcNow;
+            //entity.UpdatedBy = request.UserId;
 
-            entity.UpdatedAt = DateTime.UtcNow;
-            entity.UpdatedBy = request.UserId;
+            //using (_unitOfWork)
+            //{
+            //    var affectedRow = await _unitOfWork.LeaveTypeRepository.UpdateAsync(request.LeaveTypeId, entity);
+            //}
 
-            using (_unitOfWork)
-            {
-                var affectedRow = await _unitOfWork.LeaveTypeRepository.UpdateAsync(request.LeaveTypeId, entity);
-            }
-
-            //TODO: Fire "leaveTypeUpdated" event
-            return _mapper.Map<LeaveTypeDto>(entity);
+            ////TODO: Fire "leaveTypeUpdated" event
+            //return _mapper.Map<LeaveTypeDto>(entity);
         }
     }
 }

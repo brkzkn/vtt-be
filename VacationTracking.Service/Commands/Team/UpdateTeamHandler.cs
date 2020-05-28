@@ -2,14 +2,11 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using VacationTracking.Data;
+using VacationTracking.Data.UnitOfWork;
 using VacationTracking.Domain.Commands.Team;
 using VacationTracking.Domain.Dtos;
-using VacationTracking.Domain.Models;
-using VacationTracking.Service.Common;
 
 namespace VacationTracking.Service.Commands.Team
 {
@@ -28,31 +25,32 @@ namespace VacationTracking.Service.Commands.Team
 
         public async Task<TeamDto> Handle(UpdateTeamCommand request, CancellationToken cancellationToken)
         {
-            var teamEntity = new Domain.Models.Team();
-            teamEntity.TeamId = request.TeamId;
-            teamEntity.TeamName = request.Name;
-            teamEntity.CompanyId = request.CompanyId;
-            teamEntity.UpdatedAt = DateTime.Now;
-            teamEntity.UpdatedBy = request.UserId;
-            teamEntity.TeamMembers = new List<TeamMember>();
-            teamEntity.TeamMembers = TeamFunctions.MergeMemberAndApprover(request.TeamId, request.Members, request.Approvers);
+            throw new NotImplementedException();
+            //var teamEntity = new Domain.Models.Team();
+            //teamEntity.TeamId = request.TeamId;
+            //teamEntity.TeamName = request.Name;
+            //teamEntity.CompanyId = request.CompanyId;
+            //teamEntity.UpdatedAt = DateTime.Now;
+            //teamEntity.UpdatedBy = request.UserId;
+            //teamEntity.TeamMembers = new List<TeamMember>();
+            //teamEntity.TeamMembers = TeamFunctions.MergeMemberAndApprover(request.TeamId, request.Members, request.Approvers);
 
-            using (_unitOfWork)
-            {
-                _unitOfWork.Begin();
-                var affectedRow = await _unitOfWork.TeamMemberRepository.RemoveAsync(request.TeamId);
+            //using (_unitOfWork)
+            //{
+            //    _unitOfWork.Begin();
+            //    var affectedRow = await _unitOfWork.TeamMemberRepository.RemoveAsync(request.TeamId);
 
-                affectedRow = await _unitOfWork.TeamMemberRepository.SetAsNonMemberToOtherTeams(request.Members);
-                affectedRow = await _unitOfWork.TeamMemberRepository.RemoveNotActiveMemberAsync();
-                affectedRow = await _unitOfWork.TeamRepository.UpdateAsync(teamEntity);
-                affectedRow = await _unitOfWork.TeamMemberRepository.InsertAsync(teamEntity.TeamMembers);
+            //    affectedRow = await _unitOfWork.TeamMemberRepository.SetAsNonMemberToOtherTeams(request.Members);
+            //    affectedRow = await _unitOfWork.TeamMemberRepository.RemoveNotActiveMemberAsync();
+            //    affectedRow = await _unitOfWork.TeamRepository.UpdateAsync(teamEntity);
+            //    affectedRow = await _unitOfWork.TeamMemberRepository.InsertAsync(teamEntity.TeamMembers);
 
-                _unitOfWork.Commit();
-            }
+            //    _unitOfWork.Commit();
+            //}
 
-            //TODO: Fire "teamCreated" event
+            ////TODO: Fire "teamCreated" event
 
-            return _mapper.Map<TeamDto>(teamEntity);
+            //return _mapper.Map<TeamDto>(teamEntity);
         }
     }
 }

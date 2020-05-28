@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using VacationTracking.Data;
+using VacationTracking.Data.UnitOfWork;
 using VacationTracking.Domain.Commands.LeaveType;
 using VacationTracking.Domain.Dtos;
 
@@ -25,19 +25,20 @@ namespace VacationTracking.Service.Commands.LeaveType
 
         public async Task<LeaveTypeDto> Handle(CreateLeaveTypeCommand request, CancellationToken cancellationToken)
         {
-            Domain.Models.LeaveType entity = MapToEntity(request);
+            throw new NotImplementedException();
+            //Domain.Models.LeaveType entity = MapToEntity(request);
 
-            using (_unitOfWork)
-            {
-                var isTypeNameValid = await _unitOfWork.LeaveTypeRepository.IsLeaveTypeExistAsync(entity.CompanyId, entity.TypeName);
-                if (isTypeNameValid)
-                    throw new Exception("NameAlreadyExist"); //TODO: Replace custom exception handler
+            //using (_unitOfWork)
+            //{
+            //    var isTypeNameValid = await _unitOfWork.LeaveTypeRepository.IsLeaveTypeExistAsync(entity.CompanyId, entity.TypeName);
+            //    if (isTypeNameValid)
+            //        throw new Exception("NameAlreadyExist"); //TODO: Replace custom exception handler
 
-                var affectedRow = await _unitOfWork.LeaveTypeRepository.InsertAsync(entity);
-            }
+            //    var affectedRow = await _unitOfWork.LeaveTypeRepository.InsertAsync(entity);
+            //}
 
-            //TODO: Fire "leaveTypeCreated" event
-            return _mapper.Map<LeaveTypeDto>(entity);
+            ////TODO: Fire "leaveTypeCreated" event
+            //return _mapper.Map<LeaveTypeDto>(entity);
         }
 
         private Domain.Models.LeaveType MapToEntity(CreateLeaveTypeCommand request)

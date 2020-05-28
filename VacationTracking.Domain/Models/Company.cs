@@ -1,34 +1,50 @@
-﻿using Dapper.FluentMap.Mapping;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VacationTracking.Domain.Models
 {
+    [Table("companies")]
     public class Company : BaseModel
     {
-        public Guid CompanyId { get; set; }
-        public string CompanyName { get; set; }
-        public string Address1 { get; set; }
-        public string Address2 { get; set; }
-        public string Country { get; set; }
-        public string Logo { get; set; }
-    }
-
-    public class CompaniesMap : EntityMap<Company>
-    {
-        public CompaniesMap()
+        public Company()
         {
-            Map(p => p.CompanyId).ToColumn("company_id");
-            Map(p => p.CompanyName).ToColumn("company_name");
-            Map(p => p.Address1).ToColumn("address_1");
-            Map(p => p.Address2).ToColumn("address_2");
-            Map(p => p.Country).ToColumn("country");
-            Map(p => p.Logo).ToColumn("logo");
-            Map(p => p.CreatedAt).ToColumn("created_at");
-            Map(p => p.CreatedBy).ToColumn("created_by");
-            Map(p => p.UpdatedAt).ToColumn("updated_at");
-            Map(p => p.UpdatedBy).ToColumn("updated_by");
+            Holidays = new HashSet<Holiday>();
         }
+
+        [Key]
+        [Column("company_id")]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public Guid CompanyId { get; set; }
+        
+        [Column("company_name")]
+        [StringLength(50)]
+        public string CompanyName { get; set; }
+        
+        [Column("address_1")]
+        [StringLength(100)]
+        public string Address1 { get; set; }
+        
+        [Column("address_2")]
+        [StringLength(100)]
+        public string Address2 { get; set; }
+        
+        [Column("country")]
+        [StringLength(100)]
+        public string Country { get; set; }
+        
+        [Column("logo")]
+        public string Logo { get; set; }
+
+        [InverseProperty("Holidays")]
+        public ICollection<Holiday> Holidays { get; set; }
+
+        [InverseProperty("LeaveTypes")]
+        public ICollection<LeaveType> LeaveTypes{ get; set; }
+
+        [InverseProperty("Teams")]
+        public virtual ICollection<Team> Teams { get; set; }
+
     }
 }

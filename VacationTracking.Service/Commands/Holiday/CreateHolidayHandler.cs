@@ -2,10 +2,9 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using VacationTracking.Data;
+using VacationTracking.Data.UnitOfWork;
 using VacationTracking.Domain.Commands.Holiday;
 using VacationTracking.Domain.Dtos;
 
@@ -26,40 +25,42 @@ namespace VacationTracking.Service.Commands.Holiday
 
         public async Task<HolidayDto> Handle(CreateHolidayCommand request, CancellationToken cancellationToken)
         {
-            var holidayEntity = new Domain.Models.Holiday();
-            Guid holidayId = Guid.NewGuid();
+            throw new NotImplementedException();
 
-            holidayEntity.CompanyId = request.CompanyId;
-            holidayEntity.CreatedAt = DateTime.UtcNow;
-            holidayEntity.CreatedBy = request.UserId;
-            holidayEntity.EndDate = request.EndDate;
-            holidayEntity.HolidayId = holidayId;
-            holidayEntity.HolidayName = request.Name;
-            holidayEntity.IsFullDay = request.IsFullDay;
-            holidayEntity.StartDate = request.StartDate;
+            //var holidayEntity = new Domain.Models.Holiday();
+            //Guid holidayId = Guid.NewGuid();
 
-            using (_unitOfWork)
-            {
-                _unitOfWork.Begin();
+            //holidayEntity.CompanyId = request.CompanyId;
+            //holidayEntity.CreatedAt = DateTime.UtcNow;
+            //holidayEntity.CreatedBy = request.UserId;
+            //holidayEntity.EndDate = request.EndDate;
+            //holidayEntity.HolidayId = holidayId;
+            //holidayEntity.HolidayName = request.Name;
+            //holidayEntity.IsFullDay = request.IsFullDay;
+            //holidayEntity.StartDate = request.StartDate;
 
-                /* TODO: Check holiday date; 
-                 * 1. if date is already exist for team or general,
-                 */
-                var affectedRow = await _unitOfWork.HolidayRepository.InsertAsync(holidayEntity);
-                if (request.IsForAllTeams)
-                {
-                    var teamIds = await _unitOfWork.TeamRepository.GetListAsync(request.CompanyId);
-                    affectedRow = await _unitOfWork.HolidayRepository.InsertHolidayToTeams(holidayId, teamIds.Select(x => x.TeamId).ToList());
-                }
-                else
-                {
-                    affectedRow = await _unitOfWork.HolidayRepository.InsertHolidayToTeams(holidayId, request.Teams);
-                }
-                _unitOfWork.Commit();
-            }
+            //using (_unitOfWork)
+            //{
+            //    _unitOfWork.Begin();
 
-            //TODO: Fire "holidayCreated" event
-            return _mapper.Map<HolidayDto>(holidayEntity);
+            //    /* TODO: Check holiday date; 
+            //     * 1. if date is already exist for team or general,
+            //     */
+            //    var affectedRow = await _unitOfWork.HolidayRepository.InsertAsync(holidayEntity);
+            //    if (request.IsForAllTeams)
+            //    {
+            //        var teamIds = await _unitOfWork.TeamRepository.GetListAsync(request.CompanyId);
+            //        affectedRow = await _unitOfWork.HolidayRepository.InsertHolidayToTeams(holidayId, teamIds.Select(x => x.TeamId).ToList());
+            //    }
+            //    else
+            //    {
+            //        affectedRow = await _unitOfWork.HolidayRepository.InsertHolidayToTeams(holidayId, request.Teams);
+            //    }
+            //    _unitOfWork.Commit();
+            //}
+
+            ////TODO: Fire "holidayCreated" event
+            //return _mapper.Map<HolidayDto>(holidayEntity);
         }
     }
 }

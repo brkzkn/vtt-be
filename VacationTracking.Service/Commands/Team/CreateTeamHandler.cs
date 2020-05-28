@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using VacationTracking.Data;
+using VacationTracking.Data.UnitOfWork;
 using VacationTracking.Domain.Commands.Team;
 using VacationTracking.Domain.Dtos;
 using VacationTracking.Domain.Models;
@@ -28,31 +29,33 @@ namespace VacationTracking.Service.Commands.Team
 
         public async Task<TeamDto> Handle(CreateTeamCommand request, CancellationToken cancellationToken)
         {
-            var teamEntity = new Domain.Models.Team();
-            Guid teamId = Guid.NewGuid();
-            teamEntity.TeamName = request.Name;
-            teamEntity.CompanyId = request.CompanyId;
-            teamEntity.CreatedAt = DateTime.Now;
-            teamEntity.CreatedBy = request.UserId;
-            teamEntity.TeamId = teamId;
+            throw new NotImplementedException();
 
-            teamEntity.TeamMembers = new List<TeamMember>();
-            teamEntity.TeamMembers = TeamFunctions.MergeMemberAndApprover(teamId, request.Members, request.Approvers);
+            //var teamEntity = new Domain.Models.Team();
+            //Guid teamId = Guid.NewGuid();
+            //teamEntity.TeamName = request.Name;
+            //teamEntity.CompanyId = request.CompanyId;
+            //teamEntity.CreatedAt = DateTime.Now;
+            //teamEntity.CreatedBy = request.UserId;
+            //teamEntity.TeamId = teamId;
 
-            using (_unitOfWork)
-            {
-                _unitOfWork.Begin();
-                var affectedRow = await _unitOfWork.TeamMemberRepository.SetAsNonMemberToOtherTeams(request.Members);
-                affectedRow = await _unitOfWork.TeamMemberRepository.RemoveNotActiveMemberAsync();
-                affectedRow = await _unitOfWork.TeamRepository.InsertAsync(teamEntity);
-                affectedRow = await _unitOfWork.TeamMemberRepository.InsertAsync(teamEntity.TeamMembers);
+            //teamEntity.TeamMembers = new List<TeamMember>();
+            //teamEntity.TeamMembers = TeamFunctions.MergeMemberAndApprover(teamId, request.Members, request.Approvers);
 
-                _unitOfWork.Commit();
-            }
+            //using (_unitOfWork)
+            //{
+            //    _unitOfWork.Begin();
+            //    var affectedRow = await _unitOfWork.TeamMemberRepository.SetAsNonMemberToOtherTeams(request.Members);
+            //    affectedRow = await _unitOfWork.TeamMemberRepository.RemoveNotActiveMemberAsync();
+            //    affectedRow = await _unitOfWork.TeamRepository.InsertAsync(teamEntity);
+            //    affectedRow = await _unitOfWork.TeamMemberRepository.InsertAsync(teamEntity.TeamMembers);
 
-            //TODO: Fire "teamCreated" event
+            //    _unitOfWork.Commit();
+            //}
 
-            return _mapper.Map<TeamDto>(teamEntity);
+            ////TODO: Fire "teamCreated" event
+
+            //return _mapper.Map<TeamDto>(teamEntity);
         }
     }
 }

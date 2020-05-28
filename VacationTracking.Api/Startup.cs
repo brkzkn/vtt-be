@@ -1,5 +1,4 @@
 using AutoMapper;
-using Dapper.FluentMap;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,10 +11,9 @@ using System;
 using System.Data;
 using System.IO;
 using System.Reflection;
-using VacationTracking.Data;
 using VacationTracking.Data.IRepositories;
 using VacationTracking.Data.Repositories;
-using VacationTracking.Domain.Models;
+using VacationTracking.Data.UnitOfWork;
 using VacationTracking.Service.Queries.Team;
 
 namespace VacationTracking.Api
@@ -33,16 +31,16 @@ namespace VacationTracking.Api
 
             Configuration = builder.Build();
 
-            FluentMapper.Initialize(config =>
-            {
-                config.AddMap(new CompaniesMap());
-                config.AddMap(new HolidaysMap());
-                config.AddMap(new LeaveTypesMap());
-                config.AddMap(new TeamsMap());
-                config.AddMap(new TeamMemberMap());
-                config.AddMap(new UserMap());
-                config.AddMap(new VacationsMap());
-            });
+            //FluentMapper.Initialize(config =>
+            //{
+            //    config.AddMap(new CompaniesMap());
+            //    config.AddMap(new HolidaysMap());
+            //    config.AddMap(new LeaveTypesMap());
+            //    config.AddMap(new TeamsMap());
+            //    config.AddMap(new TeamMemberMap());
+            //    config.AddMap(new UserMap());
+            //    config.AddMap(new VacationsMap());
+            //});
         }
 
         public IConfiguration Configuration { get; }

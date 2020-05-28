@@ -1,35 +1,42 @@
-﻿using Dapper.FluentMap.Mapping;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using VacationTracking.Domain.Queries.Holiday;
 
 namespace VacationTracking.Domain.Models
 {
-    public class Holiday :BaseModel
+    [Table("holidays")]
+    public class Holiday : BaseModel
     {
+        [Key]
+        [Column("holiday_id")]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid HolidayId { get; set; }
-        public Guid CompanyId { get; set; }
-        public string HolidayName { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public bool IsFullDay { get; set; }
         
-        public List<Team> Teams { get; set; }
-    }
+        [Column("company_id")]
+        public Guid CompanyId { get; set; }
+        
+        [Column("name")]
+        [StringLength(100)]
+        public string HolidayName { get; set; }
+        
+        [Column("start_date", TypeName = "date")]
+        public DateTime StartDate { get; set; }
+        
+        [Column("end_date", TypeName = "date")]
+        public DateTime? EndDate { get; set; }
+        
+        [Column("is_full_day")]
+        public bool? IsFullDay { get; set; }
 
-    public class HolidaysMap : EntityMap<Holiday>
-    {
-        public HolidaysMap()
-        {
-            Map(p => p.HolidayId).ToColumn("holiday_id");
-            Map(p => p.CompanyId).ToColumn("company_id");
-            Map(p => p.HolidayName).ToColumn("name");
-            Map(p => p.StartDate).ToColumn("start_date");
-            Map(p => p.EndDate).ToColumn("end_date");
-            Map(p => p.IsFullDay).ToColumn("is_full_day");
-            Map(p => p.CreatedAt).ToColumn("created_at");
-            Map(p => p.CreatedBy).ToColumn("created_by");
-            Map(p => p.UpdatedAt).ToColumn("updated_at");
-            Map(p => p.UpdatedBy).ToColumn("updated_by");
-        }
+        public ICollection<Team> Teams { get; set; }
+
+        [ForeignKey("CompanyId")]
+        [InverseProperty("Holidays")]
+        public Company Company { get; set; }
+
+        [InverseProperty("HolidayTeams")]
+        public ICollection<HolidayTeam> HolidayTeams { get; set; }
     }
 }
