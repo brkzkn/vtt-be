@@ -1,39 +1,47 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using VacationTracking.Data.IRepositories;
+using VacationTracking.Data.Repository;
 using VacationTracking.Domain.Dtos;
 using VacationTracking.Domain.Models;
 using VacationTracking.Domain.Queries.Team;
+using TeamDb = VacationTracking.Domain.Models.Team;
 
 namespace VacationTracking.Service.Queries.Team
 {
     public class GetTeamHandler : IRequestHandler<GetTeamQuery, TeamDto>
     {
-        private readonly ITeamRepository _teamRepository;
-        private readonly ITeamMemberRepository _teamMemberRepository;
+        private readonly IRepository<TeamDb> _repository;
+        private readonly IRepository<Company> _companyRepository;
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
 
-        public GetTeamHandler(ITeamRepository teamRepository, ITeamMemberRepository teamMemberRepository, IMapper mapper, ILogger<GetTeamHandler> logger)
+        public GetTeamHandler(IRepository<TeamDb> repository, IRepository<Company> companyRepository, IMapper mapper, ILogger<GetTeamHandler> logger)
         {
-            _teamRepository = teamRepository ?? throw new ArgumentNullException(nameof(teamRepository));
-            _teamMemberRepository = teamMemberRepository ?? throw new ArgumentNullException(nameof(teamMemberRepository));
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _companyRepository = companyRepository;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<TeamDto> Handle(GetTeamQuery request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
             //// TODO: Check user permission. 
             //// User should has owner or admin permission
-            //var team = await _teamRepository.GetAsync(request.TeamId, request.CompanyId);
+            ///
+            var a = _companyRepository.Queryable().ToList();
 
+            var team = await _repository.Queryable()
+                                        //.Include(x => x.TeamMembers)
+                                        //.Where(x => x.TeamId == request.TeamId && x.CompanyId == request.CompanyId)
+                                        .ToListAsync();
+
+            throw new NotImplementedException();
             //var teamMembers = await _teamMemberRepository.GetListAsync(request.TeamId);
             //team.TeamMembers = new List<TeamMember>();
             //team.TeamMembers.AddRange(teamMembers);

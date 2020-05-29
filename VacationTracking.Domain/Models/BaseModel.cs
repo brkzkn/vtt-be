@@ -11,6 +11,7 @@ namespace VacationTracking.Domain.Models
         public Guid CreatedBy { get; set; }
         [Column("updated_at")]
         public DateTime? UpdatedAt { get; set; }
+
         [Column("updated_by", TypeName = "timestamp with time zone")]
         public Guid? UpdatedBy { get; set; }
     }

@@ -10,8 +10,7 @@ namespace VacationTracking.Data.Repositories
 {
     public class UserRepository : BaseRepository, IUserRepository
     {
-        public UserRepository(IDbConnection connection)
-            : base(connection)
+        public UserRepository(IDbConnection connection): base(connection)
         {
         }
 

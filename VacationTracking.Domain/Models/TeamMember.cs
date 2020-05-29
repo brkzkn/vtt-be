@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VacationTracking.Domain.Models
 {
-    [Table("team_member")]
+    [Table("team_members")]
     public class TeamMember
     {
         [Column("team_id")]
@@ -12,7 +12,7 @@ namespace VacationTracking.Domain.Models
         [Column("user_id")]
         public Guid UserId { get; set; }
 
-        [Column("is_appriver")]
+        [Column("is_approver")]
         public bool? IsApprover { get; set; }
 
         [Column("is_member")]

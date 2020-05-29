@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VacationTracking.Domain.Models
 {
+    [Table("teams")]
     public class Team : BaseModel
     {
         public Team()
@@ -28,9 +29,7 @@ namespace VacationTracking.Domain.Models
 
         public Company Company { get; set; }
 
-        [InverseProperty("Teams")]
         public ICollection<HolidayTeam> HolidayTeams { get; set; }
-
         public ICollection<TeamMember> TeamMembers { get; set; }
     }
 }

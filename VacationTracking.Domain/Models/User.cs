@@ -12,6 +12,7 @@ namespace VacationTracking.Domain.Models
         {
             VacationsApprover = new HashSet<Vacation>();
             VacationsUser = new HashSet<Vacation>();
+            TeamMembers = new HashSet<TeamMember>();
         }
 
         [Key]
@@ -43,5 +44,6 @@ namespace VacationTracking.Domain.Models
 
         public ICollection<Vacation> VacationsApprover { get; set; }
         public ICollection<Vacation> VacationsUser { get; set; }
+        public ICollection<TeamMember> TeamMembers { get; set; }
     }
 }

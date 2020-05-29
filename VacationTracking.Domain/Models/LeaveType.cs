@@ -61,7 +61,6 @@ namespace VacationTracking.Domain.Models
         public string ColorCode { get; set; }
 
         [ForeignKey("fk_leavetype_companyid_companies_id")]
-        [InverseProperty("LeaveTypes")]
         public Company Company { get; set; }
 
         public ICollection<Vacation> Vacations { get; set; }

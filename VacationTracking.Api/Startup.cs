@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -11,9 +12,12 @@ using System;
 using System.Data;
 using System.IO;
 using System.Reflection;
+using VacationTracking.Data;
 using VacationTracking.Data.IRepositories;
 using VacationTracking.Data.Repositories;
+using VacationTracking.Data.Repository;
 using VacationTracking.Data.UnitOfWork;
+using VacationTracking.Domain.Models;
 using VacationTracking.Service.Queries.Team;
 
 namespace VacationTracking.Api
@@ -30,17 +34,6 @@ namespace VacationTracking.Api
                 .AddEnvironmentVariables();
 
             Configuration = builder.Build();
-
-            //FluentMapper.Initialize(config =>
-            //{
-            //    config.AddMap(new CompaniesMap());
-            //    config.AddMap(new HolidaysMap());
-            //    config.AddMap(new LeaveTypesMap());
-            //    config.AddMap(new TeamsMap());
-            //    config.AddMap(new TeamMemberMap());
-            //    config.AddMap(new UserMap());
-            //    config.AddMap(new VacationsMap());
-            //});
         }
 
         public IConfiguration Configuration { get; }
@@ -55,9 +48,15 @@ namespace VacationTracking.Api
             services.AddScoped<ITeamRepository, TeamRepository>();
             services.AddScoped<ITeamMemberRepository, TeamMemberRepository>();
             services.AddScoped<IVacationRepository, VacationRepository>();
-            services.AddScoped<IDbConnection>(db => new NpgsqlConnection(
-                    Configuration.GetConnectionString("MyConnection")));
+            services.AddScoped<IDbConnection>(db => new NpgsqlConnection(Configuration.GetConnectionString("MyConnection")));
+
+            var builder = new NpgsqlConnectionStringBuilder(Configuration.GetConnectionString("MyConnection"));
+            services.AddDbContext<VacationTrackingContext>(options => options.UseNpgsql(builder.ConnectionString));
+            services.AddScoped<DbContext, VacationTrackingContext>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            services.AddScoped<Data.Repository.IRepository<Team>, Repository<Team>>();
+            services.AddScoped<Data.Repository.IRepository<Company>, Repository<Company>>();
 
             services.AddMediatR(typeof(GetTeamHandler).Assembly);
             services.AddAutoMapper(typeof(Service.Mapper.AutoMapping));

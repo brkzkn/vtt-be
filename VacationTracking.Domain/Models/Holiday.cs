@@ -2,16 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using VacationTracking.Domain.Queries.Holiday;
 
 namespace VacationTracking.Domain.Models
 {
     [Table("holidays")]
     public class Holiday : BaseModel
     {
-        [Key]
-        [Column("holiday_id")]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid HolidayId { get; set; }
         
         [Column("company_id")]
@@ -32,11 +28,8 @@ namespace VacationTracking.Domain.Models
 
         public ICollection<Team> Teams { get; set; }
 
-        [ForeignKey("CompanyId")]
-        [InverseProperty("Holidays")]
         public Company Company { get; set; }
 
-        [InverseProperty("HolidayTeams")]
         public ICollection<HolidayTeam> HolidayTeams { get; set; }
     }
 }

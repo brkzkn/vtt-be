@@ -37,13 +37,8 @@ namespace VacationTracking.Domain.Models
         [Column("logo")]
         public string Logo { get; set; }
 
-        [InverseProperty("Holidays")]
         public ICollection<Holiday> Holidays { get; set; }
-
-        [InverseProperty("LeaveTypes")]
         public ICollection<LeaveType> LeaveTypes{ get; set; }
-
-        [InverseProperty("Teams")]
         public virtual ICollection<Team> Teams { get; set; }
 
     }
