@@ -1,45 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VacationTracking.Domain.Models
 {
-    [Table("companies")]
     public class Company : BaseModel
     {
         public Company()
         {
+            CompanySettings = new HashSet<CompanySetting>();
             Holidays = new HashSet<Holiday>();
+            LeaveTypes = new HashSet<LeaveType>();
+            Teams = new HashSet<Team>();
+            Users = new HashSet<User>();
         }
 
-        [Key]
-        [Column("company_id")]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public Guid CompanyId { get; set; }
-        
-        [Column("company_name")]
-        [StringLength(50)]
+        [Column("CompanyID")]
+        public int CompanyId { get; set; }
+        [StringLength(100)]
+        [Required]
         public string CompanyName { get; set; }
-        
-        [Column("address_1")]
-        [StringLength(100)]
-        public string Address1 { get; set; }
-        
-        [Column("address_2")]
-        [StringLength(100)]
-        public string Address2 { get; set; }
-        
-        [Column("country")]
+        [StringLength(500)]
+        public string Address { get; set; }
         [StringLength(100)]
         public string Country { get; set; }
-        
-        [Column("logo")]
+        [StringLength(500)]
         public string Logo { get; set; }
 
-        public ICollection<Holiday> Holidays { get; set; }
-        public ICollection<LeaveType> LeaveTypes{ get; set; }
+        public virtual ICollection<CompanySetting> CompanySettings { get; set; }
+        public virtual ICollection<Holiday> Holidays { get; set; }
+        public virtual ICollection<LeaveType> LeaveTypes { get; set; }
         public virtual ICollection<Team> Teams { get; set; }
+        public virtual ICollection<User> Users { get; set; }
 
     }
 }

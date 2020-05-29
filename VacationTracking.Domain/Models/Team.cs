@@ -1,35 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VacationTracking.Domain.Models
 {
-    [Table("teams")]
     public class Team : BaseModel
     {
         public Team()
         {
+            HolidaysTeam = new HashSet<HolidayTeam>();
             TeamMembers = new HashSet<TeamMember>();
-            HolidayTeams = new HashSet<HolidayTeam>();
         }
 
-        [Key]
-        [Column("team_id")]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public Guid TeamId { get; set; }
+        [Column("TeamID")]
+        public int TeamId { get; set; }
 
-        [Column("company_id")]
-        [ForeignKey("fk_company_id")]
-        public Guid CompanyId { get; set; }
+        [Column("CompanyID")]
+        public int CompanyId { get; set; }
 
-        [Column("team_name")]
-        [StringLength(50)]
+        [StringLength(150)]
+        [Required]
         public string TeamName { get; set; }
 
-        public Company Company { get; set; }
-
-        public ICollection<HolidayTeam> HolidayTeams { get; set; }
-        public ICollection<TeamMember> TeamMembers { get; set; }
+        public virtual Company Company { get; set; }
+        public virtual ICollection<HolidayTeam> HolidaysTeam { get; set; }
+        public virtual ICollection<TeamMember> TeamMembers { get; set; }
     }
 }

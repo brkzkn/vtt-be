@@ -33,17 +33,19 @@ namespace VacationTracking.Data.Repositories
 
         public async Task<int> InsertAsync(LeaveType model)
         {
-            string sql = "INSERT INTO LEAVE_TYPES(leave_type_id, company_id, is_default, is_half_days_activated, is_active, is_deleted, "
-                         + "is_hide_leave_type_name, type_name, is_approver_required, default_days_per_year, is_unlimited, is_reason_required, "
-                         + "is_allow_negative_balance, color_code, created_at, created_by)"
-                         + $" VALUES('{model.LeaveTypeId}', '{model.CompanyId}', '{model.IsDefault}', '{model.IsHalfDaysActivated}', '{model.IsActive}', "
-                         + $"'{model.IsDeleted}', '{model.IsHideLeaveTypeName}', '{model.TypeName}', '{model.IsApproverRequired}', '{model.DefaultDaysPerYear}', "
-                         + $"'{model.IsUnlimited}', '{model.IsReasonRequired}', '{model.IsAllowNegativeBalance}', '{model.ColorCode}', "
-                         + $"'{model.CreatedAt}', '{model.CreatedBy}')";
+            throw new NotImplementedException();
 
-            var affectedRow = await Connection.ExecuteAsync(sql);
+            //string sql = "INSERT INTO LEAVE_TYPES(leave_type_id, company_id, is_default, is_half_days_activated, is_active, is_deleted, "
+            //             + "is_hide_leave_type_name, type_name, is_approver_required, default_days_per_year, is_unlimited, is_reason_required, "
+            //             + "is_allow_negative_balance, color_code, created_at, created_by)"
+            //             + $" VALUES('{model.LeaveTypeId}', '{model.CompanyId}', '{model.IsDefault}', '{model.IsHalfDaysActivated}', '{model.IsActive}', "
+            //             + $"'{model.IsDeleted}', '{model.IsHideLeaveTypeName}', '{model.TypeName}', '{model.IsApproverRequired}', '{model.DefaultDaysPerYear}', "
+            //             + $"'{model.IsUnlimited}', '{model.IsReasonRequired}', '{model.IsAllowNegativeBalance}', '{model.ColorCode}', "
+            //             + $"'{model.CreatedAt}', '{model.CreatedBy}')";
 
-            return affectedRow;
+            //var affectedRow = await Connection.ExecuteAsync(sql);
+
+            //return affectedRow;
         }
 
         public async Task<bool> IsLeaveTypeExistAsync(Guid companyId, string name)
@@ -66,27 +68,29 @@ namespace VacationTracking.Data.Repositories
 
         public async Task<int> UpdateAsync(Guid leaveTypeId, LeaveType model)
         {
-            if (model == null)
-                throw new ArgumentNullException(nameof(LeaveType));
+            throw new NotImplementedException();
+
+            //if (model == null)
+            //    throw new ArgumentNullException(nameof(LeaveType));
            
-            string query = "UPDATE leave_types SET " +
-                $"is_half_days_activated = '{model.IsHalfDaysActivated}', " +
-                $"is_active = '{model.IsActive}', " +
-                $"is_hide_leave_type_name = '{model.IsHideLeaveTypeName}', " +
-                $"type_name = '{model.TypeName}', " +
-                $"is_approver_required = '{model.IsApproverRequired}', " +
-                $"default_days_per_year = '{model.DefaultDaysPerYear}', " +
-                $"is_unlimited = '{model.IsUnlimited}', " +
-                $"is_reason_required = '{model.IsReasonRequired}', " +
-                $"is_allow_negative_balance = '{model.IsAllowNegativeBalance}', " +
-                $"color_code = '{model.ColorCode}', " +
-                $"updated_at = '{model.UpdatedAt}', " +
-                $"updated_by = '{model.UpdatedBy}' " +
-                $"WHERE leave_type_id = '{model.LeaveTypeId}' AND COMPANY_ID = '{model.CompanyId}';";
+            //string query = "UPDATE leave_types SET " +
+            //    $"is_half_days_activated = '{model.IsHalfDaysActivated}', " +
+            //    $"is_active = '{model.IsActive}', " +
+            //    $"is_hide_leave_type_name = '{model.IsHideLeaveTypeName}', " +
+            //    $"type_name = '{model.TypeName}', " +
+            //    $"is_approver_required = '{model.IsApproverRequired}', " +
+            //    $"default_days_per_year = '{model.DefaultDaysPerYear}', " +
+            //    $"is_unlimited = '{model.IsUnlimited}', " +
+            //    $"is_reason_required = '{model.IsReasonRequired}', " +
+            //    $"is_allow_negative_balance = '{model.IsAllowNegativeBalance}', " +
+            //    $"color_code = '{model.ColorCode}', " +
+            //    $"updated_at = '{model.ModifiedAt}', " +
+            //    $"updated_by = '{model.ModifiedBy}' " +
+            //    $"WHERE leave_type_id = '{model.LeaveTypeId}' AND COMPANY_ID = '{model.CompanyId}';";
 
-            var affectedRow = await Connection.ExecuteAsync(query);
+            //var affectedRow = await Connection.ExecuteAsync(query);
 
-            return affectedRow;
+            //return affectedRow;
         }
     }
 }

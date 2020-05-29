@@ -26,28 +26,30 @@ namespace VacationTracking.Data.Repositories
 
         public async Task<IEnumerable<Team>> GetListAsync(Guid companyId)
         {
-            string sql = "SELECT * FROM TEAMS as t  " +
-                "JOIN TEAM_MEMBERS as tm on t.team_id = tm.team_id " +
-                "JOIN USERS as u on tm.user_id = u.user_id " +
-                $"WHERE t.COMPANY_ID = '{companyId}'";
+            throw new NotImplementedException();
 
-            Dictionary<Guid, Team> teamsDictionary = new Dictionary<Guid, Team>();
+            //string sql = "SELECT * FROM TEAMS as t  " +
+            //    "JOIN TEAM_MEMBERS as tm on t.team_id = tm.team_id " +
+            //    "JOIN USERS as u on tm.user_id = u.user_id " +
+            //    $"WHERE t.COMPANY_ID = '{companyId}'";
 
-            var result = await Connection.QueryAsync<Team, TeamMember, User, Team>(sql, map: (t, tm, u) =>
-            {
-                tm.User = u;
-                if (!teamsDictionary.TryGetValue(t.TeamId, out Team teamEntry))
-                {
-                    teamEntry = t;
-                    teamEntry.TeamMembers = new List<TeamMember>();
-                    teamsDictionary.Add(t.TeamId, teamEntry);
-                }
-                teamEntry.TeamMembers.Add(tm);
-                return teamEntry;
+            //Dictionary<Guid, Team> teamsDictionary = new Dictionary<Guid, Team>();
 
-            }, splitOn: "team_id, user_id");
+            //var result = await Connection.QueryAsync<Team, TeamMember, User, Team>(sql, map: (t, tm, u) =>
+            //{
+            //    tm.User = u;
+            //    if (!teamsDictionary.TryGetValue(t.TeamId, out Team teamEntry))
+            //    {
+            //        teamEntry = t;
+            //        teamEntry.TeamMembers = new List<TeamMember>();
+            //        teamsDictionary.Add(t.TeamId, teamEntry);
+            //    }
+            //    teamEntry.TeamMembers.Add(tm);
+            //    return teamEntry;
 
-            return teamsDictionary.Values.AsList();
+            //}, splitOn: "team_id, user_id");
+
+            //return teamsDictionary.Values.AsList();
         }
 
         public async Task<int> InsertAsync(Team team)
@@ -92,8 +94,8 @@ namespace VacationTracking.Data.Repositories
 
             string query = "UPDATE TEAMS SET " +
                 $"TEAM_NAME = '{team.TeamName}', " +
-                $"UPDATED_AT = '{team.UpdatedAt}', " +
-                $"UPDATED_BY = '{team.UpdatedBy}' " +
+                $"UPDATED_AT = '{team.ModifiedAt}', " +
+                $"UPDATED_BY = '{team.ModifiedBy}' " +
                 $"WHERE TEAM_ID = '{team.TeamId}' AND COMPANY_ID = '{team.CompanyId}';";
 
             var affectedRow = await Connection.ExecuteAsync(query);

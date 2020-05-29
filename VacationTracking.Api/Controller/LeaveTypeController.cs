@@ -63,8 +63,10 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(500)]
         public async Task<ActionResult<LeaveTypeDto>> CreateAsync([FromBody]LeaveTypeModel model)
         {
-            Guid companyId = new Guid(_companyId);
-            Guid userId = new Guid(_userId);
+            //Guid companyId = new Guid(_companyId);
+            //Guid userId = new Guid(_userId);
+            int companyId = 1;
+            int userId = 1;
 
             var request = new CreateLeaveTypeCommand(companyId,
                                                      userId,

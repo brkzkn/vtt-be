@@ -52,12 +52,14 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(500)]
         public async Task<ActionResult<VacationDto>> CreateVacationAsync([FromBody]VacationModel model)
         {
-            Guid companyId = new Guid(_companyId);
-            Guid userId = new Guid(_userId);
+            //Guid companyId = new Guid(_companyId);
+            //Guid userId = new Guid(_userId);
+            int companyId = 1;
+            int userId = 1;
 
             var request = new CreateVacationCommand(companyId,
                                                     userId,
-                                                    model.LeaveTypeId,
+                                                    12,//model.LeaveTypeId,
                                                     model.StartDate,
                                                     model.EndDate,
                                                     model.Reason,
@@ -78,9 +80,9 @@ namespace VacationTracking.Api.Controller
         {
             Guid companyId = new Guid(_companyId);
 
-            var request = new CreateUserVacationCommand(companyId,
-                                                    id,
-                                                    model.LeaveTypeId,
+            var request = new CreateUserVacationCommand(1,//companyId,
+                                                    3, //id,
+                                                    1, //model.LeaveTypeId,
                                                     model.StartDate,
                                                     model.EndDate,
                                                     model.Reason);
@@ -95,11 +97,14 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(500)]
         public async Task<ActionResult<bool>> ResponseUserVacationAsync(Guid id, [FromBody]VacationResponseModel model)
         {
-            Guid companyId = new Guid(_companyId);
-            Guid userId = new Guid(_userId);
+            //Guid companyId = new Guid(_companyId);
+            //Guid userId = new Guid(_userId);
+
+            int companyId = 1;
+            int userId = 1;
 
             var request = new UpdateVacationCommand(companyId,
-                                                    id,
+                                                    2, //id,
                                                     userId,
                                                     model.Status,
                                                     model.Note);

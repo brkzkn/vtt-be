@@ -49,8 +49,8 @@ namespace VacationTracking.Service.Commands.Vacation
             vacationEntity.VacationId = request.VacationId;
             vacationEntity.ApproverId = request.ResponsedBy;
             vacationEntity.Note = request.Note;
-            vacationEntity.UpdatedAt= DateTime.Now;
-            vacationEntity.UpdatedBy = request.ResponsedBy;
+            vacationEntity.ModifiedAt= DateTime.Now;
+            vacationEntity.ModifiedBy = request.ResponsedBy;
 
             switch (request.Status)
             {

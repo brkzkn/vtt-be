@@ -5,14 +5,12 @@ namespace VacationTracking.Domain.Models
 {
     public class BaseModel
     {
-        [Column("created_at", TypeName = "timestamp with time zone")]
+        [Column(TypeName = "datetime")]
         public DateTime CreatedAt { get; set; }
-        [Column("created_by")]
-        public Guid CreatedBy { get; set; }
-        [Column("updated_at")]
-        public DateTime? UpdatedAt { get; set; }
+        public int CreatedBy { get; set; }
 
-        [Column("updated_by", TypeName = "timestamp with time zone")]
-        public Guid? UpdatedBy { get; set; }
+        [Column(TypeName = "datetime")]
+        public DateTime? ModifiedAt { get; set; }
+        public int? ModifiedBy { get; set; }
     }
 }

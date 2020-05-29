@@ -45,20 +45,21 @@ namespace VacationTracking.Service.Commands.Vacation
 
         private Domain.Models.Vacation MapToEntity(CreateVacationCommand request)
         {
-            var vacationEntity = new Domain.Models.Vacation();
-            Guid vacationId = Guid.NewGuid();
-            vacationEntity.VacationId = vacationId;
-            vacationEntity.UserId = request.UserId;
-            vacationEntity.ApproverId = null;
-            vacationEntity.LeaveTypeId = request.LeaveTypeId;
-            vacationEntity.VacationStatus = VacationStatus.Pending;
-            vacationEntity.StartDate = request.StartDate;
-            vacationEntity.EndDate = request.EndDate;
-            vacationEntity.Reason = request.Reason;
-            vacationEntity.IsHalfDay = request.IsHalfDay;
-            vacationEntity.CreatedAt = DateTime.Now;
-            vacationEntity.CreatedBy = request.UserId;
-            return vacationEntity;
+            throw new NotImplementedException();
+            //var vacationEntity = new Domain.Models.Vacation();
+            //Guid vacationId = Guid.NewGuid();
+            //vacationEntity.VacationId = vacationId;
+            //vacationEntity.UserId = request.UserId;
+            //vacationEntity.ApproverId = null;
+            //vacationEntity.LeaveTypeId = request.LeaveTypeId;
+            //vacationEntity.VacationStatus = VacationStatus.Pending;
+            //vacationEntity.StartDate = request.StartDate;
+            //vacationEntity.EndDate = request.EndDate;
+            //vacationEntity.Reason = request.Reason;
+            //vacationEntity.IsHalfDay = request.IsHalfDay;
+            //vacationEntity.CreatedAt = DateTime.Now;
+            //vacationEntity.CreatedBy = request.UserId;
+            //return vacationEntity;
         }
     }
 }

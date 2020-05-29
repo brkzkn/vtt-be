@@ -1,13 +1,12 @@
 ﻿using MediatR;
-using System;
 using VacationTracking.Domain.Dtos;
 
 namespace VacationTracking.Domain.Commands.LeaveType
 {
 	public class CreateLeaveTypeCommand: IRequest<LeaveTypeDto>
     {
-		public CreateLeaveTypeCommand(Guid companyId,
-								Guid userId,
+		public CreateLeaveTypeCommand(int companyId,
+								int userId,
 								bool isHalfDaysActivated,
 								bool isHideLeaveTypeName,
 								string typeName,
@@ -31,8 +30,8 @@ namespace VacationTracking.Domain.Commands.LeaveType
 			Color = color;
 		}
 
-		public Guid CompanyId { get; set; }
-		public Guid UserId { get; set; }
+		public int CompanyId { get; set; }
+		public int UserId { get; set; }
 		public bool IsHalfDaysActivated { get; set; }
 		public bool IsHideLeaveTypeName { get; set; }
 		public string TypeName { get; set; }

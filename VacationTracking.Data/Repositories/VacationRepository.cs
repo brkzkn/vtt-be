@@ -46,8 +46,8 @@ namespace VacationTracking.Data.Repositories
                 $"VACATION_STATUS = '{model.VacationStatus}', " +
                 $"APPROVER_ID = '{model.ApproverId}', " +
                 $"NOTE = '{model.Note}', " +
-                $"UPDATED_AT = '{model.UpdatedAt}', " +
-                $"UPDATED_BY = '{model.UpdatedBy}' " +
+                $"UPDATED_AT = '{model.ModifiedAt}', " +
+                $"UPDATED_BY = '{model.ModifiedBy}' " +
                 $"WHERE VACATION_ID = '{model.VacationId}';";
 
             var affectedRow = await Connection.ExecuteAsync(query);

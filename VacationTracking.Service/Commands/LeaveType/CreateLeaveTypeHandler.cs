@@ -43,27 +43,28 @@ namespace VacationTracking.Service.Commands.LeaveType
 
         private Domain.Models.LeaveType MapToEntity(CreateLeaveTypeCommand request)
         {
-            var entity = new Domain.Models.LeaveType();
-            Guid leaveTypeId = Guid.NewGuid();
+            throw new NotImplementedException();
+            //var entity = new Domain.Models.LeaveType();
+            //Guid leaveTypeId = Guid.NewGuid();
 
-            entity.ColorCode = request.Color;
-            entity.CompanyId = request.CompanyId;
+            //entity.ColorCode = request.Color;
+            //entity.CompanyId = request.CompanyId;
 
-            entity.CreatedAt = DateTime.UtcNow;
-            entity.CreatedBy = request.UserId;
-            entity.DefaultDaysPerYear = request.DefaultDaysPerYear;
-            entity.IsActive = true;
-            entity.IsAllowNegativeBalance = request.IsAllowNegativeBalance;
-            entity.IsApproverRequired = request.IsApproverRequired;
-            entity.IsDefault = false;
-            entity.IsDeleted = false;
-            entity.IsHalfDaysActivated = request.IsHalfDaysActivated;
-            entity.IsHideLeaveTypeName = request.IsHideLeaveTypeName;
-            entity.IsReasonRequired = request.IsReasonRequired;
-            entity.IsUnlimited = request.IsUnlimited;
-            entity.LeaveTypeId = leaveTypeId;
-            entity.TypeName = request.TypeName;
-            return entity;
+            //entity.CreatedAt = DateTime.UtcNow;
+            //entity.CreatedBy = request.UserId;
+            //entity.DefaultDaysPerYear = request.DefaultDaysPerYear;
+            //entity.IsActive = true;
+            //entity.IsAllowNegativeBalance = request.IsAllowNegativeBalance;
+            //entity.IsApproverRequired = request.IsApproverRequired;
+            //entity.IsDefault = false;
+            //entity.IsDeleted = false;
+            //entity.IsHalfDaysActivated = request.IsHalfDaysActivated;
+            //entity.IsHideLeaveTypeName = request.IsHideLeaveTypeName;
+            //entity.IsReasonRequired = request.IsReasonRequired;
+            //entity.IsUnlimited = request.IsUnlimited;
+            //entity.LeaveTypeId = leaveTypeId;
+            //entity.TypeName = request.TypeName;
+            //return entity;
         }
     }
 }

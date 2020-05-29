@@ -47,20 +47,20 @@ namespace VacationTracking.Service.Commands.Vacation
 
         private Domain.Models.Vacation MapToEntity(CreateUserVacationCommand request)
         {
-            var vacationEntity = new Domain.Models.Vacation();
-            Guid vacationId = Guid.NewGuid();
+            throw new NotImplementedException();
+            //var vacationEntity = new Domain.Models.Vacation();
 
-            vacationEntity.VacationId = vacationId;
-            vacationEntity.UserId = request.UserId;
-            vacationEntity.ApproverId = null;
-            vacationEntity.LeaveTypeId = request.LeaveTypeId;
-            vacationEntity.VacationStatus = VacationStatus.Approved;
-            vacationEntity.StartDate = request.StartDate;
-            vacationEntity.EndDate = request.EndDate;
-            vacationEntity.Reason = request.Reason;
-            vacationEntity.CreatedAt = DateTime.Now;
-            vacationEntity.CreatedBy = request.UserId;
-            return vacationEntity;
+            //vacationEntity.VacationId = vacationId;
+            //vacationEntity.UserId = request.UserId;
+            //vacationEntity.ApproverId = null;
+            //vacationEntity.LeaveTypeId = request.LeaveTypeId;
+            //vacationEntity.VacationStatus = VacationStatus.Approved;
+            //vacationEntity.StartDate = request.StartDate;
+            //vacationEntity.EndDate = request.EndDate;
+            //vacationEntity.Reason = request.Reason;
+            //vacationEntity.CreatedAt = DateTime.Now;
+            //vacationEntity.CreatedBy = request.UserId;
+            //return vacationEntity;
         }
     }
 }
