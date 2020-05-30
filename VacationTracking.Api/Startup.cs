@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Npgsql;
 using System;
 using System.Data;
 using System.IO;
@@ -42,23 +41,21 @@ namespace VacationTracking.Api
         public void ConfigureServices(IServiceCollection services)
         {
             //Add DIs
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IHolidayRepository, HolidayRepository>();
-            services.AddScoped<ILeaveTypeRepository, LeaveTypeRepository>();
-            services.AddScoped<ITeamRepository, TeamRepository>();
-            services.AddScoped<ITeamMemberRepository, TeamMemberRepository>();
-            services.AddScoped<IVacationRepository, VacationRepository>();
-            services.AddScoped<IDbConnection>(db => new NpgsqlConnection(Configuration.GetConnectionString("MyConnection")));
+            //services.AddScoped<IUserRepository, UserRepository>();
+            //services.AddScoped<IHolidayRepository, HolidayRepository>();
+            //services.AddScoped<ILeaveTypeRepository, LeaveTypeRepository>();
+            //services.AddScoped<ITeamRepository, TeamRepository>();
+            //services.AddScoped<ITeamMemberRepository, TeamMemberRepository>();
+            //services.AddScoped<IVacationRepository, VacationRepository>();
 
-            var builder = new NpgsqlConnectionStringBuilder(Configuration.GetConnectionString("MyConnection"));
-            services.AddDbContext<VacationTrackingContext>(options => options.UseNpgsql(builder.ConnectionString));
+            services.AddDbContext<VacationTrackingContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MyConnection")));
             services.AddScoped<DbContext, VacationTrackingContext>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddScoped<Data.Repository.IRepository<Team>, Repository<Team>>();
             services.AddScoped<Data.Repository.IRepository<Company>, Repository<Company>>();
 
-            services.AddMediatR(typeof(GetTeamHandler).Assembly);
+            services.AddMediatR(typeof(GetTeamHandler));
             services.AddAutoMapper(typeof(Service.Mapper.AutoMapping));
 
             // Register the Swagger generator

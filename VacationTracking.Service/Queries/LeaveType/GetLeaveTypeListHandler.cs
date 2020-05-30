@@ -17,9 +17,9 @@ namespace VacationTracking.Service.Queries.LeaveType
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
 
-        public GetLeaveTypeListHandler(ILeaveTypeRepository leaveTypeRepository, IMapper mapper, ILogger<GetLeaveTypeListHandler> logger)
+        public GetLeaveTypeListHandler(IMapper mapper, ILogger<GetLeaveTypeListHandler> logger)
         {
-            _leaveTypeRepository = leaveTypeRepository ?? throw new ArgumentNullException(nameof(leaveTypeRepository));
+            _leaveTypeRepository = null; // leaveTypeRepository ?? throw new ArgumentNullException(nameof(leaveTypeRepository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }

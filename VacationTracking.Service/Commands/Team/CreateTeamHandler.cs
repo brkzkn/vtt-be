@@ -2,15 +2,11 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using VacationTracking.Data;
 using VacationTracking.Data.UnitOfWork;
 using VacationTracking.Domain.Commands.Team;
 using VacationTracking.Domain.Dtos;
-using VacationTracking.Domain.Models;
-using VacationTracking.Service.Common;
 
 namespace VacationTracking.Service.Commands.Team
 {

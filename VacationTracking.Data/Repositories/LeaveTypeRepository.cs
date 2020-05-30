@@ -1,5 +1,4 @@
-﻿using Dapper;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
@@ -17,18 +16,20 @@ namespace VacationTracking.Data.Repositories
 
         public async Task<LeaveType> GetAsync(Guid companyId, Guid leaveTypeId)
         {
-            string sql = $"SELECT * FROM LEAVE_TYPES WHERE LEAVE_TYPE_ID = '{leaveTypeId}' AND COMPANY_ID = '{companyId}' and is_deleted = 'false'";
-            LeaveType result = await Connection.QueryFirstOrDefaultAsync<LeaveType>(sql);
+            throw new NotImplementedException();
+            //string sql = $"SELECT * FROM LEAVE_TYPES WHERE LEAVE_TYPE_ID = '{leaveTypeId}' AND COMPANY_ID = '{companyId}' and is_deleted = 'false'";
+            //LeaveType result = await Connection.QueryFirstOrDefaultAsync<LeaveType>(sql);
 
-            return result;
+            //return result;
         }
 
         public async Task<IEnumerable<LeaveType>> GetListAsync(Guid companyId)
         {
-            string sql = $"SELECT * FROM LEAVE_TYPES WHERE COMPANY_ID = '{companyId}' and is_deleted = 'false'";
-            var result = await Connection.QueryAsync<LeaveType>(sql);
+            throw new NotImplementedException();
+            //string sql = $"SELECT * FROM LEAVE_TYPES WHERE COMPANY_ID = '{companyId}' and is_deleted = 'false'";
+            //var result = await Connection.QueryAsync<LeaveType>(sql);
 
-            return result;
+            //return result;
         }
 
         public async Task<int> InsertAsync(LeaveType model)
@@ -50,20 +51,23 @@ namespace VacationTracking.Data.Repositories
 
         public async Task<bool> IsLeaveTypeExistAsync(Guid companyId, string name)
         {
-            var exists = await Connection.ExecuteScalarAsync<bool>($"select count(1) from Leave_Types where company_id='{companyId}' and type_name = '{name}' and is_deleted = 'false'");
+            throw new NotImplementedException();
+            //var exists = await Connection.ExecuteScalarAsync<bool>($"select count(1) from Leave_Types where company_id='{companyId}' and type_name = '{name}' and is_deleted = 'false'");
 
-            return exists;
+            //return exists;
         }
 
         public async Task<int> RemoveAsync(Guid leaveTypeId, Guid companyId)
         {
-            string query = "UPDATE leave_types SET " +
-                $"is_deleted = 'true' " +
-                $"WHERE leave_type_id = '{leaveTypeId}' AND COMPANY_ID = '{companyId}';";
+            throw new NotImplementedException();
 
-            var affectedRow = await Connection.ExecuteAsync(query);
+            //string query = "UPDATE leave_types SET " +
+            //    $"is_deleted = 'true' " +
+            //    $"WHERE leave_type_id = '{leaveTypeId}' AND COMPANY_ID = '{companyId}';";
 
-            return affectedRow;
+            //var affectedRow = await Connection.ExecuteAsync(query);
+
+            //return affectedRow;
         }
 
         public async Task<int> UpdateAsync(Guid leaveTypeId, LeaveType model)

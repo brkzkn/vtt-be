@@ -1,5 +1,4 @@
-﻿using Dapper;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
@@ -16,18 +15,21 @@ namespace VacationTracking.Data.Repositories
 
         public async Task<User> GetAsync(Guid companyId, Guid userId)
         {
-            string sql = $"SELECT * FROM USERS WHERE USER_ID = '{userId}' AND COMPANY_ID = '{companyId}'";
-            var result = await Connection.QueryFirstOrDefaultAsync<User>(sql);
+            throw new NotImplementedException();
+            //string sql = $"SELECT * FROM USERS WHERE USER_ID = '{userId}' AND COMPANY_ID = '{companyId}'";
+            //var result = await Connection.QueryFirstOrDefaultAsync<User>(sql);
 
-            return result;
+            //return result;
         }
 
         public async Task<IEnumerable<User>> GetListAsync(Guid companyId)
         {
-            string sql = $"SELECT * FROM USERS WHERE COMPANY_ID = '{companyId}'";
-            var result = await Connection.QueryAsync<User>(sql);
+            throw new NotImplementedException();
 
-            return result;
+            //string sql = $"SELECT * FROM USERS WHERE COMPANY_ID = '{companyId}'";
+            //var result = await Connection.QueryAsync<User>(sql);
+
+            //return result;
         }
 
         public Task<int> InsertAsync(User model)

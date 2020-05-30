@@ -16,9 +16,9 @@ namespace VacationTracking.Service.Queries.User
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
 
-        public GetUserHandler(IUserRepository userRepository, IMapper mapper, ILogger<GetUserHandler> logger)
+        public GetUserHandler(IMapper mapper, ILogger<GetUserHandler> logger)
         {
-            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+            _userRepository = null; // userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }

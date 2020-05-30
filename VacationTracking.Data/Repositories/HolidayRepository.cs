@@ -1,8 +1,6 @@
-﻿using Dapper;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Text;
 using System.Threading.Tasks;
 using VacationTracking.Data.IRepositories;
 using VacationTracking.Domain.Models;
@@ -18,10 +16,11 @@ namespace VacationTracking.Data.Repositories
 
         public async Task<Holiday> GetAsync(Guid companyId, Guid holidayId)
         {
-            string sql = $"SELECT * FROM HOLIDAYS WHERE HOLIDAY_ID = '{holidayId}' AND COMPANY_ID = '{companyId}'";
-            Holiday result = await Connection.QueryFirstOrDefaultAsync<Holiday>(sql);
+            throw new NotImplementedException();
+            //string sql = $"SELECT * FROM HOLIDAYS WHERE HOLIDAY_ID = '{holidayId}' AND COMPANY_ID = '{companyId}'";
+            //Holiday result = await Connection.QueryFirstOrDefaultAsync<Holiday>(sql);
 
-            return result;
+            //return result;
         }
 
         public async Task<IEnumerable<Holiday>> GetListAsync(Guid companyId)
