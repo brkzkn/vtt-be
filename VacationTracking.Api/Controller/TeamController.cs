@@ -32,12 +32,14 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(typeof(TeamDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<ActionResult<TeamDto>> GetTeamAsync(Guid id)
+        public async Task<ActionResult<TeamDto>> GetTeamAsync(int id)
         {
-            //TODO: Set companyId from logged-in users
+            // TODO: Check permission. Only Admin and Owner account can run this
+            // TODO: Set companyId from logged-in users
             Guid companyId = new Guid(_companyId);
 
-            return Single(await QueryAsync(new GetTeamQuery(id, companyId)));
+            //return Single(await QueryAsync(new GetTeamQuery(id, companyId)));
+            return Single(await QueryAsync(new GetTeamQuery(1, 1, 3)));
         }
 
         /// <summary>

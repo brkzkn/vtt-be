@@ -1,4 +1,5 @@
 using AutoMapper;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -8,16 +9,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Data;
 using System.IO;
 using System.Reflection;
+using VacationTracking.Api.Middleware;
+using VacationTracking.Api.PipelineBehaviors;
 using VacationTracking.Data;
-using VacationTracking.Data.IRepositories;
-using VacationTracking.Data.Repositories;
 using VacationTracking.Data.Repository;
 using VacationTracking.Data.UnitOfWork;
 using VacationTracking.Domain.Models;
 using VacationTracking.Service.Queries.Team;
+using VacationTracking.Service.Validation.Queries.Team;
 
 namespace VacationTracking.Api
 {
@@ -115,6 +116,9 @@ namespace VacationTracking.Api
             services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 
             services.AddControllers();
+
+            services.AddValidatorsFromAssembly(typeof(GetTeamQueryValidator).Assembly);
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviors<,>));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -149,6 +153,7 @@ namespace VacationTracking.Api
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseMiddleware<CustomExceptionMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

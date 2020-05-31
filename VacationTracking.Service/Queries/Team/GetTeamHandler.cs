@@ -3,11 +3,15 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using VacationTracking.Data.Repository;
+using VacationTracking.Domain.Constants;
 using VacationTracking.Domain.Dtos;
+using VacationTracking.Domain.Enums;
+using VacationTracking.Domain.Exceptions;
 using VacationTracking.Domain.Models;
 using VacationTracking.Domain.Queries.Team;
 using TeamDb = VacationTracking.Domain.Models.Team;
@@ -31,29 +35,21 @@ namespace VacationTracking.Service.Queries.Team
 
         public async Task<TeamDto> Handle(GetTeamQuery request, CancellationToken cancellationToken)
         {
-            //// TODO: Check user permission. 
-            //// User should has owner or admin permission
-            ///
-            var a = _companyRepository.Queryable().ToList();
-
             var team = await _repository.Queryable()
-                                        //.Include(x => x.TeamMembers)
-                                        //.Where(x => x.TeamId == request.TeamId && x.CompanyId == request.CompanyId)
-                                        .ToListAsync();
+                                        .Include(x => x.TeamMembers)
+                                            .ThenInclude(x => x.User)
+                                        .SingleOrDefaultAsync(x => x.TeamId == request.TeamId && x.CompanyId == request.CompanyId);
 
-            throw new NotImplementedException();
-            //var teamMembers = await _teamMemberRepository.GetListAsync(request.TeamId);
-            //team.TeamMembers = new List<TeamMember>();
-            //team.TeamMembers.AddRange(teamMembers);
+            if (team != null)
+            {
+                _logger.LogInformation($"Got a request get team Id: {team.TeamId}");
+                var teamDto = _mapper.Map<TeamDto>(team);
+                teamDto.TeamMembers = _mapper.Map<IList<TeamMemberDto>>(team.TeamMembers.Where(x => x.User.Status == UserStatus.Active));
 
-            //if (team != null)
-            //{
-            //    _logger.LogInformation($"Got a request get customer Id: {team.TeamId}");
-            //    var teamDto = _mapper.Map<Domain.Dtos.TeamDto>(team);
-            //    return teamDto;
-            //}
+                return teamDto;
+            }
 
-            //return null;
+            throw new VacationTrackingException(ExceptionMessages.ItemNotFound, $"Team not found by id {request.TeamId}", 404);
         }
     }
 }

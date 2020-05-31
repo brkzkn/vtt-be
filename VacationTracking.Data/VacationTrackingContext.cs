@@ -86,11 +86,11 @@ namespace VacationTracking.Data
 
             modelBuilder.Entity<TeamMember>(entity =>
             {
-                entity.HasKey(e => new { e.TeamId, e.UserId });
+                entity.HasKey(tm => new { tm.TeamId, tm.UserId });
 
-                entity.HasOne(d => d.Team)
-                    .WithMany(p => p.TeamMembers)
-                    .HasForeignKey(d => d.TeamId)
+                entity.HasOne(tm => tm.Team)
+                    .WithMany(t => t.TeamMembers)
+                    .HasForeignKey(tm => tm.TeamId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_TeamMember_Team");
 
@@ -103,12 +103,18 @@ namespace VacationTracking.Data
 
             modelBuilder.Entity<User>(entity =>
             {
-                entity.HasOne(d => d.Company)
-                    .WithMany(p => p.Users)
-                    .HasForeignKey(d => d.CompanyId)
+                entity.Property(u => u.AccountType)
+                      .HasConversion<string>();
+
+                entity.Property(u => u.Status)
+                      .HasConversion<string>();
+
+                entity.HasOne(u => u.Company)
+                    .WithMany(c => c.Users)
+                    .HasForeignKey(u => u.CompanyId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_User_Company");
-            });
+            }); 
 
             modelBuilder.Entity<UserSetting>(entity =>
             {

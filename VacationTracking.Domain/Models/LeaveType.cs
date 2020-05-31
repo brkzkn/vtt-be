@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VacationTracking.Domain.Models
 {
+    [Table("LeaveType")]
     public class LeaveType : BaseModel
     {
         public LeaveType()

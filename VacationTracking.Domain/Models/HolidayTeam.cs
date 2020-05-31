@@ -2,6 +2,7 @@
 
 namespace VacationTracking.Domain.Models
 {
+    [Table("HolidayTeam")]
     public class HolidayTeam
     {
         [Column("HolidayID")]

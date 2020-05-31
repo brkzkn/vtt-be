@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\VacationTracking.Data\VacationTracking.Data.csproj" />
     <ProjectReference Include="..\VacationTracking.Domain\VacationTracking.Domain.csproj" />
+    <ProjectReference Include="..\VacationTracking.Service\VacationTracking.Service.csproj" />
   </ItemGroup>
 
 </Project>

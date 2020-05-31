@@ -1,0 +1,7 @@
+﻿namespace VacationTracking.Domain.Constants
+{
+    public static class ExceptionMessages
+    {
+        public const string ItemNotFound = "ItemNotFound";
+    }
+}

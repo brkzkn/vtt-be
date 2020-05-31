@@ -9,12 +9,12 @@ namespace VacationTracking.Domain.Dtos
         public DateTime CreatedAt { get; set; }
 
         [JsonProperty("updatedAt")]
-        public DateTime UpdatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
 
         [JsonProperty("createdBy")]
-        public Guid CreatedBy { get; set; }
+        public int CreatedBy { get; set; }
 
         [JsonProperty("updatedBy")]
-        public Guid UpdatedBy { get; set; }
+        public int? UpdatedBy { get; set; }
     }
 }

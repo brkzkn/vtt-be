@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VacationTracking.Domain.Models
 {
+    [Table("Vacation")]
     public class Vacation : BaseModel
     {
         [Column("VacationID")]

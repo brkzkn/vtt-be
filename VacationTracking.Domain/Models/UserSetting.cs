@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VacationTracking.Domain.Models
 {
+    [Table("UserSetting")]
     public class UserSetting
     {
         [Column("UserID")]

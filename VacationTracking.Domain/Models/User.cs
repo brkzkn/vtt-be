@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using VacationTracking.Domain.Enums;
 
 namespace VacationTracking.Domain.Models
 {
 
+    [Table("User")]
     public class User : BaseModel
     {
         public User()
@@ -36,11 +38,13 @@ namespace VacationTracking.Domain.Models
 
         [StringLength(50)]
         [Required]
-        public string Status { get; set; }
+        [Column(TypeName = "nvarchar(20)")]
+        public UserStatus Status { get; set; }
 
         [StringLength(50)]
         [Required]
-        public string AccountType { get; set; }
+        [Column(TypeName = "nvarchar(20)")]
+        public AccountType AccountType { get; set; }
 
         public virtual Company Company { get; set; }
         public virtual ICollection<TeamMember> TeamMembers { get; set; }

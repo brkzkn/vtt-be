@@ -6,10 +6,10 @@ namespace VacationTracking.Domain.Dtos
     public class TeamMemberDto
     {
         [JsonProperty("teamId")]
-        public Guid TeamId { get; set; }
+        public int TeamId { get; set; }
 
         [JsonProperty("userId")]
-        public Guid UserId { get; set; }
+        public int UserId { get; set; }
 
         [JsonProperty("isApprover")]
         public bool IsApprover { get; set; }

@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 
 namespace VacationTracking.Domain.Dtos
@@ -7,15 +6,15 @@ namespace VacationTracking.Domain.Dtos
     public class TeamDto : BaseDto
     {
         [JsonProperty("teamId")]
-        public Guid TeamId { get; set; }
+        public int TeamId { get; set; }
 
         [JsonProperty("name")]
         public string TeamName { get; set; }
 
         [JsonProperty("companyID")]
-        public Guid CompanyId { get; set; }
+        public int CompanyId { get; set; }
 
         [JsonProperty("teamMembers")]
-        public IList<TeamMemberDto> TeamMembers { get; set; }
+        public IEnumerable<TeamMemberDto> TeamMembers { get; set; }
     }
 }
