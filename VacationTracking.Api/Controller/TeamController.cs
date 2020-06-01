@@ -55,7 +55,7 @@ namespace VacationTracking.Api.Controller
             //TODO: Set companyId from logged-in users
             Guid companyId = new Guid(_companyId);
 
-            return Single(await QueryAsync(new GetTeamListQuery(companyId)));
+            return Single(await QueryAsync(new GetTeamListQuery(1)));
         }
 
         [HttpPost]

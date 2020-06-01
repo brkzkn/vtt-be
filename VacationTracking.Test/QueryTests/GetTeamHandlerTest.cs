@@ -53,9 +53,8 @@ namespace VacationTracking.Test.QueryTests
         {
             // Arrange
             IRepository<Team> teamRepository = new Repository<Team>(_fixture.Context);
-            IRepository<Company> companyRepository = new Repository<Company>(_fixture.Context);
 
-            var getTeamHandler = new GetTeamHandler(teamRepository, companyRepository, _mapper, _logger);
+            var getTeamHandler = new GetTeamHandler(teamRepository, _mapper, _logger);
 
             var queryRequest = new GetTeamQuery(teamId: 1, companyId: 1, userId: 1);
 
@@ -75,8 +74,7 @@ namespace VacationTracking.Test.QueryTests
         {
             // Arrange
             IRepository<Team> teamRepository = new Repository<Team>(_fixture.Context);
-            IRepository<Company> companyRepository = new Repository<Company>(_fixture.Context);
-            var getTeamHandler = new GetTeamHandler(teamRepository, companyRepository, _mapper, _logger);
+            var getTeamHandler = new GetTeamHandler(teamRepository, _mapper, _logger);
 
             var queryRequest = new GetTeamQuery(teamId: -10, companyId: 1, userId: 1);
 
@@ -98,8 +96,7 @@ namespace VacationTracking.Test.QueryTests
         {
             // Arrange
             IRepository<Team> teamRepository = new Repository<Team>(_fixture.Context);
-            IRepository<Company> companyRepository = new Repository<Company>(_fixture.Context);
-            var getTeamHandler = new GetTeamHandler(teamRepository, companyRepository, _mapper, _logger);
+            var getTeamHandler = new GetTeamHandler(teamRepository, _mapper, _logger);
 
             var queryRequest = new GetTeamQuery(teamId: 1, companyId: 2, userId: 1);
 
@@ -135,8 +132,7 @@ namespace VacationTracking.Test.QueryTests
             _fixture.Context.SaveChanges();
 
             IRepository<Team> teamRepository = new Repository<Team>(_fixture.Context);
-            IRepository<Company> companyRepository = new Repository<Company>(_fixture.Context);
-            var getTeamHandler = new GetTeamHandler(teamRepository, companyRepository, _mapper, _logger);
+            var getTeamHandler = new GetTeamHandler(teamRepository, _mapper, _logger);
 
             var queryRequest = new GetTeamQuery(teamId: 1, companyId: 2, userId: 5);
 
@@ -183,8 +179,7 @@ namespace VacationTracking.Test.QueryTests
             _fixture.Context.SaveChanges();
 
             IRepository<Team> teamRepository = new Repository<Team>(_fixture.Context);
-            IRepository<Company> companyRepository = new Repository<Company>(_fixture.Context);
-            var getTeamHandler = new GetTeamHandler(teamRepository, companyRepository, _mapper, _logger);
+            var getTeamHandler = new GetTeamHandler(teamRepository, _mapper, _logger);
 
             var queryRequest = new GetTeamQuery(teamId: 1, companyId: 1, userId: 1);
 

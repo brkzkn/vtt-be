@@ -15,43 +15,6 @@ namespace VacationTracking.Data.Repositories
         {
         }
 
-        public async Task<Team> GetAsync(Guid teamId, Guid companyId)
-        {
-            throw new NotImplementedException();
-            //string sqlQuery = $"SELECT * FROM TEAMS WHERE TEAM_ID = '{teamId}' AND COMPANY_ID = '{companyId}'";
-            //Team result = await Connection.QueryFirstOrDefaultAsync<Team>(sqlQuery);
-
-            //return result;
-        }
-
-        public async Task<IEnumerable<Team>> GetListAsync(Guid companyId)
-        {
-            throw new NotImplementedException();
-
-            //string sql = "SELECT * FROM TEAMS as t  " +
-            //    "JOIN TEAM_MEMBERS as tm on t.team_id = tm.team_id " +
-            //    "JOIN USERS as u on tm.user_id = u.user_id " +
-            //    $"WHERE t.COMPANY_ID = '{companyId}'";
-
-            //Dictionary<Guid, Team> teamsDictionary = new Dictionary<Guid, Team>();
-
-            //var result = await Connection.QueryAsync<Team, TeamMember, User, Team>(sql, map: (t, tm, u) =>
-            //{
-            //    tm.User = u;
-            //    if (!teamsDictionary.TryGetValue(t.TeamId, out Team teamEntry))
-            //    {
-            //        teamEntry = t;
-            //        teamEntry.TeamMembers = new List<TeamMember>();
-            //        teamsDictionary.Add(t.TeamId, teamEntry);
-            //    }
-            //    teamEntry.TeamMembers.Add(tm);
-            //    return teamEntry;
-
-            //}, splitOn: "team_id, user_id");
-
-            //return teamsDictionary.Values.AsList();
-        }
-
         public async Task<int> InsertAsync(Team team)
         {
             throw new NotImplementedException();

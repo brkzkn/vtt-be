@@ -12,7 +12,6 @@ using VacationTracking.Domain.Constants;
 using VacationTracking.Domain.Dtos;
 using VacationTracking.Domain.Enums;
 using VacationTracking.Domain.Exceptions;
-using VacationTracking.Domain.Models;
 using VacationTracking.Domain.Queries.Team;
 using TeamDb = VacationTracking.Domain.Models.Team;
 
@@ -21,14 +20,12 @@ namespace VacationTracking.Service.Queries.Team
     public class GetTeamHandler : IRequestHandler<GetTeamQuery, TeamDto>
     {
         private readonly IRepository<TeamDb> _repository;
-        private readonly IRepository<Company> _companyRepository;
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
 
-        public GetTeamHandler(IRepository<TeamDb> repository, IRepository<Company> companyRepository, IMapper mapper, ILogger<GetTeamHandler> logger)
+        public GetTeamHandler(IRepository<TeamDb> repository, IMapper mapper, ILogger<GetTeamHandler> logger)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
-            _companyRepository = companyRepository;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }

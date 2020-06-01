@@ -27,7 +27,8 @@ namespace VacationTracking.Test.Data
             => new List<Company>()
             {
                 new Company { CompanyId = 1, CompanyName="Facebook", Country="Turkey", Address="Istanbul", CreatedAt= DateTime.Now, CreatedBy=-1},
-                new Company { CompanyId = 2, CompanyName="Google", Country="Italy", Address="Roma", CreatedAt= DateTime.Now, CreatedBy=-1}
+                new Company { CompanyId = 2, CompanyName="Google", Country="Italy", Address="Roma", CreatedAt= DateTime.Now, CreatedBy=-1},
+                new Company { CompanyId = 3, CompanyName="Twitter", Country="USA", Address="Houston", CreatedAt= DateTime.Now, CreatedBy=-1}
             };
 
         public static ICollection<TeamMember> TeamMembers()
