@@ -1,26 +1,28 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using VacationTracking.Data.IRepositories;
+using VacationTracking.Data.Repository;
+using VacationTracking.Domain.Constants;
 using VacationTracking.Domain.Dtos;
+using VacationTracking.Domain.Exceptions;
 using VacationTracking.Domain.Queries.Holiday;
+using HolidayDb = VacationTracking.Domain.Models.Holiday;
 
 namespace VacationTracking.Service.Queries.Holiday
 {
     public class GetHolidayHandler : IRequestHandler<GetHolidayQuery, HolidayDto>
     {
-        private readonly IHolidayRepository _holidayRepository;
+        private readonly IRepository<HolidayDb> _repository;
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
 
-        public GetHolidayHandler(IMapper mapper, ILogger<GetHolidayHandler> logger)
+        public GetHolidayHandler(IRepository<HolidayDb> repository, IMapper mapper, ILogger<GetHolidayHandler> logger)
         {
-            _holidayRepository = null; //teamRepository ?? throw new ArgumentNullException(nameof(teamRepository));
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
@@ -29,18 +31,18 @@ namespace VacationTracking.Service.Queries.Holiday
         {
             // TODO: Check user permission. 
             // User should has owner or admin permission
-            var holiday = await _holidayRepository.GetAsync(request.CompanyId, request.HolidayId);
+            var holiday = await _repository.Queryable()
+                                           .SingleOrDefaultAsync(x => x.CompanyId == request.CompanyId
+                                                                   && x.HolidayId == request.HolidayId);
 
             if (holiday != null)
             {
                 _logger.LogInformation($"Got a request get holiday Id: {holiday.HolidayId}");
-                var teamDto = _mapper.Map<HolidayDto>(holiday);
-                return teamDto;
+                var holidayDto = _mapper.Map<HolidayDto>(holiday);
+                return holidayDto;
             }
 
-            // TODO: throw exception not found
-            return null;
+            throw new VacationTrackingException(ExceptionMessages.ItemNotFound, $"Holiday not found by id {request.HolidayId}", 404);
         }
-
     }
 }

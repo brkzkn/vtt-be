@@ -78,16 +78,16 @@ namespace VacationTracking.Test.QueryTests
         public async Task Should_ReturnEmptyList_When_PassValidCompanyId()
         {
             // Arrange
-            IRepository<LeaveTypeDb> teamRepository = new Repository<LeaveTypeDb>(_fixture.Context);
+            IRepository<LeaveTypeDb> repository = new Repository<LeaveTypeDb>(_fixture.Context);
 
-            var handler = new GetLeaveTypeListHandler(teamRepository, _mapper, _logger);
+            var handler = new GetLeaveTypeListHandler(repository, _mapper, _logger);
 
-            var queryRequest = new GetLeaveTypeListQuery(companyId: 3);
+            var request = new GetLeaveTypeListQuery(companyId: 3);
 
             // Act
             var tcs = new CancellationToken();
 
-            var result = await handler.Handle(queryRequest, tcs);
+            var result = await handler.Handle(request, tcs);
 
             // Assert
             Assert.Empty(result);
@@ -154,12 +154,12 @@ namespace VacationTracking.Test.QueryTests
 
             var handler = new GetLeaveTypeListHandler(repository, _mapper, _logger);
 
-            var queryRequest = new GetLeaveTypeListQuery(companyId: 1);
+            var request = new GetLeaveTypeListQuery(companyId: 1);
 
             // Act
             var tcs = new CancellationToken();
 
-            var result = await handler.Handle(queryRequest, tcs);
+            var result = await handler.Handle(request, tcs);
 
             // Assert
             Assert.Equal(1, result.Count);

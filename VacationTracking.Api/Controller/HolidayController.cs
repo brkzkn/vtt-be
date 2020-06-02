@@ -34,12 +34,12 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(typeof(HolidayDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<ActionResult<HolidayDto>> GetHolidayAsync(Guid id)
+        public async Task<ActionResult<HolidayDto>> GetHolidayAsync(int id)
         {
             //TODO: Set companyId from logged-in users
             Guid companyId = new Guid(_companyId);
 
-            return Single(await QueryAsync(new GetHolidayQuery(id, companyId)));
+            return Single(await QueryAsync(new GetHolidayQuery(id, 1)));
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace VacationTracking.Api.Controller
             //TODO: Set companyId from logged-in users
             Guid companyId = new Guid(_companyId);
 
-            return Single(await QueryAsync(new GetHolidayListQuery(companyId)));
+            return Single(await QueryAsync(new GetHolidayListQuery(1)));
         }
 
         [HttpPost]
