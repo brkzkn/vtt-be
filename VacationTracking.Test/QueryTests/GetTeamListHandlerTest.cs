@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging.Abstractions;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using VacationTracking.Data;
@@ -80,7 +79,6 @@ namespace VacationTracking.Test.QueryTests
             // Assert
             Assert.Empty(teamList);
         }
-
 
         [Fact]
         public async Task Should_ReturnEmptyList_When_PassInvalidCompanyId()

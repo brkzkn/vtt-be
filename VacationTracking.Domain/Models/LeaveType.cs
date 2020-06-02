@@ -19,7 +19,7 @@ namespace VacationTracking.Domain.Models
         public bool? IsDefault { get; set; }
         public bool? IsHalfDaysActivated { get; set; }
         public bool? IsActive { get; set; }
-        public bool? IsDeleted { get; set; }
+        public bool IsDeleted { get; set; }
         public bool? IsHideLeaveTypeName { get; set; }
         [StringLength(100)]
         public string LeaveTypeName { get; set; }

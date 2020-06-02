@@ -1,33 +1,38 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using VacationTracking.Data.IRepositories;
+using VacationTracking.Data.Repository;
+using VacationTracking.Domain.Constants;
 using VacationTracking.Domain.Dtos;
+using VacationTracking.Domain.Exceptions;
 using VacationTracking.Domain.Queries.LeaveType;
+using LeaveTypeDb = VacationTracking.Domain.Models.LeaveType;
 
 namespace VacationTracking.Service.Queries.LeaveType
 {
     public class GetLeaveTypeHandler : IRequestHandler<GetLeaveTypeQuery, LeaveTypeDto>
     {
-        private readonly ILeaveTypeRepository _leaveTypeRepository;
+        private readonly IRepository<LeaveTypeDb> _repository;
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
 
-        public GetLeaveTypeHandler(IMapper mapper, ILogger<GetLeaveTypeHandler> logger)
+        public GetLeaveTypeHandler(IRepository<LeaveTypeDb> repository, IMapper mapper, ILogger<GetLeaveTypeHandler> logger)
         {
-            _leaveTypeRepository = null; // leaveTypeRepository ?? throw new ArgumentNullException(nameof(leaveTypeRepository));
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<LeaveTypeDto> Handle(GetLeaveTypeQuery request, CancellationToken cancellationToken)
         {
-            // TODO: Check user permission. 
-            // User should has owner or admin permission
-            var leaveType = await _leaveTypeRepository.GetAsync(request.CompanyId, request.LeaveTypeId);
+            var leaveType = await _repository.Queryable().SingleOrDefaultAsync(x => x.LeaveTypeId == request.LeaveTypeId
+                                                                                 && x.CompanyId == request.CompanyId
+                                                                                 && x.IsDeleted == false);
 
             if (leaveType != null)
             {
@@ -36,8 +41,7 @@ namespace VacationTracking.Service.Queries.LeaveType
                 return leaveTypeDto;
             }
 
-            // TODO: throw exception not found
-            return null;
+            throw new VacationTrackingException(ExceptionMessages.ItemNotFound, $"LeaveType not found by id {request.LeaveTypeId}", 404);
         }
 
     }

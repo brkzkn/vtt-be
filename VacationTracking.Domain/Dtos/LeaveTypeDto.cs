@@ -6,10 +6,10 @@ namespace VacationTracking.Domain.Dtos
     public class LeaveTypeDto : BaseDto
     {
         [JsonProperty("leaveTypeId")]
-        public Guid LeaveTypeId { get; set; }
+        public int LeaveTypeId { get; set; }
 
         [JsonProperty("companyId")]
-        public Guid CompanyId { get; set; }
+        public int CompanyId { get; set; }
         
         [JsonProperty("isDefault")]
         public bool IsDefault { get; set; }

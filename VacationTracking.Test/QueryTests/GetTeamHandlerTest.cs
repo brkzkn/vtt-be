@@ -92,49 +92,13 @@ namespace VacationTracking.Test.QueryTests
         }
 
         [Fact]
-        public async Task Should_ThrowException_When_TeamIdIsNotBelongsToCompany()
+        public async Task Should_ThrowException_When_TeamIdDoesNotBelongsToCompany()
         {
             // Arrange
             IRepository<Team> teamRepository = new Repository<Team>(_fixture.Context);
             var getTeamHandler = new GetTeamHandler(teamRepository, _mapper, _logger);
 
             var queryRequest = new GetTeamQuery(teamId: 1, companyId: 2, userId: 1);
-
-            // Act
-            var tcs = new CancellationToken();
-
-            var exception = await Assert.ThrowsAsync<VacationTrackingException>(async () =>
-            {
-                await getTeamHandler.Handle(queryRequest, tcs);
-            });
-
-            // Assert
-            Assert.NotNull(exception);
-            Assert.Equal(404, exception.Code);
-        }
-
-        [Fact]
-        public async Task Should_ThrowException_When_UserDoesNotHavePermission()
-        {
-            // Arrange
-            var user = new User
-            {
-                UserId = 5,
-                CompanyId = 1,
-                Email = "test.user@vt.com",
-                CreatedAt = DateTime.Now,
-                EmployeeSince = DateTime.UtcNow.AddYears(-3).Date,
-                FullName = "Burak Ozkan",
-                Status = UserStatus.Active,
-                AccountType = AccountType.Member
-            };
-            _fixture.Context.Users.Add(user);
-            _fixture.Context.SaveChanges();
-
-            IRepository<Team> teamRepository = new Repository<Team>(_fixture.Context);
-            var getTeamHandler = new GetTeamHandler(teamRepository, _mapper, _logger);
-
-            var queryRequest = new GetTeamQuery(teamId: 1, companyId: 2, userId: 5);
 
             // Act
             var tcs = new CancellationToken();
