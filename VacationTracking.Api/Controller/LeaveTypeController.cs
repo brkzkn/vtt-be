@@ -33,12 +33,12 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(typeof(LeaveTypeDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<ActionResult<LeaveTypeDto>> GetAsync(Guid id)
+        public async Task<ActionResult<LeaveTypeDto>> GetAsync(int id)
         {
             //TODO: Set companyId from logged-in users
             Guid companyId = new Guid(_companyId);
 
-            return Single(await QueryAsync(new GetLeaveTypeQuery(id, companyId)));
+            return Single(await QueryAsync(new GetLeaveTypeQuery(id, 1)));
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace VacationTracking.Api.Controller
             //TODO: Set companyId from logged-in users
             Guid companyId = new Guid(_companyId);
 
-            return Single(await QueryAsync(new GetLeaveTypeListQuery(companyId)));
+            return Single(await QueryAsync(new GetLeaveTypeListQuery(1)));
         }
 
         [HttpPost]

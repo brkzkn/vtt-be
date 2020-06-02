@@ -1,18 +1,15 @@
 ﻿using AutoMapper;
-using MediatR;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
-using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using VacationTracking.Data;
 using VacationTracking.Data.Repository;
-using VacationTracking.Domain.Enums;
+using VacationTracking.Domain.Constants;
 using VacationTracking.Domain.Exceptions;
 using VacationTracking.Domain.Models;
-using VacationTracking.Domain.Queries.Team;
-using VacationTracking.Service.Queries.Team;
-using VacationTracking.Service.Validation.Queries.Team;
+using VacationTracking.Domain.Queries.User;
+using VacationTracking.Service.Queries.User;
 using VacationTracking.Test.Context;
 using VacationTracking.Test.Data;
 using Xunit;
@@ -20,15 +17,15 @@ using Xunit;
 namespace VacationTracking.Test.QueryTests
 {
     [Collection(nameof(VacationTrackingContext))]
-    public class GetTeamHandlerTest
+    public class GetUserHandlerTest
     {
         private readonly VacationTrackingDbContextFixture _fixture;
-        private readonly NullLogger<GetTeamHandler> _logger;
+        private readonly NullLogger<GetUserHandler> _logger;
         private readonly IMapper _mapper;
-        public GetTeamHandlerTest(VacationTrackingDbContextFixture fixture)
+        public GetUserHandlerTest(VacationTrackingDbContextFixture fixture)
         {
             _fixture = fixture;
-            _logger = new NullLogger<GetTeamHandler>();
+            _logger = new NullLogger<GetUserHandler>();
 
             //auto mapper configuration
             var mockMapper = new MapperConfiguration(cfg =>
@@ -49,14 +46,14 @@ namespace VacationTracking.Test.QueryTests
         }
 
         [Fact]
-        public async Task Should_ReturnTeamObject_When_PassValidTeamId()
+        public async Task Should_ReturnUser_When_PassValidUserId()
         {
             // Arrange
-            IRepository<Team> repository = new Repository<Team>(_fixture.Context);
+            IRepository<User> repository = new Repository<User>(_fixture.Context);
 
-            var handler = new GetTeamHandler(repository, _mapper, _logger);
+            var handler = new GetUserHandler(repository, _mapper, _logger);
 
-            var query = new GetTeamQuery(teamId: 1, companyId: 1, userId: 1);
+            var query = new GetUserQuery(companyId: 1, userId: 1);
 
             // Act
             var tcs = new CancellationToken();
@@ -64,19 +61,18 @@ namespace VacationTracking.Test.QueryTests
             var result = await handler.Handle(query, tcs);
 
             // Assert
-            Assert.Equal(1, result.TeamId);
+            Assert.Equal(1, result.UserId);
             Assert.Equal(1, result.CompanyId);
-            Assert.NotNull(result.TeamMembers);
         }
 
         [Fact]
-        public async Task Should_ThrowException_When_PassInvalidTeamId()
+        public async Task Should_ThrowException_When_PassInvalidUserId()
         {
             // Arrange
-            IRepository<Team> repository = new Repository<Team>(_fixture.Context);
-            var handler = new GetTeamHandler(repository, _mapper, _logger);
+            IRepository<User> repository = new Repository<User>(_fixture.Context);
+            var handler = new GetUserHandler(repository, _mapper, _logger);
 
-            var query = new GetTeamQuery(teamId: -10, companyId: 1, userId: 1);
+            var query = new GetUserQuery(companyId: 1, userId: -1);
 
             // Act
             var tcs = new CancellationToken();
@@ -89,16 +85,18 @@ namespace VacationTracking.Test.QueryTests
             // Assert
             Assert.NotNull(exception);
             Assert.Equal(404, exception.Code);
+            Assert.Equal(ExceptionMessages.ItemNotFound, exception.Message);
         }
 
         [Fact]
-        public async Task Should_ThrowException_When_TeamIdDoesNotBelongsToCompany()
+        public async Task Should_ThrowException_When_UserIdDoesNotBelongsToCompany()
         {
-            // Arrange
-            IRepository<Team> repository = new Repository<Team>(_fixture.Context);
-            var handler = new GetTeamHandler(repository, _mapper, _logger);
 
-            var query = new GetTeamQuery(teamId: 1, companyId: 2, userId: 1);
+            // Arrange
+            IRepository<User> repository = new Repository<User>(_fixture.Context);
+            var handler = new GetUserHandler(repository, _mapper, _logger);
+
+            var query = new GetUserQuery(companyId: 2, userId: 1);
 
             // Act
             var tcs = new CancellationToken();
@@ -111,48 +109,45 @@ namespace VacationTracking.Test.QueryTests
             // Assert
             Assert.NotNull(exception);
             Assert.Equal(404, exception.Code);
+            Assert.Equal(ExceptionMessages.ItemNotFound, exception.Message);
         }
 
+
         [Fact]
-        public async Task Should_ReturnOnlyActiveMember_When_TeamHasDisabledMember()
+        public async Task Should_ThrowException_When_UserStatusDisabled()
         {
+
             // Arrange
-            var user = new User()
+            IRepository<User> repository = new Repository<User>(_fixture.Context);
+            var user = new User
             {
-                UserName = "inactive_user",
+                UserId = 5,
                 CompanyId = 1,
-                CreatedAt = DateTime.Now,
-                CreatedBy = -1,
-                AccountType = AccountType.Member,
-                Status = UserStatus.Disabled,
+                UserName = "test",
                 FullName = "Test User",
-                Email = "inactive.user@vtt.com",
-                UserId = 10
+                Status = Domain.Enums.UserStatus.Disabled,
+                CreatedAt = DateTime.Now,
+                CreatedBy = -1
             };
-            var teamMember = new TeamMember()
-            {
-                TeamId = 1,
-                UserId = 10,
-                IsApprover = true,
-                IsMember = false
-            };
-
             _fixture.Context.Users.Add(user);
-            _fixture.Context.TeamMembers.Add(teamMember);
             _fixture.Context.SaveChanges();
 
-            IRepository<Team> repository = new Repository<Team>(_fixture.Context);
-            var handler = new GetTeamHandler(repository, _mapper, _logger);
+            var handler = new GetUserHandler(repository, _mapper, _logger);
 
-            var query = new GetTeamQuery(teamId: 1, companyId: 1, userId: 1);
+            var query = new GetUserQuery(companyId: 1, userId: 5);
 
             // Act
             var tcs = new CancellationToken();
 
-            var result = await handler.Handle(query, tcs);
+            var exception = await Assert.ThrowsAsync<VacationTrackingException>(async () =>
+            {
+                await handler.Handle(query, tcs);
+            });
 
             // Assert
-            Assert.All(result.TeamMembers, item => Assert.NotEqual(10, item.UserId));
+            Assert.NotNull(exception);
+            Assert.Equal(404, exception.Code);
+            Assert.Equal(ExceptionMessages.ItemNotFound, exception.Message);
         }
     }
 }

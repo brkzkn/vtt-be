@@ -13,15 +13,6 @@ namespace VacationTracking.Data.Repositories
         {
         }
 
-        public async Task<User> GetAsync(Guid companyId, Guid userId)
-        {
-            throw new NotImplementedException();
-            //string sql = $"SELECT * FROM USERS WHERE USER_ID = '{userId}' AND COMPANY_ID = '{companyId}'";
-            //var result = await Connection.QueryFirstOrDefaultAsync<User>(sql);
-
-            //return result;
-        }
-
         public async Task<IEnumerable<User>> GetListAsync(Guid companyId)
         {
             throw new NotImplementedException();

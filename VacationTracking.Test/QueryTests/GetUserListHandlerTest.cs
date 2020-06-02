@@ -1,28 +1,29 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging.Abstractions;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using VacationTracking.Data;
 using VacationTracking.Data.Repository;
-using VacationTracking.Domain.Queries.Team;
-using VacationTracking.Service.Queries.Team;
+using VacationTracking.Domain.Models;
+using VacationTracking.Domain.Queries.User;
+using VacationTracking.Service.Queries.User;
 using VacationTracking.Test.Context;
 using VacationTracking.Test.Data;
 using Xunit;
-using TeamDb = VacationTracking.Domain.Models.Team;
 
 namespace VacationTracking.Test.QueryTests
 {
     [Collection(nameof(VacationTrackingContext))]
-    public class GetTeamListHandlerTest
+    public class GetUserListHandlerTest
     {
         private readonly VacationTrackingDbContextFixture _fixture;
-        private readonly NullLogger<GetTeamListHandler> _logger;
+        private readonly NullLogger<GetUserListHandler> _logger;
         private readonly IMapper _mapper;
-        public GetTeamListHandlerTest(VacationTrackingDbContextFixture fixture)
+        public GetUserListHandlerTest(VacationTrackingDbContextFixture fixture)
         {
             _fixture = fixture;
-            _logger = new NullLogger<GetTeamListHandler>();
+            _logger = new NullLogger<GetUserListHandler>();
 
             //auto mapper configuration
             var mockMapper = new MapperConfiguration(cfg =>
@@ -46,11 +47,11 @@ namespace VacationTracking.Test.QueryTests
         public async Task Should_ReturnTeamList_When_PassValidCompanyId()
         {
             // Arrange
-            IRepository<TeamDb> repository = new Repository<TeamDb>(_fixture.Context);
+            IRepository<User> repository = new Repository<User>(_fixture.Context);
 
-            var handler = new GetTeamListHandler(repository, _mapper, _logger);
+            var handler = new GetUserListHandler(repository, _mapper, _logger);
 
-            var request = new GetTeamListQuery(companyId: 1);
+            var request = new GetUserListQuery(companyId: 1);
 
             // Act
             var tcs = new CancellationToken();
@@ -65,38 +66,49 @@ namespace VacationTracking.Test.QueryTests
         public async Task Should_ReturnEmptyList_When_PassValidCompanyId()
         {
             // Arrange
-            IRepository<TeamDb> repository = new Repository<TeamDb>(_fixture.Context);
+            var company = new Company()
+            {
+                CompanyId = 4,
+                CompanyName = "Test Company",
+                CreatedAt = DateTime.Now,
+                CreatedBy = -1
+            };
+            _fixture.Context.Add(company);
+            _fixture.Context.SaveChanges();
 
-            var handler = new GetTeamListHandler(repository, _mapper, _logger);
+            IRepository<User> repository = new Repository<User>(_fixture.Context);
 
-            var request = new GetTeamListQuery(companyId: 3);
+            var handler = new GetUserListHandler(repository, _mapper, _logger);
+
+            var request = new GetUserListQuery(companyId: 4);
 
             // Act
             var tcs = new CancellationToken();
 
-            var result = await handler.Handle(request, tcs);
+            var response = await handler.Handle(request, tcs);
 
             // Assert
-            Assert.Empty(result);
+            Assert.Empty(response);
         }
 
         [Fact]
         public async Task Should_ReturnEmptyList_When_PassInvalidCompanyId()
         {
             // Arrange
-            IRepository<TeamDb> teamRepository = new Repository<TeamDb>(_fixture.Context);
+            IRepository<User> repository = new Repository<User>(_fixture.Context);
 
-            var handler = new GetTeamListHandler(teamRepository, _mapper, _logger);
+            var handler = new GetUserListHandler(repository, _mapper, _logger);
 
-            var request = new GetTeamListQuery(companyId: -1);
+            var request = new GetUserListQuery(companyId: -1);
 
             // Act
             var tcs = new CancellationToken();
 
-            var result = await handler.Handle(request, tcs);
+            var response = await handler.Handle(request, tcs);
 
             // Assert
-            Assert.Empty(result);
+            Assert.Empty(response);
         }
+
     }
 }

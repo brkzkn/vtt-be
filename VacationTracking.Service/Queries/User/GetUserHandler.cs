@@ -1,33 +1,38 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using VacationTracking.Data.IRepositories;
+using VacationTracking.Data.Repository;
+using VacationTracking.Domain.Constants;
 using VacationTracking.Domain.Dtos;
+using VacationTracking.Domain.Exceptions;
 using VacationTracking.Domain.Queries.User;
+using UserDb = VacationTracking.Domain.Models.User;
 
 namespace VacationTracking.Service.Queries.User
 {
     public class GetUserHandler : IRequestHandler<GetUserQuery, UserDto>
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IRepository<UserDb> _repository;
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
 
-        public GetUserHandler(IMapper mapper, ILogger<GetUserHandler> logger)
+        public GetUserHandler(IRepository<UserDb> repository, IMapper mapper, ILogger<GetUserHandler> logger)
         {
-            _userRepository = null; // userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<UserDto> Handle(GetUserQuery request, CancellationToken cancellationToken)
         {
-            // TODO: Check user permission. 
-            // User should has owner or admin permission
-            var user = await _userRepository.GetAsync(request.CompanyId, request.UserId);
+            var user = await _repository.Queryable()
+                                        .SingleOrDefaultAsync(x => x.CompanyId == request.CompanyId 
+                                                                && x.UserId == request.UserId
+                                                                && x.Status == Domain.Enums.UserStatus.Active);
 
             if (user != null)
             {
@@ -36,8 +41,7 @@ namespace VacationTracking.Service.Queries.User
                 return userDto;
             }
 
-            // TODO: throw exception not found
-            return null;
+            throw new VacationTrackingException(ExceptionMessages.ItemNotFound, $"User not found by id {request.UserId}", 404);
         }
     }
 }

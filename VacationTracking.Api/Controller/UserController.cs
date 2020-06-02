@@ -30,12 +30,12 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(typeof(UserDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<ActionResult<UserDto>> GetTeamAsync(Guid id)
+        public async Task<ActionResult<UserDto>> GetTeamAsync(int id)
         {
             //TODO: Set companyId from logged-in users
             Guid companyId = new Guid(_companyId);
 
-            return Single(await QueryAsync(new GetUserQuery(id, companyId)));
+            return Single(await QueryAsync(new GetUserQuery(id, 1)));
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace VacationTracking.Api.Controller
             Guid companyId = new Guid(_companyId);
             Guid userId = new Guid(_userId);
 
-            return Single(await QueryAsync(new GetUserQuery(userId, companyId)));
+            return Single(await QueryAsync(new GetUserQuery(1, 1)));
         }
 
 
@@ -62,15 +62,16 @@ namespace VacationTracking.Api.Controller
         /// </summary>
         /// <returns>List of teams</returns>
         [HttpGet]
-        [ProducesResponseType(typeof(IList<UserDto>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<UserDto>), 200)]
+        [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<ActionResult<IList<UserDto>>> GetAsync()
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetAsync()
         {
             //TODO: Set companyId from logged-in users
             Guid companyId = new Guid(_companyId);
 
-            return Single(await QueryAsync(new GetUserListQuery(companyId)));
+            return Single(await QueryAsync(new GetUserListQuery(companyId: 1)));
         }
     }
 }
