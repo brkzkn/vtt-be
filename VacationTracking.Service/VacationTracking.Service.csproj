@@ -16,8 +16,4 @@
     <ProjectReference Include="..\VacationTracking.Domain\VacationTracking.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Validation\Commands\" />
-  </ItemGroup>
-
 </Project>

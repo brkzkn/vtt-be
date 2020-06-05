@@ -112,7 +112,6 @@ namespace VacationTracking.Test.QueryTests
             Assert.Equal(ExceptionMessages.ItemNotFound, exception.Message);
         }
 
-
         [Fact]
         public async Task Should_ThrowException_When_UserStatusDisabled()
         {
