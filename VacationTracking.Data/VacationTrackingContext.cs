@@ -56,13 +56,13 @@ namespace VacationTracking.Data
                 entity.HasOne(d => d.Holiday)
                     .WithMany(p => p.HolidayTeam)
                     .HasForeignKey(d => d.HolidayId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_HolidayTeam_Holiday");
 
                 entity.HasOne(d => d.Team)
                     .WithMany(p => p.HolidaysTeam)
                     .HasForeignKey(d => d.TeamId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_HolidayTeam_Team");
             });
 
