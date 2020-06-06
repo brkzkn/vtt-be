@@ -7,15 +7,15 @@ namespace VacationTracking.Domain.Commands.Holiday
 {
     public class UpdateHolidayCommand : IRequest<HolidayDto>
     {
-        public UpdateHolidayCommand(Guid companyId,
-                                    Guid holidayId,
-                                    Guid userId,
+        public UpdateHolidayCommand(int companyId,
+                                    int holidayId,
+                                    int userId,
                                     string name,
                                     DateTime startDate,
                                     DateTime endDate,
-                                    bool isFullday,
+                                    List<int> teams,
                                     bool isForAllTeams,
-                                    List<Guid> teams)
+                                    bool isFullDay)
         {
             CompanyId = companyId;
             HolidayId = holidayId;
@@ -23,18 +23,19 @@ namespace VacationTracking.Domain.Commands.Holiday
             Name = name;
             StartDate = startDate;
             EndDate = endDate;
-            IsFullDay = isFullday;
             IsForAllTeams = isForAllTeams;
+            IsFullDay = isFullDay;
             Teams = teams;
         }
+
         public bool IsForAllTeams { get; set; }
-        public Guid HolidayId { get; set; }
-        public Guid CompanyId { get; set; }
-        public Guid UserId { get; set; }
+        public bool IsFullDay { get; set; }
+        public int HolidayId { get; set; }
+        public int CompanyId { get; set; }
+        public int UserId { get; set; }
         public string Name { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public bool IsFullDay { get; set; }
-        public List<Guid> Teams { get; set; }
+        public List<int> Teams { get; set; }
     }
 }

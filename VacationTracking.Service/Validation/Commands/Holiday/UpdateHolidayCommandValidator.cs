@@ -3,9 +3,9 @@ using VacationTracking.Domain.Commands.Holiday;
 
 namespace VacationTracking.Service.Validation.Commands.Holiday
 {
-    public class CreateHolidayCommandValidator : AbstractValidator<CreateHolidayCommand>
+    public class UpdateHolidayCommandValidator : AbstractValidator<UpdateHolidayCommand>
     {
-        public CreateHolidayCommandValidator()
+        public UpdateHolidayCommandValidator()
         {
             RuleFor(x => x.StartDate).GreaterThanOrEqualTo(x => x.EndDate);
 

@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
 using FluentValidation;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using VacationTracking.Data;
@@ -62,7 +59,14 @@ namespace VacationTracking.Test.CommandTests
             IRepository<Team> teamRepository = new Repository<Team>(_fixture.Context);
             var handler = new CreateHolidayHandler(unitOfWork, repository, teamRepository, _logger, _mapper);
 
-            var request = new CreateHolidayCommand(companyId: 1, userId: 1, null, DateTime.Now.Date, DateTime.Now.Date, "Test Holiday", true);
+            var request = new CreateHolidayCommand(companyId: 1,
+                                                   userId: 1,
+                                                   new List<int>() { 1 },
+                                                   DateTime.Now.Date,
+                                                   DateTime.Now.Date,
+                                                   "Test Holiday",
+                                                   isForAllTeams: false,
+                                                   isFullDay: true);
 
             // Act
             var tcs = new CancellationToken();
@@ -90,7 +94,8 @@ namespace VacationTracking.Test.CommandTests
                                                    DateTime.Now.Date,
                                                    DateTime.Now.Date,
                                                    "Test Holiday",
-                                                   false);
+                                                   isForAllTeams: false,
+                                                   isFullDay: true);
 
             // Act
             var tcs = new CancellationToken();
@@ -119,7 +124,8 @@ namespace VacationTracking.Test.CommandTests
                                                    DateTime.Now.Date,
                                                    DateTime.Now.Date,
                                                    "Test Holiday",
-                                                   false);
+                                                   isForAllTeams: false,
+                                                   isFullDay: true);
 
             // Act
             var tcs = new CancellationToken();
@@ -150,7 +156,8 @@ namespace VacationTracking.Test.CommandTests
                                                    DateTime.Now.Date,
                                                    DateTime.Now.Date,
                                                    "Test Holiday",
-                                                   true);
+                                                   isForAllTeams: true,
+                                                   isFullDay: true);
 
             // Act
             var tcs = new CancellationToken();
@@ -202,7 +209,8 @@ namespace VacationTracking.Test.CommandTests
                                                    DateTime.Now.AddDays(-1).Date,
                                                    DateTime.Now.AddDays(-1).Date,
                                                    "Test Holiday",
-                                                   true);
+                                                   isForAllTeams: true,
+                                                   isFullDay: true);
 
             // Act
             var tcs = new CancellationToken();
@@ -251,7 +259,8 @@ namespace VacationTracking.Test.CommandTests
                                                    DateTime.Now.AddDays(-1).Date,
                                                    DateTime.Now.AddDays(-1).Date,
                                                    "Test Holiday",
-                                                   false);
+                                                   isForAllTeams: false,
+                                                   isFullDay: true);
 
             // Act
             var tcs = new CancellationToken();
@@ -300,7 +309,8 @@ namespace VacationTracking.Test.CommandTests
                                                    DateTime.Now.AddDays(-1).Date,
                                                    DateTime.Now.AddDays(-1).Date,
                                                    "Test Holiday",
-                                                   false);
+                                                   isForAllTeams: false,
+                                                   isFullDay: true);
 
             // Act
             var tcs = new CancellationToken();
@@ -314,7 +324,103 @@ namespace VacationTracking.Test.CommandTests
         }
 
         [Fact]
-        public async Task Should_ThrowException_When_StartDateLessThanEndDate()
+        public async Task Should_ThrowException_When_InterceptDate_v1()
+        {
+            // Arrange
+            var entity = new Holiday()
+            {
+                CompanyId = 1,
+                IsFullDay = true,
+                CreatedAt = DateTime.Now,
+                CreatedBy = -1,
+                StartDate = DateTime.Now.AddDays(-1).Date,
+                EndDate = DateTime.Now.AddDays(-1).Date,
+                Name = "Mock Holiday"
+            };
+            entity.HolidayTeam = new List<HolidayTeam>();
+            entity.HolidayTeam.Add(new HolidayTeam()
+            {
+                TeamId = 1
+            });
+
+            _fixture.Context.Holidays.Attach(entity);
+            _fixture.Context.SaveChanges();
+
+            IUnitOfWork unitOfWork = new UnitOfWork(_fixture.Context);
+            IRepository<Holiday> repository = new Repository<Holiday>(_fixture.Context);
+            IRepository<Team> teamRepository = new Repository<Team>(_fixture.Context);
+
+            var handler = new CreateHolidayHandler(unitOfWork, repository, teamRepository, _logger, _mapper);
+
+            var request = new CreateHolidayCommand(companyId: 1,
+                                                   userId: 1,
+                                                   teams: new List<int> { 1 },
+                                                   startDate: DateTime.Now.AddDays(-2).Date,
+                                                   endDate: DateTime.Now.AddDays(1).Date,
+                                                   name: "Test Holiday",
+                                                   isForAllTeams: false,
+                                                   isFullDay: true);
+
+            // Act & Assert
+            var tcs = new CancellationToken();
+            var exception = await Assert.ThrowsAsync<VacationTrackingException>(async () =>
+            {
+                await handler.Handle(request, tcs);
+            });
+            Assert.Equal(ExceptionMessages.HolidayAlreadyExistForSameDate, exception.Message);
+            Assert.Equal(400, exception.Code);
+        }
+
+        [Fact]
+        public async Task Should_ThrowException_When_InterceptDate_v2()
+        {
+            // Arrange
+            var entity = new Holiday()
+            {
+                CompanyId = 1,
+                IsFullDay = true,
+                CreatedAt = DateTime.Now,
+                CreatedBy = -1,
+                StartDate = DateTime.Now.AddDays(-2).Date,
+                EndDate = DateTime.Now.AddDays(1).Date,
+                Name = "Mock Holiday"
+            };
+            entity.HolidayTeam = new List<HolidayTeam>();
+            entity.HolidayTeam.Add(new HolidayTeam()
+            {
+                TeamId = 1
+            });
+
+            _fixture.Context.Holidays.Attach(entity);
+            _fixture.Context.SaveChanges();
+
+            IUnitOfWork unitOfWork = new UnitOfWork(_fixture.Context);
+            IRepository<Holiday> repository = new Repository<Holiday>(_fixture.Context);
+            IRepository<Team> teamRepository = new Repository<Team>(_fixture.Context);
+
+            var handler = new CreateHolidayHandler(unitOfWork, repository, teamRepository, _logger, _mapper);
+
+            var request = new CreateHolidayCommand(companyId: 1,
+                                                   userId: 1,
+                                                   teams: new List<int> { 1 },
+                                                   startDate: DateTime.Now.AddDays(-1).Date,
+                                                   endDate: DateTime.Now.AddDays(-1).Date,
+                                                   name: "Test Holiday",
+                                                   isForAllTeams: false,
+                                                   isFullDay: true);
+
+            // Act & Assert
+            var tcs = new CancellationToken();
+            var exception = await Assert.ThrowsAsync<VacationTrackingException>(async () =>
+            {
+                await handler.Handle(request, tcs);
+            });
+            Assert.Equal(ExceptionMessages.HolidayAlreadyExistForSameDate, exception.Message);
+            Assert.Equal(400, exception.Code);
+        }
+
+        [Fact]
+        public async Task Should_ValidatorReturnFalse_When_StartDateLessThanEndDate()
         {
             CreateHolidayCommandValidator validator = new CreateHolidayCommandValidator();
             // Arrange
@@ -329,7 +435,8 @@ namespace VacationTracking.Test.CommandTests
                                                    endDate: DateTime.Now.Date,
                                                    startDate: DateTime.Now.AddDays(-1).Date,
                                                    "Test Holiday",
-                                                   true);
+                                                   isForAllTeams: false,
+                                                   isFullDay: true);
 
             // Act
             var result = await validator.ValidateAsync(request);
@@ -338,5 +445,30 @@ namespace VacationTracking.Test.CommandTests
             Assert.False(result.IsValid);
         }
 
+        [Fact]
+        public async Task Should_ValidatorReturnFalse_When_PassEmptyListForIsFullTeamFalse()
+        {
+            CreateHolidayCommandValidator validator = new CreateHolidayCommandValidator();
+            // Arrange
+            IUnitOfWork unitOfWork = new UnitOfWork(_fixture.Context);
+            IRepository<Holiday> repository = new Repository<Holiday>(_fixture.Context);
+            IRepository<Team> teamRepository = new Repository<Team>(_fixture.Context);
+            var handler = new CreateHolidayHandler(unitOfWork, repository, teamRepository, _logger, _mapper);
+
+            var request = new CreateHolidayCommand(companyId: 1,
+                                                   userId: 1,
+                                                   null,
+                                                   endDate: DateTime.Now.Date,
+                                                   startDate: DateTime.Now.Date,
+                                                   "Test Holiday",
+                                                   isForAllTeams: false,
+                                                   isFullDay: true);
+
+            // Act
+            var result = await validator.ValidateAsync(request);
+
+            //Assert
+            Assert.False(result.IsValid);
+        }
     }
 }

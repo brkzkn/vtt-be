@@ -8,6 +8,10 @@ namespace VacationTracking.Domain.Models
     [Table("Holiday")]
     public class Holiday : BaseModel
     {
+        public Holiday()
+        {
+            HolidayTeam = new HashSet<HolidayTeam>();
+        }
         [Column("HolidayID")]
         public int HolidayId { get; set; }
         
