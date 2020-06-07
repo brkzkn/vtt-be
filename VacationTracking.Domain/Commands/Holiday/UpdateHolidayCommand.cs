@@ -5,7 +5,7 @@ using VacationTracking.Domain.Dtos;
 
 namespace VacationTracking.Domain.Commands.Holiday
 {
-    public class UpdateHolidayCommand : IRequest<HolidayDto>
+    public class UpdateHolidayCommand : IRequest<HolidayDto>, IHolidayCommand
     {
         public UpdateHolidayCommand(int companyId,
                                     int holidayId,
@@ -28,14 +28,14 @@ namespace VacationTracking.Domain.Commands.Holiday
             Teams = teams;
         }
 
-        public bool IsForAllTeams { get; set; }
-        public bool IsFullDay { get; set; }
-        public int HolidayId { get; set; }
         public int CompanyId { get; set; }
         public int UserId { get; set; }
+        public int HolidayId { get; set; }
         public string Name { get; set; }
+        public IEnumerable<int> Teams { get; set; }
+        public bool IsForAllTeams { get; set; }
+        public bool IsFullDay { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public List<int> Teams { get; set; }
     }
 }

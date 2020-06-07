@@ -453,7 +453,7 @@ namespace VacationTracking.Test.CommandTests
         [Fact]
         public async Task Should_ThrowException_When_StartDateLessThanEndDate()
         {
-            UpdateHolidayCommandValidator validator = new UpdateHolidayCommandValidator();
+            HolidayCommandValidator validator = new HolidayCommandValidator();
             // Arrange
             IUnitOfWork unitOfWork = new UnitOfWork(_fixture.Context);
             IRepository<Holiday> repository = new Repository<Holiday>(_fixture.Context);
@@ -480,7 +480,7 @@ namespace VacationTracking.Test.CommandTests
         [Fact]
         public async Task Should_ValidatorReturnFalse_When_PassEmptyListForIsFullTeamFalse()
         {
-            UpdateHolidayCommandValidator validator = new UpdateHolidayCommandValidator();
+            HolidayCommandValidator validator = new HolidayCommandValidator();
             // Arrange
             IUnitOfWork unitOfWork = new UnitOfWork(_fixture.Context);
             IRepository<Holiday> repository = new Repository<Holiday>(_fixture.Context);

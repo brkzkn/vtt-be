@@ -102,13 +102,13 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(typeof(LeaveTypeDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult<LeaveTypeDto>> UpdateAsync(Guid id, [FromBody]LeaveTypeModel model)
+        public async Task<ActionResult<LeaveTypeDto>> UpdateAsync(int id, [FromBody]LeaveTypeModel model)
         {
             Guid companyId = new Guid(_companyId);
             Guid userId = new Guid(_userId);
 
-            var request = new UpdateLeaveTypeCommand(companyId,
-                                                     userId,
+            var request = new UpdateLeaveTypeCommand(1,
+                                                     1,
                                                      id,
                                                      model.IsHalfDaysActivated,
                                                      model.IsHideLeaveTypeName,

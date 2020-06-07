@@ -27,7 +27,7 @@ namespace VacationTracking.Domain.Dtos
         public bool IsHideLeaveTypeName { get; set; }
 
         [JsonProperty("typeName")]
-        public string TypeName { get; set; }
+        public string LeaveTypeName { get; set; }
 
         [JsonProperty("isApproverRequired")]
         public bool IsApproverRequired { get; set; }

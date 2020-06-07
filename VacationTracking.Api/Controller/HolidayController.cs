@@ -82,11 +82,11 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult<bool>> DeleteHolidayAsync(Guid id)
+        public async Task<ActionResult<bool>> DeleteHolidayAsync(int id)
         {
             Guid companyId = new Guid(_companyId);
 
-            var request = new DeleteHolidayCommand(id, companyId);
+            var request = new DeleteHolidayCommand(id, 1);
 
             return Single(await CommandAsync(request));
         }
@@ -110,7 +110,5 @@ namespace VacationTracking.Api.Controller
 
             return Single(await CommandAsync(request));
         }
-
-
     }
 }
