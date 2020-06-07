@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using VacationTracking.Data.Repository;
+using VacationTracking.Data.Repository.LeaveType;
 using VacationTracking.Data.UnitOfWork;
 using VacationTracking.Domain.Commands.LeaveType;
 using VacationTracking.Domain.Constants;
@@ -32,9 +33,8 @@ namespace VacationTracking.Service.Commands.LeaveType
 
         public async Task<LeaveTypeDto> Handle(CreateLeaveTypeCommand request, CancellationToken cancellationToken)
         {
-            if (_repository.Queryable().Any(x => x.CompanyId == request.CompanyId 
-                                              && x.LeaveTypeName == request.LeaveTypeName
-                                              && !x.IsDeleted))
+            bool isNameUnique = await _repository.IsLeaveTypeNameExistAsync(request.CompanyId, request.LeaveTypeName);
+            if (isNameUnique)
                 throw new VacationTrackingException(ExceptionMessages.LeaveTypeNameAlreadyExist, $"Leave type name: {request.LeaveTypeName} already exist", 400);
 
             var entity = new LeaveTypeDb()
