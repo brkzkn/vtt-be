@@ -88,11 +88,11 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult<bool>> DeleteAsync(Guid id)
+        public async Task<ActionResult<bool>> DeleteAsync(int id)
         {
             Guid companyId = new Guid(_companyId);
 
-            var request = new DeleteLeaveTypeCommand(id, companyId);
+            var request = new DeleteLeaveTypeCommand(id, 1);
 
             return Single(await CommandAsync(request));
         }
