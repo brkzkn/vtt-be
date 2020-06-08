@@ -67,7 +67,7 @@ namespace VacationTracking.Api.Controller
             Guid companyId = new Guid(_companyId);
             Guid userId = new Guid(_userId);
 
-            var request = new CreateTeamCommand(companyId, userId, model.Name, model.Members, model.Approvers);
+            var request = new CreateTeamCommand(companyId: 1, userId: 1, model.Name, model.Members, model.Approvers);
 
             return Single(await CommandAsync(request));
         }
@@ -77,12 +77,12 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(typeof(TeamDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult<TeamDto>> UpdateTeamAsync(Guid id, [FromBody]TeamModel model)
+        public async Task<ActionResult<TeamDto>> UpdateTeamAsync(int id, [FromBody]TeamModel model)
         {
             Guid companyId = new Guid(_companyId);
             Guid userId = new Guid(_userId);
 
-            var request = new UpdateTeamCommand(companyId, userId, id, model.Name, model.Members, model.Approvers);
+            var request = new UpdateTeamCommand(companyId: 1, userId: 1, id, model.Name, model.Members, model.Approvers);
 
             return Single(await CommandAsync(request));
         }
