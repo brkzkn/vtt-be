@@ -1,20 +1,18 @@
 ﻿using MediatR;
 using Newtonsoft.Json;
-using System;
 
 namespace VacationTracking.Domain.Commands.Team
 {
     public class DeleteTeamCommand : IRequest<bool>
     {
         [JsonConstructor]
-        public DeleteTeamCommand(Guid teamId, Guid companyId)
+        public DeleteTeamCommand(int teamId, int companyId)
         {
             TeamId = teamId;
             CompanyId = companyId;
         }
 
-        public Guid TeamId { get; set; }
-        public Guid CompanyId { get; set; }
-
+        public int TeamId { get; set; }
+        public int CompanyId { get; set; }
     }
 }

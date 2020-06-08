@@ -23,6 +23,8 @@ namespace VacationTracking.Domain.Models
         [Required]
         public string TeamName { get; set; }
 
+        public bool IsDefault { get; set; }
+
         public virtual Company Company { get; set; }
         public ICollection<HolidayTeam> HolidaysTeam { get; set; }
         public virtual ICollection<TeamMember> TeamMembers { get; set; }

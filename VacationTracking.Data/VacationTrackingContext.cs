@@ -91,7 +91,7 @@ namespace VacationTracking.Data
                 entity.HasOne(tm => tm.Team)
                     .WithMany(t => t.TeamMembers)
                     .HasForeignKey(tm => tm.TeamId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_TeamMember_Team");
 
                 entity.HasOne(d => d.User)

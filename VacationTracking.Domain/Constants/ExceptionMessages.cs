@@ -8,5 +8,6 @@
         public const string DefaultLeaveTypeCannotDelete = "DefaultLeaveTypeCannotDelete";
         public const string InvalidUserId = "InvalidUserId";
         public const string TeamNameAlreadyExist = "TeamNameAlreadyExist";
+        public const string DefaultTeamCannotDelete = "DefaultTeamCannotDelete";
     }
 }

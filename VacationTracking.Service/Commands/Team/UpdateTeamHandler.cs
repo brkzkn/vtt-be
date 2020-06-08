@@ -1,12 +1,21 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using VacationTracking.Data.Repository;
+using VacationTracking.Data.Repository.Team;
 using VacationTracking.Data.UnitOfWork;
 using VacationTracking.Domain.Commands.Team;
+using VacationTracking.Domain.Constants;
 using VacationTracking.Domain.Dtos;
+using VacationTracking.Domain.Exceptions;
+using TeamDb = VacationTracking.Domain.Models.Team;
+using TeamMemberDb = VacationTracking.Domain.Models.TeamMember;
+using UserDb = VacationTracking.Domain.Models.User;
 
 namespace VacationTracking.Service.Commands.Team
 {
@@ -15,42 +24,80 @@ namespace VacationTracking.Service.Commands.Team
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IRepository<TeamDb> _repository;
+        private readonly IRepository<UserDb> _userRepository;
 
-        public UpdateTeamHandler(IUnitOfWork unitOfWork, ILogger<CreateTeamHandler> logger, IMapper mapper)
+        public UpdateTeamHandler(IUnitOfWork unitOfWork,
+                                 IRepository<TeamDb> repository,
+                                 IRepository<UserDb> userRepository,
+                                 ILogger<UpdateTeamHandler> logger,
+                                 IMapper mapper)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
         public async Task<TeamDto> Handle(UpdateTeamCommand request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
-            //var teamEntity = new Domain.Models.Team();
-            //teamEntity.TeamId = request.TeamId;
-            //teamEntity.TeamName = request.Name;
-            //teamEntity.CompanyId = request.CompanyId;
-            //teamEntity.UpdatedAt = DateTime.Now;
-            //teamEntity.UpdatedBy = request.UserId;
-            //teamEntity.TeamMembers = new List<TeamMember>();
-            //teamEntity.TeamMembers = TeamFunctions.MergeMemberAndApprover(request.TeamId, request.Members, request.Approvers);
+            if (await _repository.IsTeamNameExistAsync(request.CompanyId, request.Name))
+                throw new VacationTrackingException(ExceptionMessages.TeamNameAlreadyExist, $"TeamName: {request.Name} is already exist", 400);
 
-            //using (_unitOfWork)
-            //{
-            //    _unitOfWork.Begin();
-            //    var affectedRow = await _unitOfWork.TeamMemberRepository.RemoveAsync(request.TeamId);
+            var companyUsers = await _userRepository.Queryable()
+                                                    .Where(x => x.CompanyId == request.CompanyId)
+                                                    .Select(x => x.UserId)
+                                                    .ToListAsync();
 
-            //    affectedRow = await _unitOfWork.TeamMemberRepository.SetAsNonMemberToOtherTeams(request.Members);
-            //    affectedRow = await _unitOfWork.TeamMemberRepository.RemoveNotActiveMemberAsync();
-            //    affectedRow = await _unitOfWork.TeamRepository.UpdateAsync(teamEntity);
-            //    affectedRow = await _unitOfWork.TeamMemberRepository.InsertAsync(teamEntity.TeamMembers);
+            if (request.Approvers.Except(companyUsers).Any())
+                throw new VacationTrackingException(ExceptionMessages.InvalidUserId, "Some approver(s) is not valid", 400);
 
-            //    _unitOfWork.Commit();
-            //}
+            if (request.Members.Except(companyUsers).Any())
+                throw new VacationTrackingException(ExceptionMessages.InvalidUserId, "Some member(s) is not valid", 400);
 
-            ////TODO: Fire "teamCreated" event
+            var teamEntity = new TeamDb()
+            {
+                TeamName = request.Name,
+                CompanyId = request.CompanyId,
+                ModifiedAt= DateTime.UtcNow,
+                ModifiedBy = request.UserId,
+            };
+            teamEntity.TeamMembers.Clear();
 
-            //return _mapper.Map<TeamDto>(teamEntity);
+            foreach (var teamMember in request.Members)
+            {
+                teamEntity.TeamMembers.Add(new TeamMemberDb()
+                {
+                    IsApprover = request.Approvers.Contains(teamMember),
+                    IsMember = true,
+                    UserId = teamMember
+                });
+            }
+
+            foreach (var approver in request.Approvers)
+            {
+                var teamMember = teamEntity.TeamMembers.SingleOrDefault(x => x.UserId == approver);
+                if (teamMember == null)
+                {
+                    teamEntity.TeamMembers.Add(new TeamMemberDb()
+                    {
+                        IsApprover = true,
+                        IsMember = false,
+                        UserId = approver
+                    });
+                }
+                else
+                {
+                    teamMember.IsApprover = true;
+                }
+            }
+
+            _repository.Attach(teamEntity);
+            await _unitOfWork.SaveChangesAsync();
+
+            //TODO: Fire "teamCreated" event
+            return _mapper.Map<TeamDto>(teamEntity);
         }
     }
 }
