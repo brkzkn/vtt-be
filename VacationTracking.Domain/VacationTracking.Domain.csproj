@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Commands\Setting\" />
     <Folder Include="Events\" />
   </ItemGroup>
 
