@@ -41,7 +41,6 @@ namespace VacationTracking.Domain.Models
         [Column(TypeName = "nvarchar(20)")]
         public UserStatus Status { get; set; }
 
-        [StringLength(50)]
         [Required]
         [Column(TypeName = "nvarchar(20)")]
         public AccountType AccountType { get; set; }

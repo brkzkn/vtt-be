@@ -1,24 +1,11 @@
-﻿using Newtonsoft.Json;
-using System;
-
-namespace VacationTracking.Domain.Dtos
+﻿namespace VacationTracking.Domain.Dtos
 {
     public class SettingsDto
     {
-        [JsonProperty("settingId")]
-        public Guid SettingId { get; set; }
+        public int SettingId { get; set; }
 
-        [JsonProperty("name")]
-        public string Name { get; set; }
+        public string Key { get; set; }
 
-        [JsonProperty("defaultValue")]
-        public string DefaultValue { get; set; }
-
-        [JsonProperty("isUserSetting")]
-        public bool IsUserSetting { get; set; }
-
-        [JsonProperty("settingValue")]
-        public string settingValue { get; set; }
-
+        public string Value { get; set; }
     }
 }

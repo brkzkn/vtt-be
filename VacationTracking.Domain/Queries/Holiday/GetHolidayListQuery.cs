@@ -13,6 +13,6 @@ namespace VacationTracking.Domain.Queries.Holiday
         }
 
         [Required]
-        public int CompanyId { get; set; }
+        public int CompanyId { get; }
     }
 }

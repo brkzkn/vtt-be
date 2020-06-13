@@ -114,7 +114,14 @@ namespace VacationTracking.Data
                     .HasForeignKey(u => u.CompanyId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_User_Company");
-            }); 
+            });
+
+
+            modelBuilder.Entity<Setting>(entity =>
+            {
+                entity.Property(u => u.SettingType)
+                      .HasConversion<string>();
+            });
 
             modelBuilder.Entity<UserSetting>(entity =>
             {

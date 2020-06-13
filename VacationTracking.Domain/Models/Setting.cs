@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using VacationTracking.Domain.Enums;
 
 namespace VacationTracking.Domain.Models
 {
@@ -23,7 +24,9 @@ namespace VacationTracking.Domain.Models
         [Required]
         [StringLength(150)]
         public string DefaultValue { get; set; }
-        public bool? IsUserSetting { get; set; }
+
+        [Column(TypeName = "nvarchar(20)")]
+        public SettingType SettingType { get; set; }
 
         public virtual ICollection<CompanySetting> CompanySettings { get; set; }
         public virtual ICollection<UserSetting> UserSettings { get; set; }
