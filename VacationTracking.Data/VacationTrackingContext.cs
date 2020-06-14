@@ -142,6 +142,8 @@ namespace VacationTracking.Data
 
             modelBuilder.Entity<Vacation>(entity =>
             {
+                entity.Property(v => v.VacationStatus)
+                      .HasConversion<string>();
 
                 entity.HasOne(d => d.Approver)
                     .WithMany(p => p.VacationApprovers)

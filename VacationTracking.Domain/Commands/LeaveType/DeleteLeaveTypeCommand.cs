@@ -10,7 +10,7 @@ namespace VacationTracking.Domain.Commands.LeaveType
             CompanyId = companyId;
         }
 
-        public int LeaveTypeId { get; set; }
-        public int CompanyId { get; set; }
+        public int LeaveTypeId { get; }
+        public int CompanyId { get; }
     }
 }

@@ -1,24 +1,25 @@
 ﻿using Newtonsoft.Json;
 using System;
+using VacationTracking.Domain.Enums;
 
 namespace VacationTracking.Domain.Dtos
 {
     public class VacationDto : BaseDto
     {
         [JsonProperty("vacationId")]
-        public Guid VacationId { get; set; }
+        public int VacationId { get; set; }
 
         [JsonProperty("userId")]
-        public Guid UserId { get; set; }
+        public int UserId { get; set; }
 
         [JsonProperty("approverId")]
-        public Guid ApproverId { get; set; }
+        public int ApproverId { get; set; }
 
         [JsonProperty("leaveTypeId")]
-        public Guid LeaveTypeId { get; set; }
+        public int LeaveTypeId { get; set; }
 
         [JsonProperty("vacationStatus")]
-        public string VacationStatus { get; set; }
+        public VacationStatus VacationStatus { get; set; }
 
         [JsonProperty("startDate")]
         public DateTime StartDate { get; set; }

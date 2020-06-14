@@ -4,10 +4,11 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using VacationTracking.Data.Repository;
 using VacationTracking.Data.UnitOfWork;
 using VacationTracking.Domain.Commands.Vacation;
-using VacationTracking.Domain.Constants;
 using VacationTracking.Domain.Dtos;
+using VacationDb = VacationTracking.Domain.Models.Vacation;
 
 namespace VacationTracking.Service.Commands.Vacation
 {
@@ -16,50 +17,44 @@ namespace VacationTracking.Service.Commands.Vacation
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IRepository<VacationDb> _repository;
 
-        public CreateVacationHandler(IUnitOfWork unitOfWork, ILogger<CreateVacationHandler> logger, IMapper mapper)
+        public CreateVacationHandler(IUnitOfWork unitOfWork,
+                                     IRepository<VacationDb> repository,
+                                     ILogger<CreateVacationHandler> logger,
+                                     IMapper mapper)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
 
         public async Task<VacationDto> Handle(CreateVacationCommand request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
-
-            //Domain.Models.Vacation vacationEntity = MapToEntity(request);
+            var entity = new VacationDb()
+            {
+                CreatedBy = request.UserId,
+                CreatedAt = DateTime.UtcNow,
+                EndDate = request.EndDate,
+                IsHalfDay = request.IsHalfDay,
+                Reason = request.Reason,
+                StartDate = request.StartDate,
+                UserId = request.UserId,
+                LeaveTypeId = request.LeaveTypeId,
+                VacationStatus = Domain.Enums.VacationStatus.Pending
+            };
 
             ////TODO: Check rule for vacation
 
-            //using (_unitOfWork)
-            //{
-            //    var affectedRow = await _unitOfWork.VacationRepository.InsertAsync(vacationEntity);
-            //}
+
+            _repository.Insert(entity);
+            var affectedRow = await _unitOfWork.SaveChangesAsync();
+
 
             ////TODO: Fire "teamCreated" event
-
-            //return _mapper.Map<VacationDto>(vacationEntity);
-        }
-
-        private Domain.Models.Vacation MapToEntity(CreateVacationCommand request)
-        {
-            throw new NotImplementedException();
-            //var vacationEntity = new Domain.Models.Vacation();
-            //Guid vacationId = Guid.NewGuid();
-            //vacationEntity.VacationId = vacationId;
-            //vacationEntity.UserId = request.UserId;
-            //vacationEntity.ApproverId = null;
-            //vacationEntity.LeaveTypeId = request.LeaveTypeId;
-            //vacationEntity.VacationStatus = VacationStatus.Pending;
-            //vacationEntity.StartDate = request.StartDate;
-            //vacationEntity.EndDate = request.EndDate;
-            //vacationEntity.Reason = request.Reason;
-            //vacationEntity.IsHalfDay = request.IsHalfDay;
-            //vacationEntity.CreatedAt = DateTime.Now;
-            //vacationEntity.CreatedBy = request.UserId;
-            //return vacationEntity;
+            return _mapper.Map<VacationDto>(entity);
         }
     }
 }

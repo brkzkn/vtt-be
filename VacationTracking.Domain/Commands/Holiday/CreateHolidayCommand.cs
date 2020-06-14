@@ -26,13 +26,13 @@ namespace VacationTracking.Domain.Commands.Holiday
             IsFullDay = isFullDay;
         }
 
-        public int CompanyId { get; set; }
-        public int UserId { get; set; }
-        public string Name { get; set; }
-        public IEnumerable<int> Teams { get; set; }
-        public bool IsForAllTeams { get; set; }
-        public bool IsFullDay { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public int CompanyId { get; }
+        public int UserId { get; }
+        public string Name { get; }
+        public IEnumerable<int> Teams { get; }
+        public bool IsForAllTeams { get; }
+        public bool IsFullDay { get; }
+        public DateTime StartDate { get; }
+        public DateTime EndDate { get; }
     }
 }

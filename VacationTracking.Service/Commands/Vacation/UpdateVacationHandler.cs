@@ -45,25 +45,26 @@ namespace VacationTracking.Service.Commands.Vacation
 
         private Domain.Models.Vacation MapToEntity(UpdateVacationCommand request)
         {
-            var vacationEntity = new Domain.Models.Vacation();
-            vacationEntity.VacationId = request.VacationId;
-            vacationEntity.ApproverId = request.ResponsedBy;
-            vacationEntity.Note = request.Note;
-            vacationEntity.ModifiedAt= DateTime.Now;
-            vacationEntity.ModifiedBy = request.ResponsedBy;
+            throw new NotImplementedException();
+            //var vacationEntity = new Domain.Models.Vacation();
+            //vacationEntity.VacationId = request.VacationId;
+            //vacationEntity.ApproverId = request.ResponsedBy;
+            //vacationEntity.Note = request.Note;
+            //vacationEntity.ModifiedAt= DateTime.Now;
+            //vacationEntity.ModifiedBy = request.ResponsedBy;
 
-            switch (request.Status)
-            {
-                case VacationStatus.Approved:
-                    vacationEntity.VacationStatus = VacationStatus.Approved;
-                    break;
-                case VacationStatus.Rejected:
-                    vacationEntity.VacationStatus = VacationStatus.Rejected;
-                    break;
-                default:
-                    throw new Exception("Invalid vacation status");
-            }
-            return vacationEntity;
+            //switch (request.Status)
+            //{
+            //    case VacationStatus.Approved:
+            //        vacationEntity.VacationStatus = VacationStatus.Approved;
+            //        break;
+            //    case VacationStatus.Rejected:
+            //        vacationEntity.VacationStatus = VacationStatus.Rejected;
+            //        break;
+            //    default:
+            //        throw new Exception("Invalid vacation status");
+            //}
+            //return vacationEntity;
         }
     }
 }
