@@ -1,22 +1,28 @@
 using AutoMapper;
-using Dapper.FluentMap;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Npgsql;
 using System;
-using System.Data;
 using System.IO;
 using System.Reflection;
+using VacationTracking.Api.Middleware;
+using VacationTracking.Api.PipelineBehaviors;
 using VacationTracking.Data;
-using VacationTracking.Data.IRepositories;
-using VacationTracking.Data.Repositories;
+using VacationTracking.Data.Repository;
+using VacationTracking.Data.UnitOfWork;
+using VacationTracking.Domain.Commands.Holiday;
+using VacationTracking.Domain.Commands.LeaveType;
 using VacationTracking.Domain.Models;
 using VacationTracking.Service.Queries.Team;
+using VacationTracking.Service.Validation.Commands.Holiday;
+using VacationTracking.Service.Validation.Commands.LeaveType;
+using VacationTracking.Service.Validation.Queries.Team;
 
 namespace VacationTracking.Api
 {
@@ -32,17 +38,6 @@ namespace VacationTracking.Api
                 .AddEnvironmentVariables();
 
             Configuration = builder.Build();
-
-            FluentMapper.Initialize(config =>
-            {
-                config.AddMap(new CompaniesMap());
-                config.AddMap(new HolidaysMap());
-                config.AddMap(new LeaveTypesMap());
-                config.AddMap(new TeamsMap());
-                config.AddMap(new TeamMemberMap());
-                config.AddMap(new UserMap());
-                config.AddMap(new VacationsMap());
-            });
         }
 
         public IConfiguration Configuration { get; }
@@ -51,17 +46,19 @@ namespace VacationTracking.Api
         public void ConfigureServices(IServiceCollection services)
         {
             //Add DIs
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IHolidayRepository, HolidayRepository>();
-            services.AddScoped<ILeaveTypeRepository, LeaveTypeRepository>();
-            services.AddScoped<ITeamRepository, TeamRepository>();
-            services.AddScoped<ITeamMemberRepository, TeamMemberRepository>();
-            services.AddScoped<IVacationRepository, VacationRepository>();
-            services.AddScoped<IDbConnection>(db => new NpgsqlConnection(
-                    Configuration.GetConnectionString("MyConnection")));
+
+            services.AddDbContext<VacationTrackingContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MyConnection")));
+            services.AddScoped<DbContext, VacationTrackingContext>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            services.AddMediatR(typeof(GetTeamHandler).Assembly);
+            services.AddScoped<IRepository<Team>, Repository<Team>>();
+            services.AddScoped<IRepository<Company>, Repository<Company>>();
+            services.AddScoped<IRepository<Holiday>, Repository<Holiday>>();
+            services.AddScoped<IRepository<HolidayTeam>, Repository<HolidayTeam>>();
+            services.AddScoped<IRepository<LeaveType>, Repository<LeaveType>>();
+            services.AddScoped<IRepository<User>, Repository<User>>();
+
+            services.AddMediatR(typeof(GetTeamHandler));
             services.AddAutoMapper(typeof(Service.Mapper.AutoMapping));
 
             // Register the Swagger generator
@@ -121,6 +118,13 @@ namespace VacationTracking.Api
             services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 
             services.AddControllers();
+
+            services.AddValidatorsFromAssembly(typeof(GetTeamQueryValidator).Assembly);
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviors<,>));
+            services.AddTransient(typeof(IValidator<CreateLeaveTypeCommand>), typeof(LeaveTypeCommandValidator));
+            services.AddTransient(typeof(IValidator<UpdateLeaveTypeCommand>), typeof(LeaveTypeCommandValidator));
+            services.AddTransient(typeof(IValidator<CreateHolidayCommand>), typeof(HolidayCommandValidator));
+            services.AddTransient(typeof(IValidator<UpdateHolidayCommand>), typeof(HolidayCommandValidator));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -155,6 +159,7 @@ namespace VacationTracking.Api
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseMiddleware<CustomExceptionMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

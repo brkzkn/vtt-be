@@ -8,13 +8,13 @@ namespace VacationTracking.Domain.Dtos
         [JsonProperty("createdAt")]
         public DateTime CreatedAt { get; set; }
 
-        [JsonProperty("updatedAt")]
-        public DateTime UpdatedAt { get; set; }
+        [JsonProperty("modifiedAt")]
+        public DateTime? ModifiedAt { get; set; }
 
         [JsonProperty("createdBy")]
-        public Guid CreatedBy { get; set; }
+        public int CreatedBy { get; set; }
 
-        [JsonProperty("updatedBy")]
-        public Guid UpdatedBy { get; set; }
+        [JsonProperty("modifiedBy")]
+        public int? ModifiedBy { get; set; }
     }
 }

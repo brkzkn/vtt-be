@@ -1,40 +1,46 @@
-﻿using Dapper.FluentMap.Mapping;
-using System;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VacationTracking.Domain.Models
 {
+    [Table("Vacation")]
     public class Vacation : BaseModel
     {
-        public Guid VacationId { get; set; }
-        public Guid UserId { get; set; }
-        public Guid? ApproverId { get; set; }
-        public Guid LeaveTypeId { get; set; }
-        public string VacationStatus { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public string Reason { get; set; }
-        public string Note { get; set; }
-        public bool IsHalfDay { get; set; }
-    }
-    public class VacationsMap : EntityMap<Vacation>
-    {
-        public VacationsMap()
-        {
-            Map(p => p.VacationId).ToColumn("vacation_id");
-            Map(p => p.UserId).ToColumn("user_id");
-            Map(p => p.ApproverId).ToColumn("approver_id");
-            Map(p => p.LeaveTypeId).ToColumn("leave_type_id");
-            Map(p => p.VacationStatus).ToColumn("vacation_status");
-            Map(p => p.StartDate).ToColumn("start_date");
-            Map(p => p.EndDate).ToColumn("end_date");
-            Map(p => p.Reason).ToColumn("reason");
-            Map(p => p.Note).ToColumn("note");
-            Map(p => p.IsHalfDay).ToColumn("is_half_day");
-            Map(p => p.CreatedAt).ToColumn("created_at");
-            Map(p => p.CreatedBy).ToColumn("created_by");
-            Map(p => p.UpdatedAt).ToColumn("updated_at");
-            Map(p => p.UpdatedBy).ToColumn("updated_by");
-        }
-    }
+        [Column("VacationID")]
+        public int VacationId { get; set; }
 
+        [Column("UserID")]
+        public int UserId { get; set; }
+
+        [Column("ApproverID")]
+        public int? ApproverId { get; set; }
+
+        [Column("LeaveTypeID")]
+        public int LeaveTypeId { get; set; }
+
+        [Required]
+        [StringLength(50)]
+        public string VacationStatus { get; set; }
+
+        [Column(TypeName = "datetime")]
+        public DateTime StartDate { get; set; }
+
+        [Column(TypeName = "datetime")]
+        public DateTime EndDate { get; set; }
+
+        [StringLength(200)]
+        public string Reason { get; set; }
+
+        [StringLength(200)]
+        public string Note { get; set; }
+
+        [Column("is_half_day")]
+        public bool IsHalfDay { get; set; }
+
+        public User Approver { get; set; }
+        public LeaveType LeaveType { get; set; }
+        public User User{ get; set; }
+
+    }
 }

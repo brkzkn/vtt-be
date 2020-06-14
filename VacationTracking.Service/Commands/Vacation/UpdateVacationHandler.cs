@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using VacationTracking.Data;
+using VacationTracking.Data.UnitOfWork;
 using VacationTracking.Domain.Commands.Vacation;
 using VacationTracking.Domain.Constants;
 
@@ -26,19 +26,21 @@ namespace VacationTracking.Service.Commands.Vacation
 
         public async Task<bool> Handle(UpdateVacationCommand request, CancellationToken cancellationToken)
         {
-            Domain.Models.Vacation vacationEntity = MapToEntity(request);
+            throw new NotImplementedException();
 
-            //TODO: Check rule for vacation
+            //Domain.Models.Vacation vacationEntity = MapToEntity(request);
 
-            int affectedRow = 0;
-            using (_unitOfWork)
-            {
-                affectedRow = await _unitOfWork.VacationRepository.UpdateStatusAsync(vacationEntity);
-            }
+            ////TODO: Check rule for vacation
 
-            //TODO: Fire "vacationStatusUpdated" event
+            //int affectedRow = 0;
+            //using (_unitOfWork)
+            //{
+            //    affectedRow = await _unitOfWork.VacationRepository.UpdateStatusAsync(vacationEntity);
+            //}
 
-            return affectedRow != 0;
+            ////TODO: Fire "vacationStatusUpdated" event
+
+            //return affectedRow != 0;
         }
 
         private Domain.Models.Vacation MapToEntity(UpdateVacationCommand request)
@@ -47,8 +49,8 @@ namespace VacationTracking.Service.Commands.Vacation
             vacationEntity.VacationId = request.VacationId;
             vacationEntity.ApproverId = request.ResponsedBy;
             vacationEntity.Note = request.Note;
-            vacationEntity.UpdatedAt= DateTime.Now;
-            vacationEntity.UpdatedBy = request.ResponsedBy;
+            vacationEntity.ModifiedAt= DateTime.Now;
+            vacationEntity.ModifiedBy = request.ResponsedBy;
 
             switch (request.Status)
             {

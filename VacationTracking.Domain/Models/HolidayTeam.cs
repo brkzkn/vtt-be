@@ -1,10 +1,16 @@
-﻿using System;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VacationTracking.Domain.Models
 {
+    [Table("HolidayTeam")]
     public class HolidayTeam
     {
-        public Guid HolidayId { get; set; }
-        public Guid TeamId { get; set; }
+        [Column("HolidayID")]
+        public int HolidayId { get; set; }
+        [Column("TeamID")]
+        public int TeamId { get; set; }
+
+        public Holiday Holiday { get; set; }
+        public Team Team { get; set; }
     }
 }

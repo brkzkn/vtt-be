@@ -7,10 +7,10 @@ namespace VacationTracking.Domain.Dtos
     public class HolidayDto : BaseDto
     {
         [JsonProperty("holidayId")]
-        public Guid HolidayId { get; set; }
+        public int HolidayId { get; set; }
 
         [JsonProperty("companyId")]
-        public Guid CompanyId { get; set; }
+        public int CompanyId { get; set; }
 
         [JsonProperty("name")]
         public string Name { get; set; }

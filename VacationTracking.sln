@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VacationTracking.Api", "VacationTracking.Api\VacationTracking.Api.csproj", "{4476E6A5-B297-4F5F-9B47-9E361A2B8790}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VacationTracking.Api", "VacationTracking.Api\VacationTracking.Api.csproj", "{4476E6A5-B297-4F5F-9B47-9E361A2B8790}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VacationTracking.Data", "VacationTracking.Data\VacationTracking.Data.csproj", "{BAA2AD66-B7AB-4C91-B755-49E1F053AD1A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VacationTracking.Data", "VacationTracking.Data\VacationTracking.Data.csproj", "{BAA2AD66-B7AB-4C91-B755-49E1F053AD1A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VacationTracking.Domain", "VacationTracking.Domain\VacationTracking.Domain.csproj", "{B8346375-E3E5-43BD-B7B1-B41080ECFA1C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VacationTracking.Domain", "VacationTracking.Domain\VacationTracking.Domain.csproj", "{B8346375-E3E5-43BD-B7B1-B41080ECFA1C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VacationTracking.Service", "VacationTracking.Service\VacationTracking.Service.csproj", "{CC8E47A2-9623-4E6C-BC22-B1F4027AC365}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VacationTracking.Service", "VacationTracking.Service\VacationTracking.Service.csproj", "{CC8E47A2-9623-4E6C-BC22-B1F4027AC365}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VacationTracking.Test", "VacationTracking.Test\VacationTracking.Test.csproj", "{76A2C0F4-EE02-44AA-859C-8FB34D66646E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{CC8E47A2-9623-4E6C-BC22-B1F4027AC365}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC8E47A2-9623-4E6C-BC22-B1F4027AC365}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CC8E47A2-9623-4E6C-BC22-B1F4027AC365}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76A2C0F4-EE02-44AA-859C-8FB34D66646E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76A2C0F4-EE02-44AA-859C-8FB34D66646E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76A2C0F4-EE02-44AA-859C-8FB34D66646E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76A2C0F4-EE02-44AA-859C-8FB34D66646E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,12 +1,19 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using VacationTracking.Data;
+using VacationTracking.Data.Repository;
+using VacationTracking.Data.Repository.LeaveType;
+using VacationTracking.Data.UnitOfWork;
 using VacationTracking.Domain.Commands.LeaveType;
+using VacationTracking.Domain.Constants;
 using VacationTracking.Domain.Dtos;
+using VacationTracking.Domain.Exceptions;
+using LeaveTypeDb = VacationTracking.Domain.Models.LeaveType;
 
 namespace VacationTracking.Service.Commands.LeaveType
 {
@@ -15,54 +22,45 @@ namespace VacationTracking.Service.Commands.LeaveType
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-
-        public CreateLeaveTypeHandler(IUnitOfWork unitOfWork, ILogger<CreateLeaveTypeHandler> logger, IMapper mapper)
+        private readonly IRepository<LeaveTypeDb> _repository;
+        public CreateLeaveTypeHandler(IUnitOfWork unitOfWork, IRepository<LeaveTypeDb> repository, ILogger<CreateLeaveTypeHandler> logger, IMapper mapper)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
         public async Task<LeaveTypeDto> Handle(CreateLeaveTypeCommand request, CancellationToken cancellationToken)
         {
-            Domain.Models.LeaveType entity = MapToEntity(request);
+            bool isNameUnique = await _repository.IsLeaveTypeNameExistAsync(request.CompanyId, request.LeaveTypeName);
+            if (isNameUnique)
+                throw new VacationTrackingException(ExceptionMessages.LeaveTypeNameAlreadyExist, $"Leave type name: {request.LeaveTypeName} already exist", 400);
 
-            using (_unitOfWork)
+            var entity = new LeaveTypeDb()
             {
-                var isTypeNameValid = await _unitOfWork.LeaveTypeRepository.IsLeaveTypeExistAsync(entity.CompanyId, entity.TypeName);
-                if (isTypeNameValid)
-                    throw new Exception("NameAlreadyExist"); //TODO: Replace custom exception handler
+                ColorCode = request.ColorCode,
+                CompanyId = request.CompanyId,
+                CreatedAt = DateTime.Now,
+                CreatedBy = request.UserId,
+                DefaultDaysPerYear = request.DefaultDaysPerYear,
+                IsActive = true,
+                IsAllowNegativeBalance = request.IsAllowNegativeBalance,
+                IsApproverRequired = request.IsApproverRequired,
+                IsDefault = false,
+                IsDeleted = false,
+                IsHalfDaysActivated = request.IsHalfDaysActivated,
+                IsHideLeaveTypeName = request.IsHideLeaveTypeName,
+                IsReasonRequired = request.IsReasonRequired,
+                IsUnlimited = request.IsUnlimited,
+                LeaveTypeName = request.LeaveTypeName
+            };
 
-                var affectedRow = await _unitOfWork.LeaveTypeRepository.InsertAsync(entity);
-            }
+            _repository.Insert(entity);
+            int affectedRows = await _unitOfWork.SaveChangesAsync();
 
             //TODO: Fire "leaveTypeCreated" event
             return _mapper.Map<LeaveTypeDto>(entity);
-        }
-
-        private Domain.Models.LeaveType MapToEntity(CreateLeaveTypeCommand request)
-        {
-            var entity = new Domain.Models.LeaveType();
-            Guid leaveTypeId = Guid.NewGuid();
-
-            entity.ColorCode = request.Color;
-            entity.CompanyId = request.CompanyId;
-
-            entity.CreatedAt = DateTime.UtcNow;
-            entity.CreatedBy = request.UserId;
-            entity.DefaultDaysPerYear = request.DefaultDaysPerYear;
-            entity.IsActive = true;
-            entity.IsAllowNegativeBalance = request.IsAllowNegativeBalance;
-            entity.IsApproverRequired = request.IsApproverRequired;
-            entity.IsDefault = false;
-            entity.IsDeleted = false;
-            entity.IsHalfDaysActivated = request.IsHalfDaysActivated;
-            entity.IsHideLeaveTypeName = request.IsHideLeaveTypeName;
-            entity.IsReasonRequired = request.IsReasonRequired;
-            entity.IsUnlimited = request.IsUnlimited;
-            entity.LeaveTypeId = leaveTypeId;
-            entity.TypeName = request.TypeName;
-            return entity;
         }
     }
 }

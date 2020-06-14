@@ -1,31 +1,32 @@
-﻿using Dapper.FluentMap.Mapping;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VacationTracking.Domain.Models
 {
+    [Table("Team")]
     public class Team : BaseModel
     {
-        public Guid TeamId { get; set; }
-        public Guid CompanyId { get; set; }
+        public Team()
+        {
+            HolidaysTeam = new HashSet<HolidayTeam>();
+            TeamMembers = new HashSet<TeamMember>();
+        }
+
+        [Column("TeamID")]
+        public int TeamId { get; set; }
+
+        [Column("CompanyID")]
+        public int CompanyId { get; set; }
+
+        [StringLength(150)]
+        [Required]
         public string TeamName { get; set; }
 
-        public List<TeamMember> TeamMembers { get; set; }
-        public IList<Holiday> Holidays { get; set; }
-    }
+        public bool IsDefault { get; set; }
 
-    public class TeamsMap : EntityMap<Team>
-    {
-        public TeamsMap()
-        {
-            Map(p => p.TeamId).ToColumn("team_id");
-            Map(p => p.CompanyId).ToColumn("company_id");
-            Map(p => p.TeamName).ToColumn("team_name");
-            Map(p => p.CreatedAt).ToColumn("created_at");
-            Map(p => p.CreatedBy).ToColumn("created_by");
-            Map(p => p.UpdatedAt).ToColumn("updated_at");
-            Map(p => p.UpdatedBy).ToColumn("updated_by");
-        }
+        public virtual Company Company { get; set; }
+        public ICollection<HolidayTeam> HolidaysTeam { get; set; }
+        public virtual ICollection<TeamMember> TeamMembers { get; set; }
     }
-
 }

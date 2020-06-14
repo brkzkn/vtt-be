@@ -33,12 +33,12 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(typeof(LeaveTypeDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<ActionResult<LeaveTypeDto>> GetAsync(Guid id)
+        public async Task<ActionResult<LeaveTypeDto>> GetAsync(int id)
         {
             //TODO: Set companyId from logged-in users
             Guid companyId = new Guid(_companyId);
 
-            return Single(await QueryAsync(new GetLeaveTypeQuery(id, companyId)));
+            return Single(await QueryAsync(new GetLeaveTypeQuery(id, 1)));
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace VacationTracking.Api.Controller
             //TODO: Set companyId from logged-in users
             Guid companyId = new Guid(_companyId);
 
-            return Single(await QueryAsync(new GetLeaveTypeListQuery(companyId)));
+            return Single(await QueryAsync(new GetLeaveTypeListQuery(1)));
         }
 
         [HttpPost]
@@ -63,8 +63,10 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(500)]
         public async Task<ActionResult<LeaveTypeDto>> CreateAsync([FromBody]LeaveTypeModel model)
         {
-            Guid companyId = new Guid(_companyId);
-            Guid userId = new Guid(_userId);
+            //Guid companyId = new Guid(_companyId);
+            //Guid userId = new Guid(_userId);
+            int companyId = 1;
+            int userId = 1;
 
             var request = new CreateLeaveTypeCommand(companyId,
                                                      userId,
@@ -86,11 +88,11 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult<bool>> DeleteAsync(Guid id)
+        public async Task<ActionResult<bool>> DeleteAsync(int id)
         {
             Guid companyId = new Guid(_companyId);
 
-            var request = new DeleteLeaveTypeCommand(id, companyId);
+            var request = new DeleteLeaveTypeCommand(id, 1);
 
             return Single(await CommandAsync(request));
         }
@@ -100,13 +102,13 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(typeof(LeaveTypeDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult<LeaveTypeDto>> UpdateAsync(Guid id, [FromBody]LeaveTypeModel model)
+        public async Task<ActionResult<LeaveTypeDto>> UpdateAsync(int id, [FromBody]LeaveTypeModel model)
         {
             Guid companyId = new Guid(_companyId);
             Guid userId = new Guid(_userId);
 
-            var request = new UpdateLeaveTypeCommand(companyId,
-                                                     userId,
+            var request = new UpdateLeaveTypeCommand(1,
+                                                     1,
                                                      id,
                                                      model.IsHalfDaysActivated,
                                                      model.IsHideLeaveTypeName,

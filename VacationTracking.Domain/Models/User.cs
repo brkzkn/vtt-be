@@ -1,34 +1,54 @@
-﻿using Dapper.FluentMap.Mapping;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using VacationTracking.Domain.Enums;
 
 namespace VacationTracking.Domain.Models
 {
+
+    [Table("User")]
     public class User : BaseModel
     {
-        public Guid UserId { get; set; }
-        public Guid CompanyId { get; set; }
-        public string FullName { get; set; }
-        public string Email { get; set; }
-        public DateTime EmployeeSince { get; set; }
-        public string Status { get; set; }
-        public string AccountType { get; set; }
-    }
-
-    public class UserMap : EntityMap<User>
-    {
-        public UserMap()
+        public User()
         {
-            Map(p => p.UserId).ToColumn("user_id");
-            Map(p => p.CompanyId).ToColumn("company_id");
-            Map(p => p.FullName).ToColumn("full_name");
-            Map(p => p.Email).ToColumn("email");
-            Map(p => p.EmployeeSince).ToColumn("employee_since");
-            Map(p => p.Status).ToColumn("status");
-            Map(p => p.AccountType).ToColumn("account_type");
-            Map(p => p.CreatedAt).ToColumn("created_at");
-            Map(p => p.CreatedBy).ToColumn("created_by");
-            Map(p => p.UpdatedAt).ToColumn("updated_at");
-            Map(p => p.UpdatedBy).ToColumn("updated_by");
+            TeamMembers = new HashSet<TeamMember>();
+            UserSettings = new HashSet<UserSetting>();
+            VacationApprovers = new HashSet<Vacation>();
+            Vacations = new HashSet<Vacation>();
         }
+
+        [Column("UserID")]
+        public int UserId { get; set; }
+
+        [Column("CompanyID")]
+        public int CompanyId { get; set; }
+
+        [StringLength(200)]
+        public string FullName { get; set; }
+
+        [StringLength(200)]
+        public string UserName { get; set; }
+
+        [StringLength(200)]
+        public string Email { get; set; }
+
+        [Column(TypeName = "date")]
+        public DateTime? EmployeeSince { get; set; }
+
+        [StringLength(50)]
+        [Required]
+        [Column(TypeName = "nvarchar(20)")]
+        public UserStatus Status { get; set; }
+
+        [Required]
+        [Column(TypeName = "nvarchar(20)")]
+        public AccountType AccountType { get; set; }
+
+        public virtual Company Company { get; set; }
+        public virtual ICollection<TeamMember> TeamMembers { get; set; }
+        public virtual ICollection<UserSetting> UserSettings { get; set; }
+        public virtual ICollection<Vacation> VacationApprovers { get; set; }
+        public virtual ICollection<Vacation> Vacations { get; set; }
     }
 }

@@ -1,34 +1,38 @@
-﻿using Dapper.FluentMap.Mapping;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VacationTracking.Domain.Models
 {
+    [Table("Company")]
     public class Company : BaseModel
     {
-        public Guid CompanyId { get; set; }
-        public string CompanyName { get; set; }
-        public string Address1 { get; set; }
-        public string Address2 { get; set; }
-        public string Country { get; set; }
-        public string Logo { get; set; }
-    }
-
-    public class CompaniesMap : EntityMap<Company>
-    {
-        public CompaniesMap()
+        public Company()
         {
-            Map(p => p.CompanyId).ToColumn("company_id");
-            Map(p => p.CompanyName).ToColumn("company_name");
-            Map(p => p.Address1).ToColumn("address_1");
-            Map(p => p.Address2).ToColumn("address_2");
-            Map(p => p.Country).ToColumn("country");
-            Map(p => p.Logo).ToColumn("logo");
-            Map(p => p.CreatedAt).ToColumn("created_at");
-            Map(p => p.CreatedBy).ToColumn("created_by");
-            Map(p => p.UpdatedAt).ToColumn("updated_at");
-            Map(p => p.UpdatedBy).ToColumn("updated_by");
+            CompanySettings = new HashSet<CompanySetting>();
+            Holidays = new HashSet<Holiday>();
+            LeaveTypes = new HashSet<LeaveType>();
+            Teams = new HashSet<Team>();
+            Users = new HashSet<User>();
         }
+
+        [Column("CompanyID")]
+        public int CompanyId { get; set; }
+        [StringLength(100)]
+        [Required]
+        public string CompanyName { get; set; }
+        [StringLength(500)]
+        public string Address { get; set; }
+        [StringLength(100)]
+        public string Country { get; set; }
+        [StringLength(500)]
+        public string Logo { get; set; }
+
+        public virtual ICollection<CompanySetting> CompanySettings { get; set; }
+        public virtual ICollection<Holiday> Holidays { get; set; }
+        public virtual ICollection<LeaveType> LeaveTypes { get; set; }
+        public virtual ICollection<Team> Teams { get; set; }
+        public virtual ICollection<User> Users { get; set; }
+
     }
 }

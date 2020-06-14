@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using VacationTracking.Data;
+using VacationTracking.Data.UnitOfWork;
 using VacationTracking.Domain.Commands.Vacation;
 using VacationTracking.Domain.Constants;
 using VacationTracking.Domain.Dtos;
@@ -26,39 +26,41 @@ namespace VacationTracking.Service.Commands.Vacation
 
         public async Task<VacationDto> Handle(CreateUserVacationCommand request, CancellationToken cancellationToken)
         {
-            Domain.Models.Vacation vacationEntity = MapToEntity(request);
+            throw new NotImplementedException();
 
-            //TODO: Check rule for vacation
-            /// IsUserId matched company_id
-            if (request.UserId == Guid.Empty)
-                throw new ArgumentNullException(nameof(request.UserId), "UserId cannot be empty");
+            //Domain.Models.Vacation vacationEntity = MapToEntity(request);
 
-            using (_unitOfWork)
-            {
-                var affectedRow = await _unitOfWork.VacationRepository.InsertAsync(vacationEntity);
-            }
+            ////TODO: Check rule for vacation
+            ///// IsUserId matched company_id
+            //if (request.UserId == Guid.Empty)
+            //    throw new ArgumentNullException(nameof(request.UserId), "UserId cannot be empty");
 
-            //TODO: Fire "vacationCreated" event
+            //using (_unitOfWork)
+            //{
+            //    var affectedRow = await _unitOfWork.VacationRepository.InsertAsync(vacationEntity);
+            //}
 
-            return _mapper.Map<VacationDto>(vacationEntity);
+            ////TODO: Fire "vacationCreated" event
+
+            //return _mapper.Map<VacationDto>(vacationEntity);
         }
 
         private Domain.Models.Vacation MapToEntity(CreateUserVacationCommand request)
         {
-            var vacationEntity = new Domain.Models.Vacation();
-            Guid vacationId = Guid.NewGuid();
+            throw new NotImplementedException();
+            //var vacationEntity = new Domain.Models.Vacation();
 
-            vacationEntity.VacationId = vacationId;
-            vacationEntity.UserId = request.UserId;
-            vacationEntity.ApproverId = null;
-            vacationEntity.LeaveTypeId = request.LeaveTypeId;
-            vacationEntity.VacationStatus = VacationStatus.Approved;
-            vacationEntity.StartDate = request.StartDate;
-            vacationEntity.EndDate = request.EndDate;
-            vacationEntity.Reason = request.Reason;
-            vacationEntity.CreatedAt = DateTime.Now;
-            vacationEntity.CreatedBy = request.UserId;
-            return vacationEntity;
+            //vacationEntity.VacationId = vacationId;
+            //vacationEntity.UserId = request.UserId;
+            //vacationEntity.ApproverId = null;
+            //vacationEntity.LeaveTypeId = request.LeaveTypeId;
+            //vacationEntity.VacationStatus = VacationStatus.Approved;
+            //vacationEntity.StartDate = request.StartDate;
+            //vacationEntity.EndDate = request.EndDate;
+            //vacationEntity.Reason = request.Reason;
+            //vacationEntity.CreatedAt = DateTime.Now;
+            //vacationEntity.CreatedBy = request.UserId;
+            //return vacationEntity;
         }
     }
 }

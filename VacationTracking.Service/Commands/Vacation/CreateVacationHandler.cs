@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using VacationTracking.Data;
+using VacationTracking.Data.UnitOfWork;
 using VacationTracking.Domain.Commands.Vacation;
 using VacationTracking.Domain.Constants;
 using VacationTracking.Domain.Dtos;
@@ -27,36 +27,39 @@ namespace VacationTracking.Service.Commands.Vacation
 
         public async Task<VacationDto> Handle(CreateVacationCommand request, CancellationToken cancellationToken)
         {
-            Domain.Models.Vacation vacationEntity = MapToEntity(request);
+            throw new NotImplementedException();
 
-            //TODO: Check rule for vacation
+            //Domain.Models.Vacation vacationEntity = MapToEntity(request);
 
-            using (_unitOfWork)
-            {
-                var affectedRow = await _unitOfWork.VacationRepository.InsertAsync(vacationEntity);
-            }
+            ////TODO: Check rule for vacation
 
-            //TODO: Fire "teamCreated" event
+            //using (_unitOfWork)
+            //{
+            //    var affectedRow = await _unitOfWork.VacationRepository.InsertAsync(vacationEntity);
+            //}
 
-            return _mapper.Map<VacationDto>(vacationEntity);
+            ////TODO: Fire "teamCreated" event
+
+            //return _mapper.Map<VacationDto>(vacationEntity);
         }
 
         private Domain.Models.Vacation MapToEntity(CreateVacationCommand request)
         {
-            var vacationEntity = new Domain.Models.Vacation();
-            Guid vacationId = Guid.NewGuid();
-            vacationEntity.VacationId = vacationId;
-            vacationEntity.UserId = request.UserId;
-            vacationEntity.ApproverId = null;
-            vacationEntity.LeaveTypeId = request.LeaveTypeId;
-            vacationEntity.VacationStatus = VacationStatus.Pending;
-            vacationEntity.StartDate = request.StartDate;
-            vacationEntity.EndDate = request.EndDate;
-            vacationEntity.Reason = request.Reason;
-            vacationEntity.IsHalfDay = request.IsHalfDay;
-            vacationEntity.CreatedAt = DateTime.Now;
-            vacationEntity.CreatedBy = request.UserId;
-            return vacationEntity;
+            throw new NotImplementedException();
+            //var vacationEntity = new Domain.Models.Vacation();
+            //Guid vacationId = Guid.NewGuid();
+            //vacationEntity.VacationId = vacationId;
+            //vacationEntity.UserId = request.UserId;
+            //vacationEntity.ApproverId = null;
+            //vacationEntity.LeaveTypeId = request.LeaveTypeId;
+            //vacationEntity.VacationStatus = VacationStatus.Pending;
+            //vacationEntity.StartDate = request.StartDate;
+            //vacationEntity.EndDate = request.EndDate;
+            //vacationEntity.Reason = request.Reason;
+            //vacationEntity.IsHalfDay = request.IsHalfDay;
+            //vacationEntity.CreatedAt = DateTime.Now;
+            //vacationEntity.CreatedBy = request.UserId;
+            //return vacationEntity;
         }
     }
 }

@@ -1,18 +1,16 @@
 ﻿using MediatR;
-using System;
 
 namespace VacationTracking.Domain.Commands.LeaveType
 {
     public class DeleteLeaveTypeCommand : IRequest<bool>
     {
-        public DeleteLeaveTypeCommand(Guid leaveTypeId, Guid companyId)
+        public DeleteLeaveTypeCommand(int leaveTypeId, int companyId)
         {
             LeaveTypeId = leaveTypeId;
             CompanyId = companyId;
         }
 
-        public Guid LeaveTypeId { get; set; }
-        public Guid CompanyId { get; set; }
-
+        public int LeaveTypeId { get; set; }
+        public int CompanyId { get; set; }
     }
 }

@@ -1,35 +1,36 @@
-﻿using Dapper.FluentMap.Mapping;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VacationTracking.Domain.Models
 {
-    public class Holiday :BaseModel
+    [Table("Holiday")]
+    public class Holiday : BaseModel
     {
-        public Guid HolidayId { get; set; }
-        public Guid CompanyId { get; set; }
-        public string HolidayName { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public bool IsFullDay { get; set; }
-        
-        public List<Team> Teams { get; set; }
-    }
-
-    public class HolidaysMap : EntityMap<Holiday>
-    {
-        public HolidaysMap()
+        public Holiday()
         {
-            Map(p => p.HolidayId).ToColumn("holiday_id");
-            Map(p => p.CompanyId).ToColumn("company_id");
-            Map(p => p.HolidayName).ToColumn("name");
-            Map(p => p.StartDate).ToColumn("start_date");
-            Map(p => p.EndDate).ToColumn("end_date");
-            Map(p => p.IsFullDay).ToColumn("is_full_day");
-            Map(p => p.CreatedAt).ToColumn("created_at");
-            Map(p => p.CreatedBy).ToColumn("created_by");
-            Map(p => p.UpdatedAt).ToColumn("updated_at");
-            Map(p => p.UpdatedBy).ToColumn("updated_by");
+            HolidayTeam = new HashSet<HolidayTeam>();
         }
+        [Column("HolidayID")]
+        public int HolidayId { get; set; }
+        
+        [Column("CompanyID")]
+        public int CompanyId { get; set; }
+        
+        [Required]
+        [StringLength(100)]
+        public string Name { get; set; }
+        
+        [Column(TypeName = "date")]
+        public DateTime StartDate { get; set; }
+        
+        [Column(TypeName = "date")]
+        public DateTime EndDate { get; set; }
+        
+        public bool IsFullDay { get; set; }
+
+        public virtual Company Company { get; set; }
+        public virtual ICollection<HolidayTeam> HolidayTeam { get; set; }
     }
 }

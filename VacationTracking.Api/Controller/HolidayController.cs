@@ -34,12 +34,12 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(typeof(HolidayDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<ActionResult<HolidayDto>> GetHolidayAsync(Guid id)
+        public async Task<ActionResult<HolidayDto>> GetHolidayAsync(int id)
         {
             //TODO: Set companyId from logged-in users
             Guid companyId = new Guid(_companyId);
 
-            return Single(await QueryAsync(new GetHolidayQuery(id, companyId)));
+            return Single(await QueryAsync(new GetHolidayQuery(id, 1)));
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace VacationTracking.Api.Controller
             //TODO: Set companyId from logged-in users
             Guid companyId = new Guid(_companyId);
 
-            return Single(await QueryAsync(new GetHolidayListQuery(companyId)));
+            return Single(await QueryAsync(new GetHolidayListQuery(1)));
         }
 
         [HttpPost]
@@ -64,17 +64,15 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(500)]
         public async Task<ActionResult<HolidayDto>> CreateHolidayAsync([FromBody]HolidayModel model)
         {
-            Guid companyId = new Guid(_companyId);
-            Guid userId = new Guid(_userId);
-
-            var request = new CreateHolidayCommand(companyId, 
-                                                   userId, 
+            var request = new CreateHolidayCommand(companyId: 1, 
+                                                   userId: 1, 
                                                    model.Teams, 
                                                    model.EndDate, 
                                                    model.StartDate, 
                                                    model.Name, 
-                                                   model.IsForAllTeams, 
-                                                   model.IsFullDay);
+                                                   model.IsForAllTeams,
+                                                   model.IsFullDay
+                                                   );
 
             return Single(await CommandAsync(request));
         }
@@ -84,11 +82,11 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult<bool>> DeleteHolidayAsync(Guid id)
+        public async Task<ActionResult<bool>> DeleteHolidayAsync(int id)
         {
             Guid companyId = new Guid(_companyId);
 
-            var request = new DeleteHolidayCommand(id, companyId);
+            var request = new DeleteHolidayCommand(id, 1);
 
             return Single(await CommandAsync(request));
         }
@@ -98,24 +96,19 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(typeof(HolidayDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult<HolidayDto>> UpdateTeamAsync(Guid id, [FromBody]HolidayModel model)
+        public async Task<ActionResult<HolidayDto>> UpdateTeamAsync(int id, [FromBody]HolidayModel model)
         {
-            Guid companyId = new Guid(_companyId);
-            Guid userId = new Guid(_userId);
-
-            var request = new UpdateHolidayCommand(companyId,
-                                                   id,
-                                                   userId,
+            var request = new UpdateHolidayCommand(companyId : 1,
+                                                   holidayId: id,
+                                                   userId: 1,
                                                    model.Name,
                                                    model.StartDate,
-                                                   model.EndDate,
+                                                   model.EndDate,                                                   
+                                                   model.Teams,
                                                    model.IsFullDay,
-                                                   model.IsForAllTeams,
-                                                   model.Teams);
+                                                   model.IsForAllTeams);
 
             return Single(await CommandAsync(request));
         }
-
-
     }
 }

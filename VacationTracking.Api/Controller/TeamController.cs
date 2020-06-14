@@ -32,12 +32,14 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(typeof(TeamDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<ActionResult<TeamDto>> GetTeamAsync(Guid id)
+        public async Task<ActionResult<TeamDto>> GetTeamAsync(int id)
         {
-            //TODO: Set companyId from logged-in users
+            // TODO: Check permission. Only Admin and Owner account can run this
+            // TODO: Set companyId from logged-in users
             Guid companyId = new Guid(_companyId);
 
-            return Single(await QueryAsync(new GetTeamQuery(id, companyId)));
+            //return Single(await QueryAsync(new GetTeamQuery(id, companyId)));
+            return Single(await QueryAsync(new GetTeamQuery(1, 1, 3)));
         }
 
         /// <summary>
@@ -53,7 +55,7 @@ namespace VacationTracking.Api.Controller
             //TODO: Set companyId from logged-in users
             Guid companyId = new Guid(_companyId);
 
-            return Single(await QueryAsync(new GetTeamListQuery(companyId)));
+            return Single(await QueryAsync(new GetTeamListQuery(1)));
         }
 
         [HttpPost]
@@ -65,7 +67,7 @@ namespace VacationTracking.Api.Controller
             Guid companyId = new Guid(_companyId);
             Guid userId = new Guid(_userId);
 
-            var request = new CreateTeamCommand(companyId, userId, model.Name, model.Members, model.Approvers);
+            var request = new CreateTeamCommand(companyId: 1, userId: 1, model.Name, model.Members, model.Approvers);
 
             return Single(await CommandAsync(request));
         }
@@ -75,12 +77,12 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(typeof(TeamDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult<TeamDto>> UpdateTeamAsync(Guid id, [FromBody]TeamModel model)
+        public async Task<ActionResult<TeamDto>> UpdateTeamAsync(int id, [FromBody]TeamModel model)
         {
             Guid companyId = new Guid(_companyId);
             Guid userId = new Guid(_userId);
 
-            var request = new UpdateTeamCommand(companyId, userId, id, model.Name, model.Members, model.Approvers);
+            var request = new UpdateTeamCommand(companyId: 1, userId: 1, id, model.Name, model.Members, model.Approvers);
 
             return Single(await CommandAsync(request));
         }
@@ -90,11 +92,11 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult<bool>> DeleteTeamAsync(Guid id)
+        public async Task<ActionResult<bool>> DeleteTeamAsync(int id)
         {
             Guid companyId = new Guid(_companyId);
             
-            var request = new DeleteTeamCommand(id, companyId);
+            var request = new DeleteTeamCommand(id, 1);
 
             return Single(await CommandAsync(request));
         }

@@ -1,18 +1,16 @@
 ﻿using MediatR;
-using System;
 
 namespace VacationTracking.Domain.Commands.Holiday
 {
     public class DeleteHolidayCommand : IRequest<bool>
     {
-        public DeleteHolidayCommand(Guid holidayId, Guid companyId)
+        public DeleteHolidayCommand(int holidayId, int companyId)
         {
             HolidayId = holidayId;
             CompanyId = companyId;
         }
 
-        public Guid HolidayId { get; set; }
-        public Guid CompanyId { get; set; }
-
+        public int HolidayId { get; set; }
+        public int CompanyId { get; set; }
     }
 }

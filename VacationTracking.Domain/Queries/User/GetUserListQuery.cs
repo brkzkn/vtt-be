@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
 using VacationTracking.Domain.Dtos;
 
 namespace VacationTracking.Domain.Queries.User
 {
-    public class GetUserListQuery : QueryBase<IList<UserDto>>
+    public class GetUserListQuery : QueryBase<IEnumerable<UserDto>>
     {
-        public GetUserListQuery(Guid companyId)
+        public GetUserListQuery(int companyId)
         {
             CompanyId = companyId;
         }
 
-        public Guid CompanyId { get; set; }
+        public int CompanyId { get; set; }
     }
 }
