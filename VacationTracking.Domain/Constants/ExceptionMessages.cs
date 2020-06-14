@@ -9,5 +9,9 @@
         public const string InvalidUserId = "InvalidUserId";
         public const string TeamNameAlreadyExist = "TeamNameAlreadyExist";
         public const string DefaultTeamCannotDelete = "DefaultTeamCannotDelete";
+        public const string VacationDateIsNotValid = "VacationDateIsNotValid";
+        public const string VacationLeaveTypeIsNotValid = "VacationLeaveTypeIsNotValid";
+        public const string LeaveTypeDoesNotAllowNegativeBalance = "LeaveTypeDoesNotAllowNegativeBalance";
+        public const string VacationReasonIsRequired = "VacationReasonIsRequired";
     }
 }
