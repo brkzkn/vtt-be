@@ -12,6 +12,7 @@ using VacationTracking.Domain.Enums;
 using VacationTracking.Domain.Exceptions;
 using VacationTracking.Domain.Models;
 using VacationTracking.Service.Commands.Vacation;
+using VacationTracking.Service.Validation.Commands.Vacation;
 using VacationTracking.Test.Context;
 using VacationTracking.Test.Data;
 using Xunit;
@@ -24,6 +25,11 @@ namespace VacationTracking.Test.CommandTests
         private readonly VacationTrackingDbContextFixture _fixture;
         private readonly NullLogger<CreateVacationHandler> _logger;
         private readonly IMapper _mapper;
+        private readonly IRepository<Vacation> _repository;
+        private readonly IRepository<Holiday> _holidayRepository;
+        private readonly IRepository<LeaveType> _leaveTypeRepository;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly CreateVacationHandler _handler;
         public CreateVacationHandlerTest(VacationTrackingDbContextFixture fixture)
         {
             _fixture = fixture;
@@ -44,6 +50,18 @@ namespace VacationTracking.Test.CommandTests
                 _fixture.Context.TeamMembers.AddRange(Seed.TeamMembers());
                 _fixture.Context.SaveChanges();
             });
+
+            _repository = new Repository<Vacation>(_fixture.Context);
+            _holidayRepository = new Repository<Holiday>(_fixture.Context);
+            _leaveTypeRepository = new Repository<LeaveType>(_fixture.Context);
+            _unitOfWork = new UnitOfWork(_fixture.Context);
+
+            _handler = new CreateVacationHandler(unitOfWork: _unitOfWork,
+                                                 repository: _repository, 
+                                                 holidayRepository: _holidayRepository, 
+                                                 leaveTypeRepository: _leaveTypeRepository, 
+                                                 logger: _logger, 
+                                                 mapper: _mapper);
         }
 
         [Fact]
@@ -69,10 +87,7 @@ namespace VacationTracking.Test.CommandTests
             });
             _fixture.Context.SaveChanges();
 
-            IRepository<Vacation> repository = new Repository<Vacation>(_fixture.Context);
-            IUnitOfWork unitOfWork = new UnitOfWork(_fixture.Context);
 
-            var handler = new CreateVacationHandler(unitOfWork, repository, _logger, _mapper);
             DateTime startDate = new DateTime(year: 2020, month: 6, day: 8);
             DateTime endDate = new DateTime(year: 2020, month: 6, day: 10);
 
@@ -85,9 +100,11 @@ namespace VacationTracking.Test.CommandTests
                                                     isHalfDay: false);
 
             var cancellationToken = new CancellationToken();
+            var validator = new VacationCommandValidator();
 
             // Act
-            var result = await handler.Handle(request, cancellationToken);
+            var result = await _handler.Handle(request, cancellationToken);
+            var validationResult  = await validator.ValidateAsync(request);
 
             // Assert
             Assert.Equal(1, result.VacationId);
@@ -96,6 +113,7 @@ namespace VacationTracking.Test.CommandTests
             Assert.Equal(1, result.CreatedBy);
             Assert.False(result.IsHalfDay);
             Assert.Equal("test reason", result.Reason);
+            Assert.True(validationResult.IsValid);
         }
 
         [Fact]
@@ -132,10 +150,6 @@ namespace VacationTracking.Test.CommandTests
 
             _fixture.Context.SaveChanges();
 
-            IRepository<Vacation> repository = new Repository<Vacation>(_fixture.Context);
-            IUnitOfWork unitOfWork = new UnitOfWork(_fixture.Context);
-
-            var handler = new CreateVacationHandler(unitOfWork, repository, _logger, _mapper);
             DateTime startDate = new DateTime(year: 2020, month: 6, day: 8);
             DateTime endDate = new DateTime(year: 2020, month: 6, day: 10);
 
@@ -150,7 +164,7 @@ namespace VacationTracking.Test.CommandTests
             var cancellationToken = new CancellationToken();
 
             // Act
-            var result = await handler.Handle(request, cancellationToken);
+            var result = await _handler.Handle(request, cancellationToken);
 
             // Assert
             Assert.Equal(1, result.VacationId);
@@ -170,13 +184,13 @@ namespace VacationTracking.Test.CommandTests
                 CompanyId = 1,
                 CreatedAt = DateTime.Now,
                 CreatedBy = -1,
-                IsActive = false,
+                IsActive = true,
                 DefaultDaysPerYear = 1,
                 IsDefault = true,
                 IsAllowNegativeBalance = true,
-                IsApproverRequired = false,
+                IsApproverRequired = true,
                 IsDeleted = false,
-                IsHalfDaysActivated = false,
+                IsHalfDaysActivated = true,
                 IsHideLeaveTypeName = false,
                 IsReasonRequired = true,
                 IsUnlimited = true,
@@ -185,10 +199,6 @@ namespace VacationTracking.Test.CommandTests
             });
             _fixture.Context.SaveChanges();
 
-            IRepository<Vacation> repository = new Repository<Vacation>(_fixture.Context);
-            IUnitOfWork unitOfWork = new UnitOfWork(_fixture.Context);
-
-            var handler = new CreateVacationHandler(unitOfWork, repository, _logger, _mapper);
             DateTime startDate = new DateTime(year: 2020, month: 6, day: 8);
             DateTime endDate = new DateTime(year: 2020, month: 6, day: 20);
 
@@ -198,13 +208,13 @@ namespace VacationTracking.Test.CommandTests
                                                     startDate,
                                                     endDate,
                                                     reason: "test reason",
-                                                    isHalfDay: true);
+                                                    isHalfDay: false);
 
             var cancellationToken = new CancellationToken();
-
+            var validator = new VacationCommandValidator();
             // Act
-            var result = await handler.Handle(request, cancellationToken);
-
+            var result = await _handler.Handle(request, cancellationToken);
+            var validation = await validator.ValidateAsync(request);
             // Assert
             Assert.Equal(1, result.VacationId);
             Assert.Equal(VacationStatus.Pending, result.VacationStatus);
@@ -212,6 +222,7 @@ namespace VacationTracking.Test.CommandTests
             Assert.Equal(1, result.CreatedBy);
             Assert.False(result.IsHalfDay);
             Assert.Equal("test reason", result.Reason);
+            Assert.True(validation.IsValid);
         }
 
         [Fact]
@@ -238,10 +249,6 @@ namespace VacationTracking.Test.CommandTests
             });
             _fixture.Context.SaveChanges();
 
-            IRepository<Vacation> repository = new Repository<Vacation>(_fixture.Context);
-            IUnitOfWork unitOfWork = new UnitOfWork(_fixture.Context);
-
-            var handler = new CreateVacationHandler(unitOfWork, repository, _logger, _mapper);
             DateTime startDate = new DateTime(year: 2020, month: 6, day: 8);
             DateTime endDate = new DateTime(year: 2020, month: 6, day: 20);
 
@@ -256,7 +263,7 @@ namespace VacationTracking.Test.CommandTests
             var cancellationToken = new CancellationToken();
 
             // Act
-            var result = await handler.Handle(request, cancellationToken);
+            var result = await _handler.Handle(request, cancellationToken);
 
             // Assert
             Assert.Equal(1, result.VacationId);
@@ -276,7 +283,7 @@ namespace VacationTracking.Test.CommandTests
                 CompanyId = 1,
                 CreatedAt = DateTime.Now,
                 CreatedBy = -1,
-                IsActive = false,
+                IsActive = true,
                 DefaultDaysPerYear = 0,
                 IsDefault = true,
                 IsAllowNegativeBalance = false,
@@ -291,10 +298,6 @@ namespace VacationTracking.Test.CommandTests
             });
             _fixture.Context.SaveChanges();
 
-            IRepository<Vacation> repository = new Repository<Vacation>(_fixture.Context);
-            IUnitOfWork unitOfWork = new UnitOfWork(_fixture.Context);
-
-            var handler = new CreateVacationHandler(unitOfWork, repository, _logger, _mapper);
             DateTime startDate = new DateTime(year: 2020, month: 6, day: 8);
             DateTime endDate = new DateTime(year: 2020, month: 6, day: 20);
 
@@ -303,13 +306,13 @@ namespace VacationTracking.Test.CommandTests
                                                     leaveTypeId: 1,
                                                     startDate,
                                                     endDate,
-                                                    reason: string.Empty,
-                                                    isHalfDay: true);
+                                                    reason: "test reason",
+                                                    isHalfDay: false);
 
             var cancellationToken = new CancellationToken();
 
             // Act
-            var result = await handler.Handle(request, cancellationToken);
+            var result = await _handler.Handle(request, cancellationToken);
 
             // Assert
             Assert.Equal(1, result.VacationId);
@@ -344,10 +347,6 @@ namespace VacationTracking.Test.CommandTests
             });
             _fixture.Context.SaveChanges();
 
-            IRepository<Vacation> repository = new Repository<Vacation>(_fixture.Context);
-            IUnitOfWork unitOfWork = new UnitOfWork(_fixture.Context);
-
-            var handler = new CreateVacationHandler(unitOfWork, repository, _logger, _mapper);
             DateTime startDate = new DateTime(year: 2020, month: 6, day: 8);
             DateTime endDate = new DateTime(year: 2020, month: 6, day: 20);
 
@@ -362,7 +361,7 @@ namespace VacationTracking.Test.CommandTests
             var cancellationToken = new CancellationToken();
 
             // Act
-            var result = await handler.Handle(request, cancellationToken);
+            var result = await _handler.Handle(request, cancellationToken);
 
             // Assert
             Assert.Equal(1, result.VacationId);
@@ -382,13 +381,13 @@ namespace VacationTracking.Test.CommandTests
                 CompanyId = 1,
                 CreatedAt = DateTime.Now,
                 CreatedBy = -1,
-                IsActive = false,
+                IsActive = true,
                 DefaultDaysPerYear = 2,
                 IsDefault = true,
                 IsAllowNegativeBalance = false,
                 IsApproverRequired = true,
                 IsDeleted = false,
-                IsHalfDaysActivated = false,
+                IsHalfDaysActivated = true,
                 IsHideLeaveTypeName = false,
                 IsReasonRequired = true,
                 IsUnlimited = false,
@@ -408,10 +407,6 @@ namespace VacationTracking.Test.CommandTests
             });
             _fixture.Context.SaveChanges();
 
-            IRepository<Vacation> repository = new Repository<Vacation>(_fixture.Context);
-            IUnitOfWork unitOfWork = new UnitOfWork(_fixture.Context);
-
-            var handler = new CreateVacationHandler(unitOfWork, repository, _logger, _mapper);
             DateTime startDate = new DateTime(year: 2020, month: 6, day: 8);
             DateTime endDate = new DateTime(year: 2020, month: 6, day: 8);
 
@@ -420,21 +415,23 @@ namespace VacationTracking.Test.CommandTests
                                                     leaveTypeId: 1,
                                                     startDate,
                                                     endDate,
-                                                    reason: string.Empty,
+                                                    reason: "test reason",
                                                     isHalfDay: true);
 
             var cancellationToken = new CancellationToken();
-
+            var validator = new VacationCommandValidator();
             // Act
-            var result = await handler.Handle(request, cancellationToken);
+            var result = await _handler.Handle(request, cancellationToken);
+            var validation = await validator.ValidateAsync(request);
 
             // Assert
-            Assert.Equal(1, result.VacationId);
+            Assert.Equal(2, result.VacationId);
             Assert.Equal(VacationStatus.Pending, result.VacationStatus);
             Assert.Equal(DateTime.Now.Date, result.CreatedAt.Date);
             Assert.Equal(1, result.CreatedBy);
-            Assert.False(result.IsHalfDay);
+            Assert.True(result.IsHalfDay);
             Assert.Equal("test reason", result.Reason);
+            Assert.True(validation.IsValid);
         }
 
         [Fact]
@@ -471,12 +468,8 @@ namespace VacationTracking.Test.CommandTests
 
             _fixture.Context.SaveChanges();
 
-            IRepository<Vacation> repository = new Repository<Vacation>(_fixture.Context);
-            IUnitOfWork unitOfWork = new UnitOfWork(_fixture.Context);
-
-            var handler = new CreateVacationHandler(unitOfWork, repository, _logger, _mapper);
-            DateTime startDate = new DateTime(year: 2020, month: 6, day: 8);
-            DateTime endDate = new DateTime(year: 2020, month: 6, day: 10);
+            DateTime startDate = new DateTime(year: 2020, month: 6, day: 7);
+            DateTime endDate = new DateTime(year: 2020, month: 6, day: 11);
 
             var request = new CreateVacationCommand(companyId: 1,
                                                     userId: 1,
@@ -491,7 +484,7 @@ namespace VacationTracking.Test.CommandTests
             // Act & Assert
             var exception = await Assert.ThrowsAsync<VacationTrackingException>(async () =>
             {
-                var result = await handler.Handle(request, cancellationToken);
+                var result = await _handler.Handle(request, cancellationToken);
             });
 
             Assert.Equal(ExceptionMessages.VacationDateIsNotValid, exception.Message);
@@ -507,7 +500,7 @@ namespace VacationTracking.Test.CommandTests
                 CompanyId = 1,
                 CreatedAt = DateTime.Now,
                 CreatedBy = -1,
-                IsActive = false,
+                IsActive = true,
                 DefaultDaysPerYear = 2,
                 IsDefault = true,
                 IsAllowNegativeBalance = false,
@@ -515,7 +508,7 @@ namespace VacationTracking.Test.CommandTests
                 IsDeleted = false,
                 IsHalfDaysActivated = false,
                 IsHideLeaveTypeName = false,
-                IsReasonRequired = true,
+                IsReasonRequired = false,
                 IsUnlimited = false,
                 LeaveTypeName = "Test Leave Type",
                 LeaveTypeId = 1
@@ -524,19 +517,15 @@ namespace VacationTracking.Test.CommandTests
             {
                 CreatedAt = DateTime.Now,
                 CreatedBy = -1,
-                EndDate = new DateTime(year: 2020, month: 6, day: 8),
+                EndDate = new DateTime(year: 2020, month: 6, day: 10),
                 IsHalfDay = false,
                 LeaveTypeId = 1,
-                StartDate = new DateTime(year: 2020, month: 6, day: 8),
+                StartDate = new DateTime(year: 2020, month: 6, day: 6),
                 UserId = 1,
                 VacationStatus = VacationStatus.Approved
             });
             _fixture.Context.SaveChanges();
 
-            IRepository<Vacation> repository = new Repository<Vacation>(_fixture.Context);
-            IUnitOfWork unitOfWork = new UnitOfWork(_fixture.Context);
-
-            var handler = new CreateVacationHandler(unitOfWork, repository, _logger, _mapper);
             DateTime startDate = new DateTime(year: 2020, month: 6, day: 8);
             DateTime endDate = new DateTime(year: 2020, month: 6, day: 8);
 
@@ -553,7 +542,7 @@ namespace VacationTracking.Test.CommandTests
             // Act & Assert
             var exception = await Assert.ThrowsAsync<VacationTrackingException>(async () =>
             {
-                var result = await handler.Handle(request, cancellationToken);
+                var result = await _handler.Handle(request, cancellationToken);
             });
 
             Assert.Equal(ExceptionMessages.VacationDateIsNotValid, exception.Message);
@@ -561,7 +550,65 @@ namespace VacationTracking.Test.CommandTests
         }
 
         [Fact]
-        public async Task Should_ThrowException_When_PassInvalidVacationType()
+        public async Task Should_ThrowException_When_VacationIsFullAndExistVacationDayIsHalf()
+        {
+            // Arrange
+            _fixture.Context.LeaveTypes.Add(new LeaveType()
+            {
+                CompanyId = 1,
+                CreatedAt = DateTime.Now,
+                CreatedBy = -1,
+                IsActive = true,
+                DefaultDaysPerYear = 2,
+                IsDefault = true,
+                IsAllowNegativeBalance = false,
+                IsApproverRequired = true,
+                IsDeleted = false,
+                IsHalfDaysActivated = false,
+                IsHideLeaveTypeName = false,
+                IsReasonRequired = false,
+                IsUnlimited = false,
+                LeaveTypeName = "Test Leave Type",
+                LeaveTypeId = 1
+            });
+            _fixture.Context.Vacations.Add(new Vacation()
+            {
+                CreatedAt = DateTime.Now,
+                CreatedBy = -1,
+                EndDate = new DateTime(year: 2020, month: 6, day: 6),
+                IsHalfDay = true,
+                LeaveTypeId = 1,
+                StartDate = new DateTime(year: 2020, month: 6, day: 6),
+                UserId = 1,
+                VacationStatus = VacationStatus.Approved
+            });
+            _fixture.Context.SaveChanges();
+
+            DateTime startDate = new DateTime(year: 2020, month: 6, day: 6);
+            DateTime endDate = new DateTime(year: 2020, month: 6, day: 6);
+
+            var request = new CreateVacationCommand(companyId: 1,
+                                                    userId: 1,
+                                                    leaveTypeId: 1,
+                                                    startDate,
+                                                    endDate,
+                                                    reason: string.Empty,
+                                                    isHalfDay: false);
+
+            var cancellationToken = new CancellationToken();
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<VacationTrackingException>(async () =>
+            {
+                var result = await _handler.Handle(request, cancellationToken);
+            });
+
+            Assert.Equal(ExceptionMessages.VacationDateIsNotValid, exception.Message);
+            Assert.Equal(400, exception.Code);
+        }
+
+        [Fact]
+        public async Task Should_ThrowException_When_PassInvalidLeaveTypeId()
         {
             // Arrange
             _fixture.Context.LeaveTypes.Add(new LeaveType()
@@ -594,10 +641,6 @@ namespace VacationTracking.Test.CommandTests
 
             _fixture.Context.SaveChanges();
 
-            IRepository<Vacation> repository = new Repository<Vacation>(_fixture.Context);
-            IUnitOfWork unitOfWork = new UnitOfWork(_fixture.Context);
-
-            var handler = new CreateVacationHandler(unitOfWork, repository, _logger, _mapper);
             DateTime startDate = new DateTime(year: 2020, month: 6, day: 8);
             DateTime endDate = new DateTime(year: 2020, month: 6, day: 10);
 
@@ -614,7 +657,7 @@ namespace VacationTracking.Test.CommandTests
             // Act & Assert
             var exception = await Assert.ThrowsAsync<VacationTrackingException>(async () =>
             {
-                var result = await handler.Handle(request, cancellationToken);
+                var result = await _handler.Handle(request, cancellationToken);
             });
 
             Assert.Equal(ExceptionMessages.VacationLeaveTypeIsNotValid, exception.Message);
@@ -655,10 +698,6 @@ namespace VacationTracking.Test.CommandTests
 
             _fixture.Context.SaveChanges();
 
-            IRepository<Vacation> repository = new Repository<Vacation>(_fixture.Context);
-            IUnitOfWork unitOfWork = new UnitOfWork(_fixture.Context);
-
-            var handler = new CreateVacationHandler(unitOfWork, repository, _logger, _mapper);
             DateTime startDate = new DateTime(year: 2020, month: 6, day: 8);
             DateTime endDate = new DateTime(year: 2020, month: 6, day: 10);
 
@@ -675,7 +714,7 @@ namespace VacationTracking.Test.CommandTests
             // Act & Assert
             var exception = await Assert.ThrowsAsync<VacationTrackingException>(async () =>
             {
-                var result = await handler.Handle(request, cancellationToken);
+                var result = await _handler.Handle(request, cancellationToken);
             });
 
             Assert.Equal(ExceptionMessages.VacationLeaveTypeIsNotValid, exception.Message);
@@ -691,7 +730,7 @@ namespace VacationTracking.Test.CommandTests
                 CompanyId = 1,
                 CreatedAt = DateTime.Now,
                 CreatedBy = -1,
-                IsActive = false,
+                IsActive = true,
                 DefaultDaysPerYear = 20,
                 IsDefault = true,
                 IsAllowNegativeBalance = false,
@@ -702,6 +741,7 @@ namespace VacationTracking.Test.CommandTests
                 IsReasonRequired = true,
                 IsUnlimited = false,
                 LeaveTypeName = "Test Leave Type",
+                LeaveTypeId = 1
             });
             _fixture.Context.Holidays.Add(new Holiday()
             {
@@ -716,10 +756,6 @@ namespace VacationTracking.Test.CommandTests
 
             _fixture.Context.SaveChanges();
 
-            IRepository<Vacation> repository = new Repository<Vacation>(_fixture.Context);
-            IUnitOfWork unitOfWork = new UnitOfWork(_fixture.Context);
-
-            var handler = new CreateVacationHandler(unitOfWork, repository, _logger, _mapper);
             DateTime startDate = new DateTime(year: 2020, month: 6, day: 8);
             DateTime endDate = new DateTime(year: 2020, month: 6, day: 10);
 
@@ -736,7 +772,7 @@ namespace VacationTracking.Test.CommandTests
             // Act & Assert
             var exception = await Assert.ThrowsAsync<VacationTrackingException>(async () =>
             {
-                var result = await handler.Handle(request, cancellationToken);
+                var result = await _handler.Handle(request, cancellationToken);
             });
 
             Assert.Equal(ExceptionMessages.VacationReasonIsRequired, exception.Message);
@@ -788,10 +824,6 @@ namespace VacationTracking.Test.CommandTests
             });
             _fixture.Context.SaveChanges();
 
-            IRepository<Vacation> repository = new Repository<Vacation>(_fixture.Context);
-            IUnitOfWork unitOfWork = new UnitOfWork(_fixture.Context);
-
-            var handler = new CreateVacationHandler(unitOfWork, repository, _logger, _mapper);
             DateTime startDate = new DateTime(year: 2020, month: 6, day: 8);
             DateTime endDate = new DateTime(year: 2020, month: 6, day: 10);
 
@@ -808,41 +840,10 @@ namespace VacationTracking.Test.CommandTests
             // Act & Assert
             var exception = await Assert.ThrowsAsync<VacationTrackingException>(async () =>
             {
-                var result = await handler.Handle(request, cancellationToken);
+                var result = await _handler.Handle(request, cancellationToken);
             });
 
             Assert.Equal(ExceptionMessages.LeaveTypeDoesNotAllowNegativeBalance, exception.Message);
-            Assert.Equal(400, exception.Code);
-        }
-
-        [Fact]
-        public async Task Should_ThrowException_When_EndDateGreaterThanStartDate()
-        {
-            // Arrange
-            IRepository<Vacation> repository = new Repository<Vacation>(_fixture.Context);
-            IUnitOfWork unitOfWork = new UnitOfWork(_fixture.Context);
-
-            var handler = new CreateVacationHandler(unitOfWork, repository, _logger, _mapper);
-            DateTime startDate = new DateTime(year: 2020, month: 6, day: 8);
-            DateTime endDate = new DateTime(year: 2020, month: 6, day: 3);
-
-            var request = new CreateVacationCommand(companyId: 1,
-                                                    userId: 1,
-                                                    leaveTypeId: 1,
-                                                    startDate,
-                                                    endDate,
-                                                    reason: string.Empty,
-                                                    isHalfDay: false);
-
-            var cancellationToken = new CancellationToken();
-
-            // Act & Assert
-            var exception = await Assert.ThrowsAsync<VacationTrackingException>(async () =>
-            {
-                var result = await handler.Handle(request, cancellationToken);
-            });
-
-            Assert.Equal(ExceptionMessages.VacationDateIsNotValid, exception.Message);
             Assert.Equal(400, exception.Code);
         }
 
@@ -855,7 +856,7 @@ namespace VacationTracking.Test.CommandTests
                 CompanyId = 1,
                 CreatedAt = DateTime.Now,
                 CreatedBy = -1,
-                IsActive = false,
+                IsActive = true,
                 DefaultDaysPerYear = 2,
                 IsDefault = true,
                 IsAllowNegativeBalance = false,
@@ -863,7 +864,7 @@ namespace VacationTracking.Test.CommandTests
                 IsDeleted = false,
                 IsHalfDaysActivated = false,
                 IsHideLeaveTypeName = false,
-                IsReasonRequired = true,
+                IsReasonRequired = false,
                 IsUnlimited = false,
                 LeaveTypeName = "Test Leave Type",
                 LeaveTypeId = 1
@@ -881,10 +882,6 @@ namespace VacationTracking.Test.CommandTests
             });
             _fixture.Context.SaveChanges();
 
-            IRepository<Vacation> repository = new Repository<Vacation>(_fixture.Context);
-            IUnitOfWork unitOfWork = new UnitOfWork(_fixture.Context);
-
-            var handler = new CreateVacationHandler(unitOfWork, repository, _logger, _mapper);
             DateTime startDate = new DateTime(year: 2020, month: 6, day: 8);
             DateTime endDate = new DateTime(year: 2020, month: 6, day: 8);
 
@@ -894,68 +891,17 @@ namespace VacationTracking.Test.CommandTests
                                                     startDate,
                                                     endDate,
                                                     reason: string.Empty,
-                                                    isHalfDay: false);
+                                                    isHalfDay: true);
 
             var cancellationToken = new CancellationToken();
 
             // Act & Assert
             var exception = await Assert.ThrowsAsync<VacationTrackingException>(async () =>
             {
-                var result = await handler.Handle(request, cancellationToken);
+                var result = await _handler.Handle(request, cancellationToken);
             });
 
-            Assert.Equal(ExceptionMessages.VacationDateIsNotValid, exception.Message);
-            Assert.Equal(400, exception.Code);
-        }
-
-        [Fact]
-        public async Task Should_ThrowException_When_PassNonWorkingDays()
-        {
-            // Arrange
-            _fixture.Context.LeaveTypes.Add(new LeaveType()
-            {
-                CompanyId = 1,
-                CreatedAt = DateTime.Now,
-                CreatedBy = -1,
-                IsActive = false,
-                DefaultDaysPerYear = 2,
-                IsDefault = true,
-                IsAllowNegativeBalance = false,
-                IsApproverRequired = true,
-                IsDeleted = false,
-                IsHalfDaysActivated = false,
-                IsHideLeaveTypeName = false,
-                IsReasonRequired = true,
-                IsUnlimited = false,
-                LeaveTypeName = "Test Leave Type",
-                LeaveTypeId = 1
-            });
-            _fixture.Context.SaveChanges();
-
-            IRepository<Vacation> repository = new Repository<Vacation>(_fixture.Context);
-            IUnitOfWork unitOfWork = new UnitOfWork(_fixture.Context);
-
-            var handler = new CreateVacationHandler(unitOfWork, repository, _logger, _mapper);
-            DateTime startDate = new DateTime(year: 2020, month: 6, day: 14);
-            DateTime endDate = new DateTime(year: 2020, month: 6, day: 14);
-
-            var request = new CreateVacationCommand(companyId: 1,
-                                                    userId: 1,
-                                                    leaveTypeId: 1,
-                                                    startDate,
-                                                    endDate,
-                                                    reason: string.Empty,
-                                                    isHalfDay: false);
-
-            var cancellationToken = new CancellationToken();
-
-            // Act & Assert
-            var exception = await Assert.ThrowsAsync<VacationTrackingException>(async () =>
-            {
-                var result = await handler.Handle(request, cancellationToken);
-            });
-
-            Assert.Equal(ExceptionMessages.VacationDateIsNotValid, exception.Message);
+            Assert.Equal(ExceptionMessages.LeaveTypeDoesNotAllowHalfDays, exception.Message);
             Assert.Equal(400, exception.Code);
         }
 
@@ -968,7 +914,7 @@ namespace VacationTracking.Test.CommandTests
                 CompanyId = 1,
                 CreatedAt = DateTime.Now,
                 CreatedBy = -1,
-                IsActive = false,
+                IsActive = true,
                 DefaultDaysPerYear = 2,
                 IsDefault = true,
                 IsAllowNegativeBalance = false,
@@ -994,10 +940,6 @@ namespace VacationTracking.Test.CommandTests
             });
             _fixture.Context.SaveChanges();
 
-            IRepository<Vacation> repository = new Repository<Vacation>(_fixture.Context);
-            IUnitOfWork unitOfWork = new UnitOfWork(_fixture.Context);
-
-            var handler = new CreateVacationHandler(unitOfWork, repository, _logger, _mapper);
             DateTime startDate = new DateTime(year: 2020, month: 6, day: 8);
             DateTime endDate = new DateTime(year: 2020, month: 6, day: 8);
 
@@ -1006,15 +948,15 @@ namespace VacationTracking.Test.CommandTests
                                                     leaveTypeId: 1,
                                                     startDate,
                                                     endDate,
-                                                    reason: string.Empty,
-                                                    isHalfDay: true);
+                                                    reason: "test reason",
+                                                    isHalfDay: false);
 
             var cancellationToken = new CancellationToken();
 
             // Act & Assert
             var exception = await Assert.ThrowsAsync<VacationTrackingException>(async () =>
             {
-                var result = await handler.Handle(request, cancellationToken);
+                var result = await _handler.Handle(request, cancellationToken);
             });
 
             Assert.Equal(ExceptionMessages.VacationDateIsNotValid, exception.Message);
@@ -1022,7 +964,31 @@ namespace VacationTracking.Test.CommandTests
         }
 
         [Fact]
-        public async Task Should_ThrowException_When_PassTwoDaysWithIsHalfDaysTrue()
+        public async Task Should_ValidatorReturnFalse_When_EndDateGreaterThanStartDate()
+        {
+            // Arrange
+            DateTime startDate = new DateTime(year: 2020, month: 6, day: 8);
+            DateTime endDate = new DateTime(year: 2020, month: 6, day: 3);
+
+            var request = new CreateVacationCommand(companyId: 1,
+                                                    userId: 1,
+                                                    leaveTypeId: 1,
+                                                    startDate,
+                                                    endDate,
+                                                    reason: string.Empty,
+                                                    isHalfDay: false);
+
+            var validator = new VacationCommandValidator();
+
+            // Act
+            var result = await validator.ValidateAsync(request);
+
+            //Assert
+            Assert.False(result.IsValid);
+        }
+
+        [Fact]
+        public async Task Should_ValidatorReturnFalse_When_PassTwoDaysWithIsHalfDaysTrue()
         {
             // Arrange
             _fixture.Context.LeaveTypes.Add(new LeaveType()
@@ -1030,7 +996,7 @@ namespace VacationTracking.Test.CommandTests
                 CompanyId = 1,
                 CreatedAt = DateTime.Now,
                 CreatedBy = -1,
-                IsActive = false,
+                IsActive = true,
                 DefaultDaysPerYear = 2,
                 IsDefault = true,
                 IsAllowNegativeBalance = false,
@@ -1056,10 +1022,6 @@ namespace VacationTracking.Test.CommandTests
             });
             _fixture.Context.SaveChanges();
 
-            IRepository<Vacation> repository = new Repository<Vacation>(_fixture.Context);
-            IUnitOfWork unitOfWork = new UnitOfWork(_fixture.Context);
-
-            var handler = new CreateVacationHandler(unitOfWork, repository, _logger, _mapper);
             DateTime startDate = new DateTime(year: 2020, month: 6, day: 8);
             DateTime endDate = new DateTime(year: 2020, month: 6, day: 10);
 
@@ -1071,17 +1033,12 @@ namespace VacationTracking.Test.CommandTests
                                                     reason: string.Empty,
                                                     isHalfDay: true);
 
-            var cancellationToken = new CancellationToken();
+            var validator = new VacationCommandValidator();
+            // Act
+            var validationResult = await validator.ValidateAsync(request);
 
-            // Act & Assert
-            var exception = await Assert.ThrowsAsync<VacationTrackingException>(async () =>
-            {
-                var result = await handler.Handle(request, cancellationToken);
-            });
-
-            Assert.Equal(ExceptionMessages.VacationDateIsNotValid, exception.Message);
-            Assert.Equal(400, exception.Code);
+            // Assert
+            Assert.False(validationResult.IsValid);
         }
-
     }
 }
