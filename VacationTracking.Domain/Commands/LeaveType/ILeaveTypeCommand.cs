@@ -1,17 +1,17 @@
 ﻿namespace VacationTracking.Domain.Commands.LeaveType
 {
-	public interface ILeaveTypeCommand
+    public interface ILeaveTypeCommand
     {
-		int CompanyId { get; set; }
-		int UserId { get; set; }
-		bool IsHalfDaysActivated { get; set; }
-		bool IsHideLeaveTypeName { get; set; }
-		string LeaveTypeName { get; set; }
-		bool IsApproverRequired { get; set; }
-		int DefaultDaysPerYear { get; set; }
-		bool IsUnlimited { get; set; }
-		bool IsReasonRequired { get; set; }
-		bool IsAllowNegativeBalance { get; set; }
-		string ColorCode { get; set; }
-	}
+        int CompanyId { get; }
+        int UserId { get; }
+        bool IsHalfDaysActivated { get; }
+        bool IsHideLeaveTypeName { get; }
+        string LeaveTypeName { get; }
+        bool IsApproverRequired { get; }
+        int DefaultDaysPerYear { get; }
+        bool IsUnlimited { get; }
+        bool IsReasonRequired { get; }
+        bool IsAllowNegativeBalance { get; }
+        string ColorCode { get; }
+    }
 }

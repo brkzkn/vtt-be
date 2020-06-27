@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using VacationTracking.Domain.Enums;
 
 namespace VacationTracking.Domain.Models
 {
@@ -21,7 +22,7 @@ namespace VacationTracking.Domain.Models
 
         [Required]
         [StringLength(50)]
-        public string VacationStatus { get; set; }
+        public VacationStatus VacationStatus { get; set; }
 
         [Column(TypeName = "datetime")]
         public DateTime StartDate { get; set; }

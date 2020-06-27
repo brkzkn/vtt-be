@@ -10,7 +10,7 @@ namespace VacationTracking.Domain.Commands.Holiday
             CompanyId = companyId;
         }
 
-        public int HolidayId { get; set; }
-        public int CompanyId { get; set; }
+        public int HolidayId { get; }
+        public int CompanyId { get; }
     }
 }

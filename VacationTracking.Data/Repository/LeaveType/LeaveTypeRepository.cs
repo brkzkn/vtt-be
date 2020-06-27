@@ -17,5 +17,18 @@ namespace VacationTracking.Data.Repository.LeaveType
 
             return result;
         }
+
+        public static async Task<LeaveTypeDb> GetActiveLeaveTypeAsync(this IRepository<LeaveTypeDb> repository,
+                                                                      int companyId,
+                                                                      int leaveTypeId)
+        {
+            var result = await repository.Queryable()
+                                         .SingleOrDefaultAsync(x => x.CompanyId == companyId
+                                                     && x.LeaveTypeId == leaveTypeId
+                                                     && x.IsActive == true
+                                                     && x.IsDeleted == false);
+
+            return result;
+        }
     }
 }

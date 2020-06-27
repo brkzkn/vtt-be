@@ -19,7 +19,7 @@ using CompanySettingsDb = VacationTracking.Domain.Models.CompanySetting;
 using UserSettingsDb = VacationTracking.Domain.Models.UserSetting;
 using SettingsDb = VacationTracking.Domain.Models.Setting;
 
-namespace VacationTracking.Test.CommandTests.Test.Setting
+namespace VacationTracking.Test.CommandTests
 {
     [Collection(nameof(VacationTrackingContext))]
     public class UpdateSettingHandlerTest

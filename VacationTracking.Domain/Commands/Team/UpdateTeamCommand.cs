@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using VacationTracking.Domain.Dtos;
 
@@ -7,8 +6,12 @@ namespace VacationTracking.Domain.Commands.Team
 {
     public class UpdateTeamCommand : IRequest<TeamDto>, ITeamCommand
     {
-        [JsonConstructor]
-        public UpdateTeamCommand(int companyId, int userId, int teamId, string name, List<int> members, List<int> approvers)
+        public UpdateTeamCommand(int companyId,
+                                 int userId,
+                                 int teamId,
+                                 string name,
+                                 List<int> members,
+                                 List<int> approvers)
         {
             Name = name;
             Members = members;
@@ -18,11 +21,11 @@ namespace VacationTracking.Domain.Commands.Team
             UserId = userId;
         }
 
-        public int CompanyId { get; set; }
-        public int UserId { get; set; }
-        public int TeamId { get; set; }
-        public string Name { get; set; }
-        public List<int> Members { get; set; }
-        public List<int> Approvers { get; set; }
+        public int CompanyId { get; }
+        public int UserId { get; }
+        public int TeamId { get; }
+        public string Name { get; }
+        public List<int> Members { get; }
+        public List<int> Approvers { get; }
     }
 }
