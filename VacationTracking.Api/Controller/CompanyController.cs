@@ -33,7 +33,7 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(typeof(CompanyDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<ActionResult<CompanyDto>> GetCompanyAsync(Guid id)
+        public async Task<ActionResult<CompanyDto>> GetCompanyAsync(int id)
         {
             throw new NotImplementedException();
             //TODO: Set companyId from logged-in users

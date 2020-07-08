@@ -57,6 +57,10 @@ namespace VacationTracking.Api
             services.AddScoped<IRepository<HolidayTeam>, Repository<HolidayTeam>>();
             services.AddScoped<IRepository<LeaveType>, Repository<LeaveType>>();
             services.AddScoped<IRepository<User>, Repository<User>>();
+            services.AddScoped<IRepository<Vacation>, Repository<Vacation>>();
+            services.AddScoped<IRepository<Setting>, Repository<Setting>>();
+            services.AddScoped<IRepository<CompanySetting>, Repository<CompanySetting>>();
+            services.AddScoped<IRepository<UserSetting>, Repository<UserSetting>>();
 
             services.AddMediatR(typeof(GetTeamHandler));
             services.AddAutoMapper(typeof(Service.Mapper.AutoMapping));
