@@ -14,8 +14,8 @@ namespace VacationTracking.Api.Controller
     {
         // TODO: User should has admin or owner permission
         //private const string _companyId = "3aba39de-386a-4b1c-b42e-262549ed11e0";
-        private const string _companyId = "3e4a39de-386a-4b1c-b42e-262549ed11e0";
-        private const string _userId = "739bc9fa-dfec-4757-80ae-371f7e6a3af6";
+        private const int _companyId = 1;
+        private const int _userId = 1;
         public UserController(IMediator mediator) : base(mediator)
         {
         }
@@ -33,9 +33,7 @@ namespace VacationTracking.Api.Controller
         public async Task<ActionResult<UserDto>> GetTeamAsync(int id)
         {
             //TODO: Set companyId from logged-in users
-            Guid companyId = new Guid(_companyId);
-
-            return Single(await QueryAsync(new GetUserQuery(id, 1)));
+            return Single(await QueryAsync(new GetUserQuery(id, _companyId)));
         }
 
         /// <summary>
@@ -50,10 +48,7 @@ namespace VacationTracking.Api.Controller
         public async Task<ActionResult<UserDto>> GetTeamAsync()
         {
             //TODO: Set companyId from logged-in users
-            Guid companyId = new Guid(_companyId);
-            Guid userId = new Guid(_userId);
-
-            return Single(await QueryAsync(new GetUserQuery(1, 1)));
+            return Single(await QueryAsync(new GetUserQuery(_userId, _companyId)));
         }
 
 
@@ -69,9 +64,7 @@ namespace VacationTracking.Api.Controller
         public async Task<ActionResult<IEnumerable<UserDto>>> GetAsync()
         {
             //TODO: Set companyId from logged-in users
-            Guid companyId = new Guid(_companyId);
-
-            return Single(await QueryAsync(new GetUserListQuery(companyId: 1)));
+            return Single(await QueryAsync(new GetUserListQuery(_companyId)));
         }
     }
 }

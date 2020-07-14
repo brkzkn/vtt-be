@@ -33,6 +33,7 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(typeof(CompanyDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
+        [Obsolete]
         public async Task<ActionResult<CompanyDto>> GetCompanyAsync(int id)
         {
             throw new NotImplementedException();
@@ -49,6 +50,7 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
+        [Obsolete]
         public async Task<ActionResult> UpdateInfo([FromBody]CompanySettingsModel model)
         {
             throw new NotImplementedException();

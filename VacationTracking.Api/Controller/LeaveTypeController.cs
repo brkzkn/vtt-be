@@ -16,8 +16,8 @@ namespace VacationTracking.Api.Controller
     {
         // TODO: User should has admin or owner permission
         //private const string _companyId = "3aba39de-386a-4b1c-b42e-262549ed11e0";
-        private const string _companyId = "3e4a39de-386a-4b1c-b42e-262549ed11e0";
-        private const string _userId = "739bc9fa-dfec-4757-80ae-371f7e6a3af6";
+        private const int _companyId = 1;
+        private const int _userId = 1;
         public LeaveTypeController(IMediator mediator) : base(mediator)
         {
 
@@ -36,9 +36,7 @@ namespace VacationTracking.Api.Controller
         public async Task<ActionResult<LeaveTypeDto>> GetAsync(int id)
         {
             //TODO: Set companyId from logged-in users
-            Guid companyId = new Guid(_companyId);
-
-            return Single(await QueryAsync(new GetLeaveTypeQuery(id, 1)));
+            return Single(await QueryAsync(new GetLeaveTypeQuery(id, _companyId)));
         }
 
         /// <summary>
@@ -52,8 +50,6 @@ namespace VacationTracking.Api.Controller
         public async Task<ActionResult<IList<LeaveTypeDto>>> GetListAsync()
         {
             //TODO: Set companyId from logged-in users
-            Guid companyId = new Guid(_companyId);
-
             return Single(await QueryAsync(new GetLeaveTypeListQuery(1)));
         }
 
@@ -63,13 +59,8 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(500)]
         public async Task<ActionResult<LeaveTypeDto>> CreateAsync([FromBody]LeaveTypeModel model)
         {
-            //Guid companyId = new Guid(_companyId);
-            //Guid userId = new Guid(_userId);
-            int companyId = 1;
-            int userId = 1;
-
-            var request = new CreateLeaveTypeCommand(companyId,
-                                                     userId,
+            var request = new CreateLeaveTypeCommand(_companyId,
+                                                     _userId,
                                                      model.IsHalfDaysActivated,
                                                      model.IsHideLeaveTypeName,
                                                      model.TypeName,
@@ -90,9 +81,7 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(500)]
         public async Task<ActionResult<bool>> DeleteAsync(int id)
         {
-            Guid companyId = new Guid(_companyId);
-
-            var request = new DeleteLeaveTypeCommand(id, 1);
+            var request = new DeleteLeaveTypeCommand(id, _companyId);
 
             return Single(await CommandAsync(request));
         }
@@ -104,11 +93,8 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(500)]
         public async Task<ActionResult<LeaveTypeDto>> UpdateAsync(int id, [FromBody]LeaveTypeModel model)
         {
-            Guid companyId = new Guid(_companyId);
-            Guid userId = new Guid(_userId);
-
-            var request = new UpdateLeaveTypeCommand(1,
-                                                     1,
+            var request = new UpdateLeaveTypeCommand(_companyId,
+                                                     _userId,
                                                      id,
                                                      model.IsHalfDaysActivated,
                                                      model.IsHideLeaveTypeName,

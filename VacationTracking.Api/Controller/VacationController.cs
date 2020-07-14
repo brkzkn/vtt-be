@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using VacationTracking.Api.Models;
@@ -16,8 +15,8 @@ namespace VacationTracking.Api.Controller
     {
         // TODO: User should has admin or owner permission
         //private const string _companyId = "3aba39de-386a-4b1c-b42e-262549ed11e0";
-        private const string _companyId = "3e4a39de-386a-4b1c-b42e-262549ed11e0";
-        private const string _userId = "739bc9fa-dfec-4757-80ae-371f7e6a3af6";
+        private const int _companyId = 1;
+        private const int _userId = 1;
 
         public VacationController(IMediator mediator) : base(mediator)
         {
@@ -36,9 +35,7 @@ namespace VacationTracking.Api.Controller
         public async Task<ActionResult<IList<VacationDto>>> GetAsync()
         {
             //TODO: Set companyId from logged-in users
-            Guid companyId = new Guid(_companyId);
-
-            return Single(await QueryAsync(new GetVacationListQuery(companyId)));
+            return Single(await QueryAsync(new GetVacationListQuery(_companyId)));
         }
 
         /// <summary>
@@ -69,20 +66,21 @@ namespace VacationTracking.Api.Controller
         }
 
         /// <summary>
-        /// Create vacation for spesific user
+        /// 
         /// </summary>
+        /// <param name="id">UserId</param>
+        /// <param name="model"></param>
+        /// <returns>Created Vacation object</returns>
         [HttpPost]
         [Route("{id}/user")]
         [ProducesResponseType(typeof(VacationDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult<VacationDto>> CreateUserVacationAsync(Guid id, [FromBody]VacationModel model)
+        public async Task<ActionResult<VacationDto>> CreateUserVacationAsync(int id, [FromBody]VacationModel model)
         {
-            Guid companyId = new Guid(_companyId);
-
-            var request = new CreateUserVacationCommand(1,//companyId,
-                                                    3, //id,
-                                                    1, //model.LeaveTypeId,
+            var request = new CreateUserVacationCommand(_companyId,
+                                                    id,
+                                                    model.LeaveTypeId,
                                                     model.StartDate,
                                                     model.EndDate,
                                                     model.Reason);
@@ -95,22 +93,15 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult<bool>> ResponseUserVacationAsync(Guid id, [FromBody]VacationResponseModel model)
+        public async Task<ActionResult<bool>> ResponseUserVacationAsync(int id, [FromBody]VacationResponseModel model)
         {
-            //Guid companyId = new Guid(_companyId);
-            //Guid userId = new Guid(_userId);
-
-            int companyId = 1;
-            int userId = 1;
-
-            var request = new UpdateVacationCommand(companyId,
-                                                    2, //id,
-                                                    userId,
+            var request = new UpdateVacationCommand(_companyId,
+                                                    id,
+                                                    _userId,
                                                     model.Status,
                                                     model.Note);
 
             return Single(await CommandAsync(request));
         }
-
     }
 }
