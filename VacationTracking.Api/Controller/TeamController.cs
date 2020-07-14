@@ -16,8 +16,8 @@ namespace VacationTracking.Api.Controller
     {
         // TODO: User should has admin or owner permission
         //private const string _companyId = "3aba39de-386a-4b1c-b42e-262549ed11e0";
-        private const string _companyId = "3e4a39de-386a-4b1c-b42e-262549ed11e0";
-        private const string _userId = "739bc9fa-dfec-4757-80ae-371f7e6a3af6";
+        private const int _companyId = 1;
+        private const int _userId = 1;
         public TeamController(IMediator mediator) : base(mediator)
         {
         }
@@ -36,10 +36,7 @@ namespace VacationTracking.Api.Controller
         {
             // TODO: Check permission. Only Admin and Owner account can run this
             // TODO: Set companyId from logged-in users
-            Guid companyId = new Guid(_companyId);
-
-            //return Single(await QueryAsync(new GetTeamQuery(id, companyId)));
-            return Single(await QueryAsync(new GetTeamQuery(1, 1, 3)));
+            return Single(await QueryAsync(new GetTeamQuery(id, _companyId, _userId)));
         }
 
         /// <summary>
@@ -53,9 +50,7 @@ namespace VacationTracking.Api.Controller
         public async Task<ActionResult<IList<TeamDto>>> GetAsync()
         {
             //TODO: Set companyId from logged-in users
-            Guid companyId = new Guid(_companyId);
-
-            return Single(await QueryAsync(new GetTeamListQuery(1)));
+            return Single(await QueryAsync(new GetTeamListQuery(_companyId)));
         }
 
         [HttpPost]
@@ -64,10 +59,7 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(500)]
         public async Task<ActionResult<TeamDto>> CreateTeamAsync([FromBody]TeamModel model)
         {
-            Guid companyId = new Guid(_companyId);
-            Guid userId = new Guid(_userId);
-
-            var request = new CreateTeamCommand(companyId: 1, userId: 1, model.Name, model.Members, model.Approvers);
+            var request = new CreateTeamCommand(_companyId, _userId, model.Name, model.Members, model.Approvers);
 
             return Single(await CommandAsync(request));
         }
@@ -79,10 +71,7 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(500)]
         public async Task<ActionResult<TeamDto>> UpdateTeamAsync(int id, [FromBody]TeamModel model)
         {
-            Guid companyId = new Guid(_companyId);
-            Guid userId = new Guid(_userId);
-
-            var request = new UpdateTeamCommand(companyId: 1, userId: 1, id, model.Name, model.Members, model.Approvers);
+            var request = new UpdateTeamCommand(_companyId, _userId, id, model.Name, model.Members, model.Approvers);
 
             return Single(await CommandAsync(request));
         }
@@ -94,26 +83,9 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(500)]
         public async Task<ActionResult<bool>> DeleteTeamAsync(int id)
         {
-            Guid companyId = new Guid(_companyId);
-            
-            var request = new DeleteTeamCommand(id, 1);
+            var request = new DeleteTeamCommand(id, _companyId);
 
             return Single(await CommandAsync(request));
         }
-
-        /// <summary>
-        /// Get team list
-        /// </summary>
-        /// <returns>List of teams</returns>
-        [HttpGet]
-        [Route("test")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
-        public ActionResult Test()
-        {
-            return Ok("perfect");
-        }
-
     }
 }

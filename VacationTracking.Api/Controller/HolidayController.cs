@@ -16,8 +16,8 @@ namespace VacationTracking.Api.Controller
     {
         // TODO: User should has admin or owner permission
         //private const string _companyId = "3aba39de-386a-4b1c-b42e-262549ed11e0";
-        private const string _companyId = "3e4a39de-386a-4b1c-b42e-262549ed11e0";
-        private const string _userId = "739bc9fa-dfec-4757-80ae-371f7e6a3af6";
+        private const int _companyId = 1;
+        private const int _userId = 1;
 
         public HolidayController(IMediator mediator) : base(mediator)
         {
@@ -37,9 +37,8 @@ namespace VacationTracking.Api.Controller
         public async Task<ActionResult<HolidayDto>> GetHolidayAsync(int id)
         {
             //TODO: Set companyId from logged-in users
-            Guid companyId = new Guid(_companyId);
 
-            return Single(await QueryAsync(new GetHolidayQuery(id, 1)));
+            return Single(await QueryAsync(new GetHolidayQuery(id, _companyId)));
         }
 
         /// <summary>
@@ -53,19 +52,21 @@ namespace VacationTracking.Api.Controller
         public async Task<ActionResult<IList<HolidayDto>>> GetHolidayListAsync()
         {
             //TODO: Set companyId from logged-in users
-            Guid companyId = new Guid(_companyId);
-
-            return Single(await QueryAsync(new GetHolidayListQuery(1)));
+            return Single(await QueryAsync(new GetHolidayListQuery(_companyId)));
         }
 
+        /// <summary>
+        /// Create holiday
+        /// </summary>
+        /// <returns>Return created HolidayDto</returns>
         [HttpPost]
         [ProducesResponseType(typeof(HolidayDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
         public async Task<ActionResult<HolidayDto>> CreateHolidayAsync([FromBody]HolidayModel model)
         {
-            var request = new CreateHolidayCommand(companyId: 1, 
-                                                   userId: 1, 
+            var request = new CreateHolidayCommand(companyId: _companyId, 
+                                                   userId: _userId, 
                                                    model.Teams, 
                                                    model.EndDate, 
                                                    model.StartDate, 
@@ -84,9 +85,7 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(500)]
         public async Task<ActionResult<bool>> DeleteHolidayAsync(int id)
         {
-            Guid companyId = new Guid(_companyId);
-
-            var request = new DeleteHolidayCommand(id, 1);
+            var request = new DeleteHolidayCommand(id, _companyId);
 
             return Single(await CommandAsync(request));
         }
@@ -98,9 +97,9 @@ namespace VacationTracking.Api.Controller
         [ProducesResponseType(500)]
         public async Task<ActionResult<HolidayDto>> UpdateTeamAsync(int id, [FromBody]HolidayModel model)
         {
-            var request = new UpdateHolidayCommand(companyId : 1,
+            var request = new UpdateHolidayCommand(companyId : _companyId,
                                                    holidayId: id,
-                                                   userId: 1,
+                                                   userId: _userId,
                                                    model.Name,
                                                    model.StartDate,
                                                    model.EndDate,                                                   
